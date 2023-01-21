@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 
 def predict_pool(source):
-    model = YOLO("best.pt")
+    model = YOLO("poolm.pt")
     outputs = model.predict(source=source, return_outputs=True) # treat predict as a Python generator
     return outputs
 
@@ -15,6 +15,7 @@ def predict_person(source):
       
 
 def add_layers_to_image(output, img):
+    # print(output)
     if not "det" in output:
         return img
 
@@ -52,7 +53,7 @@ def onVideo(pools, people, source):
             break
         
         image_display = add_layers_to_image(pool, image)
-        image_display = add_layers_to_image(person, image)
+        image_display = add_layers_to_image(person, image_display)
         cv2.imshow("Result", image_display)
 
         key = cv2.waitKey(1) & 0xFF
@@ -65,6 +66,6 @@ def onVideo(pools, people, source):
 
 
 if __name__ == "__main__":
-    pool = predict_pool("vidtest.mp4")
-    person = predict_person("vidtest.mp4")
-    onVideo(pool, person, "vidtest.mp4")
+    pool = predict_pool("vid.mp4")
+    person = predict_person("vid.mp4")
+    onVideo(pool, person, "vid.mp4")
