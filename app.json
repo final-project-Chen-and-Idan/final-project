@@ -1,0 +1,11 @@
+{
+  "expo": {
+    "name": "icCam",
+    "slug": "icCam",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  },
+  "name": "icCam"
+}
