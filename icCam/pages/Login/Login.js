@@ -1,21 +1,23 @@
 import { StyleSheet, Text, View , TouchableOpacity, TextInput} from 'react-native'
-import React , {useState} from 'react'
+import React , {useRef, useState} from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { auth } from '../../firebase'
-
+import {signInWithEmailAndPassword} from 'firebase/auth'
 
 
 const Login = () => {
     const navigation = useNavigation();
+    // const email = useRef();
+    // const password = useRef();
     const[email, setEmail] = useState('');
-    const[passord, setPassord] = useState('');
+    const[password, setPassword] = useState('');
 
 
-    loginUser = async(email, passord) => {
+    loginUser = async(email, password) => {
         try{
-            await auth.signInWiteEmailAndPassord(email, passord)
+            await signInWithEmailAndPassword(auth, email, password)
         } catch(error){
-            alert(error + "hjkg")
+            alert(error)
         }
     }
 
@@ -27,20 +29,22 @@ const Login = () => {
             <View>
                 <TextInput
                 placeholder="Email"
+                // ref={email}
                 onChangeText={(email) => setEmail(email)}
                 autoCapitalize="none"
                 autoCorrect = {false}
                 />
                 <TextInput
                 placeholder="Password"
-                onChangeText={(password) => setPassord(passord)}
+                // ref={password}
+                onChangeText={(password) => setPassword(password)}
                 autoCapitalize="none"
                 autoCorrect = {false}
                 secureTextEntry={true}
                 />
             </View>
             <TouchableOpacity
-                onPress={() => loginUser(email, passord)}
+                onPress={() => loginUser(email, password)}
             >
                 <Text>Login</Text>
             </TouchableOpacity>
