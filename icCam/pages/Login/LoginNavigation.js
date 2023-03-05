@@ -2,6 +2,7 @@ import { createStackNavigator } from '@react-navigation/stack'
 import React, {useState, useEffect}from 'react'
 import {auth} from '../../firebase'
 import Login from './Login'
+import Camera from '../Camera/Camera'
 import Signup from '../Signup/Signup'
 import Home from '../Home/Home'
 import { NavigationContainer } from '@react-navigation/native'
@@ -49,6 +50,7 @@ function LoginNavigation(){
                     //     }
                     // }}
                 />
+              
             </Stack.Navigator>
             </NavigationContainer>
         )
@@ -67,6 +69,11 @@ function LoginNavigation(){
                                     
                             //     }
                             // }}
+                />
+                  <Stack.Screen
+                    name="Camera"
+                    component={Camera}
+
                 />
             </Stack.Navigator>
         </NavigationContainer>
