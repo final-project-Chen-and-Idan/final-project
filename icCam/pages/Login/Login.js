@@ -7,8 +7,6 @@ import {signInWithEmailAndPassword} from 'firebase/auth'
 
 const Login = () => {
     const navigation = useNavigation();
-    // const email = useRef();
-    // const password = useRef();
     const[email, setEmail] = useState('');
     const[password, setPassword] = useState('');
 
@@ -56,12 +54,6 @@ const Login = () => {
         </View>
         
     )
-
-//   return (
-//     <View>
-//       <Text>Login</Text>
-//     </View>
-//   )
 }
 
 export default Login
