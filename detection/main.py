@@ -1,44 +1,51 @@
-from yolov8.ultralytics import YOLO
+from ultralytics import YOLO
 import cv2
 import numpy as np
+import supervision as sv
 
-def predict_pool(source):
-    model = YOLO("poolm.pt")
-    outputs = model.predict(source=source, return_outputs=True) # treat predict as a Python generator
-    return outputs
 
-def predict_person(source):
-    model = YOLO("yolov8m.pt")
-    outputs = model.predict(source=source, return_outputs=True) # treat predict as a Python generator
-    return outputs
+def child_or_adult(img, box):
+    cropped_image =  img[box[0]:box[1], box[2]:box[3],:]
+    cv2.imshow("cropped", cropped_image)
+    cv2.waitKey(1)
+    pass
 
-      
 
-def add_layers_to_image(output, img):
-    # print(output)
-    if not "det" in output:
-        return img
-
-    # for detection
-    if not "segment" in output:    
-        for x in output["det"]:
-            x1 , y1, x2, y2, score, label = x
-            if label != 0:
+def predict(source, model, img):
+    output = model.predict(source, agnostic_nms=True)[0] # treat predict as a Python generator
+    
+    boxes, masks = output.boxes, output.masks
+    
+    # we don't want the bounding box of the pool
+    if model.names[0] != 'pool':   
+        # addig the bounding boxes to the image
+        for box in boxes.data:
+            x1 , y1, x2, y2, score, label = box
+            
+            if label != 0 or score<0.45:
                 continue
-            cv2.rectangle(img,(int(x1), int(y1)), (int(x2), int(y2)), color=(100,100,100), thickness=5, lineType=cv2.LINE_AA)   
-    # for segmentation
-    else:
-        if not "segment" in output:
-            return img
-        for x in output["segment"]:
-            x = np.matrix.round(x)
-            cv2.fillPoly(img, pts = np.int32([x]), color =(0,100,0,0.5))
+            child_or_adult(source, [int(y1),int(y2),int(x1),int(x2)])
+            cv2.rectangle(img,(int(x1), int(y1)), (int(x2), int(y2)), color=(0,0,0), thickness=3, lineType=cv2.LINE_AA)
+
+    # if there are no masks
+    if masks == None:
+        return img
+    
+    # adding the polygon to the image
+    for mask in masks.segments:
+        # normalizing the mask coordinates
+        mask = np.matrix.round(mask * np.array([img.shape[1],img.shape[0]]))
+        # adding the polygon
+        cv2.fillPoly(img, pts = np.int32([mask]), color =(0,100,0,0.5))
 
     return img
 
 
 
-def onVideo(pools, people, source):
+def onVideo(source):
+    model_pool = YOLO("poolm.pt")
+    model_person = YOLO("yolov8m.pt")
+    
     if source == "0":
         cap = cv2.VideoCapture(int(source))
     else:
@@ -47,14 +54,16 @@ def onVideo(pools, people, source):
         print("error on opening file....")
         return
     
+    every_fith = 0
     (success, image) = cap.read()
-    for pool, person in zip(pools, people):
-        if not success:
-            break
+    while success:
+        # getting the predictions of the pool and people and adding to image
+        display_image = predict(image, model_pool, image)
+        display_image = predict(image, model_person, display_image)
         
-        image_display = add_layers_to_image(pool, image)
-        image_display = add_layers_to_image(person, image_display)
-        cv2.imshow("Result", image_display)
+        # applaying the information to the image
+        
+        cv2.imshow("Result", display_image)
 
         key = cv2.waitKey(1) & 0xFF
         if key == ord("q"):
@@ -66,6 +75,9 @@ def onVideo(pools, people, source):
 
 
 if __name__ == "__main__":
-    pool = predict_pool("vid.mp4")
-    person = predict_person("vid.mp4")
-    onVideo(pool, person, "vid.mp4")
+    box_annotator = sv.BoxAnnotator(
+        thickness=2,
+        text_thickness=2,
+        text_scale=1
+    )
+    onVideo("vid.mp4")
