@@ -1,11 +1,15 @@
 //import { createStackNavigator } from 'react-navigation-stack';
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import { StyleSheet, Text, View,TouchableOpacity, Linking } from 'react-native';
 import LoginNavigation from './pages/Login/LoginNavigation';
 
 export default function App() {
+
+  
+
   return (
+    
     // <View style={styles.container}>
     //   <Text style={styles.Text}>IC-CAM</Text>
     //   <StatusBar style="auto" />
