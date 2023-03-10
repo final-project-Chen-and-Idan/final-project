@@ -32,30 +32,27 @@ const MyCamera = () => {
         setShowCamera(false);
         console.log(photo.path);
     }
-  }
-
-//   render() {
-//     return (
-//       <Camera
-//         style={styles.preview}
-//         type={Camera.Constants.Type.back}
-//       />
-//     );
-//   }
-  
-
- const takePicture = async () => {
-    if (this.camera) {
-      const photo = await this.camera.takePicture();
-      console.log(photo.uri);
-
+    else{
+        console.log("namera not conected")
     }
   }
+
+
+  
+
+//  const takePicture = async () => {
+//     if (camera.current) {
+//       const photo = await camera.current.takePicture();
+//       console.log(photo.uri);
+      
+
+//     }
+//   }
 
   return (
     <View>
         <Text>Hello</Text>
-        <TouchableOpacity style={styles.button} onPress={takePicture}>
+        <TouchableOpacity style={styles.button} onPress={cupturePhoto}>
         <Text style={styles.buttonText}>Take a Picture</Text>
       </TouchableOpacity>
       {image && <Image source={{ uri: image }} style={{ flex: 1 }} />}

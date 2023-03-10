@@ -6,6 +6,7 @@ import Camera from '../Camera/Camera'
 import Signup from '../Signup/Signup'
 import Home from '../Home/Home'
 import { NavigationContainer } from '@react-navigation/native'
+import {View, Text} from 'react-native'
 
 const Stack = createStackNavigator();
 function LoginNavigation(){
@@ -32,23 +33,11 @@ function LoginNavigation(){
                 <Stack.Screen
                     name = "login"
                     component = {Login}
-                    // options = {{
-                    //     headerTitle: () => <Headers name = "Bug Ninza"/>,
-                    //     headerStyle: {
-                        
-                    //     }
-                    // }}
                 />
                
                 <Stack.Screen
                     name = "Signup"
                     component = {Signup}
-                    // options = {{
-                    //     headerTitle: () => <Headers name = "Bug Ninza"/>,
-                    //     headerStyle: {
-                            
-                    //     }
-                    // }}
                 />
               
             </Stack.Navigator>
@@ -57,27 +46,31 @@ function LoginNavigation(){
         
         
     }
-    return(
-        <NavigationContainer>
-            <Stack.Navigator>
-                <Stack.Screen
-                    name = "Home"
-                            component = {Home}
-                            // options = {{
-                            //     headerTitle: () => <Headers name = "Bug Ninza"/>,
-                            //     headerStyle: {
-                                    
-                            //     }
-                            // }}
-                />
-                  <Stack.Screen
-                    name="Camera"
-                    component={Camera}
+    if(!auth.currentUser.emailVerified)
+        return(
+            <NavigationContainer>
+                <Stack.Navigator>
+                    <Stack.Screen
+                        name = "Home"
+                                component = {Home}
+                                
+                    />
+                    <Stack.Screen
+                        name="Camera"
+                        component={Camera}
 
-                />
-            </Stack.Navigator>
-        </NavigationContainer>
-    )
+                    />
+                </Stack.Navigator>
+            </NavigationContainer>
+        )
+
+    
+        return(
+            <View>
+                <Text style = {{fontSize: 30,}}>pleass verify your email</Text>
+            </View>
+        )
+    
 
 }
 export default LoginNavigation
