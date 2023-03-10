@@ -25,6 +25,7 @@ const Signup = () => {
   }
   return (
     <View>
+      <View style = {styles.a}>
       <Text style = {styles.title}>Signup</Text>
       <TextInput
                 style = {styles.box}
@@ -60,7 +61,7 @@ const Signup = () => {
             </TouchableOpacity>
                 
       
-
+            </View>
     </View>
   )
 }
@@ -68,11 +69,19 @@ const Signup = () => {
 export default Signup
 
 const styles = StyleSheet.create({
+  a: {
+    backgroundColor: `#5f9ea0`,
+    padding: 2,
+    margin:30,
+    height: '70%'
+  },
   box: {
     backgroundColor: `#7fffd4`,
     fontSize: 20,
     borderWidth: 2,
-    margin: 4
+    margin: 10,
+    padding: 1,
+    paddingLeft: 3,
 },
 button: {
     borderWidth: 2,
@@ -86,11 +95,20 @@ button: {
     marginBottom: 6,
     minWidth: '48%',
     textAlign: 'center',
+    justifyContent: 'center',
     backgroundColor: `#daa520`,
+  },
+  buttonText: {
+    textAlign: 'center',
+    justifyContent: 'center',
+    fontWeight: 'bold',
+    fontSize: 25,
   },
   title: {
     //fontSize: 10,
     fontWeight: 'bold',
     fontSize: 20,
+    justifyContent: 'center',
+    alignSelf: 'center',
   }
 })

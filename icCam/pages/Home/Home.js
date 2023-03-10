@@ -10,7 +10,7 @@ const Home = () => {
 
   const navigation = useNavigation();
 
-  const image = {uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQld43FLoaOoKEDcHtOuns32h7Pt3DR-Mc0wROQYQi_t1bsHPk3BMYVDT5S7babFkg-5DQ&usqp=CAU"}
+  const image = {uri: "https://img.freepik.com/free-vector/scene-swimming-pool-with_1308-37683.jpg"}
 
   const logOut = async()=>{
     try{
@@ -25,6 +25,7 @@ const Home = () => {
     <ImageBackground source={image} style={styles.image}>
       <View>
             <Text style = {styles.title}>hello there  {auth.currentUser.email}</Text>
+            <Text style={styles.logo}>IC-CAM</Text>
             <View style={styles.box}>
                 <View>
                 <TouchableOpacity onPress={logOut} style = {styles.button}>
@@ -48,6 +49,15 @@ const Home = () => {
 export default Home
 
 const styles = StyleSheet.create({
+  logo: {
+    fontWeight: 'bold',
+    color: '#b8860b',
+    shadowColor: '#cd5c5c',
+    fontSize: 60,
+    alignSelf: 'center',
+    borderCurve: '#cd5c5c',
+  },
+
   title: {
     //fontSize: 10,
     fontWeight: 'bold',

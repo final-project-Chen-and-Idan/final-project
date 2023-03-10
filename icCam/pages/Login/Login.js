@@ -21,6 +21,9 @@ const Login = () => {
 
     return(
         <View>
+            <View style = {styles.a}>
+
+            
             <Text style = {styles.title}>
                 Login
             </Text>
@@ -55,6 +58,7 @@ const Login = () => {
             >
                 <Text>Don't have an account? Register Now</Text>
             </TouchableOpacity>
+            </View>
         </View>
         
     )
@@ -68,7 +72,9 @@ const styles = StyleSheet.create({
         backgroundColor: `#7fffd4`,
         fontSize: 20,
         borderWidth: 2,
-        margin: 4
+        margin: 10,
+        padding: 1,
+        paddingLeft: 3,
     },
     button: {
         borderWidth: 2,
@@ -88,5 +94,12 @@ const styles = StyleSheet.create({
         //fontSize: 10,
         fontWeight: 'bold',
         fontSize: 20,
-      }
+        alignSelf: 'center'
+      },
+      a: {
+        backgroundColor: `#5f9ea0`,
+        padding: 2,
+        margin:30,
+        height: '70%'
+      },
 })
