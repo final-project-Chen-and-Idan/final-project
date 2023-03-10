@@ -9,6 +9,7 @@ const Signup = () => {
   const[password, setPassword] = useState(''); 
   const[passwordAuthentication, setPasswordAuthentication] = useState(''); 
 
+
   CreateUser = async(email, password, passwordAuthentication) => {
     if(password === passwordAuthentication){
       try{
@@ -24,8 +25,9 @@ const Signup = () => {
   }
   return (
     <View>
-      <Text>Signup</Text>
+      <Text style = {styles.title}>Signup</Text>
       <TextInput
+                style = {styles.box}
                 placeholder="Email"
                 // ref={email}
                 onChangeText={(email) => setEmail(email)}
@@ -33,6 +35,7 @@ const Signup = () => {
                 autoCorrect = {false}
                 />
                 <TextInput
+                style = {styles.box}
                 placeholder="Password"
                 // ref={password}
                 onChangeText={(password) => setPassword(password)}
@@ -41,6 +44,7 @@ const Signup = () => {
                 secureTextEntry={true}
                 />
                  <TextInput
+                 style = {styles.box}
                 placeholder="Password Authentication"
                 // ref={password}
                 onChangeText={(passwordAuthentication) => setPasswordAuthentication(passwordAuthentication)}
@@ -64,13 +68,13 @@ const Signup = () => {
 export default Signup
 
 const styles = StyleSheet.create({
-  title: {
-    //fontSize: 10,
-    fontWeight: 'bold',
+  box: {
+    backgroundColor: `#7fffd4`,
     fontSize: 20,
-  }
-     ,
-  button: {
+    borderWidth: 2,
+    margin: 4
+},
+button: {
     borderWidth: 2,
     alignSelf: 'center',
     width: '40%',
@@ -84,16 +88,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     backgroundColor: `#daa520`,
   },
-  buttonText: {
-    textAlign: 'center',
-    justifyContent: 'center',
+  title: {
+    //fontSize: 10,
     fontWeight: 'bold',
-    fontSize: 25,
-  },
-  box: {
-    textAlign: 'center',
-    justifyContent: 'center',
-    //backgroundColor: `#2f4f4f`,
-    height: '80%'
-  },
+    fontSize: 20,
+  }
 })

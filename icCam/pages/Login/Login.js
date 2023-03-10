@@ -21,11 +21,12 @@ const Login = () => {
 
     return(
         <View>
-            <Text>
+            <Text style = {styles.title}>
                 Login
             </Text>
             <View>
                 <TextInput
+                style = {styles.box}
                 placeholder="Email"
                 // ref={email}
                 onChangeText={(email) => setEmail(email)}
@@ -33,6 +34,7 @@ const Login = () => {
                 autoCorrect = {false}
                 />
                 <TextInput
+                style = {styles.box}
                 placeholder="Password"
                 // ref={password}
                 onChangeText={(password) => setPassword(password)}
@@ -42,11 +44,13 @@ const Login = () => {
                 />
             </View>
             <TouchableOpacity
+                style = {styles.button}
                 onPress={() => loginUser(email, password)}
             >
                 <Text>Login</Text>
             </TouchableOpacity>
             <TouchableOpacity
+                style = {styles.button}
                 onPress={() => navigation.navigate('Signup')}
             >
                 <Text>Don't have an account? Register Now</Text>
@@ -59,5 +63,30 @@ const Login = () => {
 export default Login
 
 const styles = StyleSheet.create({
-backgroundColor: '#fff'
+    
+    box: {
+        backgroundColor: `#7fffd4`,
+        fontSize: 20,
+        borderWidth: 2,
+        margin: 4
+    },
+    button: {
+        borderWidth: 2,
+        alignSelf: 'center',
+        width: '40%',
+        paddingHorizontal: 8,
+        paddingVertical: 6,
+        borderRadius: 50,
+        backgroundColor: 'oldlace',
+        marginHorizontal: '1%',
+        marginBottom: 6,
+        minWidth: '48%',
+        textAlign: 'center',
+        backgroundColor: `#daa520`,
+      },
+      title: {
+        //fontSize: 10,
+        fontWeight: 'bold',
+        fontSize: 20,
+      }
 })

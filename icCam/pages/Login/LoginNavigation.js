@@ -6,7 +6,7 @@ import Camera from '../Camera/Camera'
 import Signup from '../Signup/Signup'
 import Home from '../Home/Home'
 import { NavigationContainer } from '@react-navigation/native'
-import {View, Text} from 'react-native'
+import {View, Text, StyleSheet} from 'react-native'
 
 const Stack = createStackNavigator();
 function LoginNavigation(){
@@ -76,4 +76,6 @@ function LoginNavigation(){
 export default LoginNavigation
    
         
+const styles = StyleSheet.create({
    
+  })
