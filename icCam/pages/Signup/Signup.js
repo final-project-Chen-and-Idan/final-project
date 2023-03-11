@@ -1,7 +1,9 @@
 import { StyleSheet, Text, View, TextInput ,TouchableOpacity} from 'react-native'
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, sendSignInLinkToEmail, isSignInWithEmailLink ,fetchSignInMethodsForEmail,EmailAuthProvider} from "firebase/auth";
 import React , {useRef, useState} from 'react'
 import { auth } from '../../firebase'
+//import { getAuth, sendSignInLinkToEmail } from "firebase/auth";
+
 
 
 const Signup = () => {
@@ -9,20 +11,53 @@ const Signup = () => {
   const[password, setPassword] = useState(''); 
   const[passwordAuthentication, setPasswordAuthentication] = useState(''); 
 
-
-  CreateUser = async(email, password, passwordAuthentication) => {
-    if(password === passwordAuthentication){
-      try{
-        await createUserWithEmailAndPassword(auth, email, password)
-    } catch(error){
-        alert(error)
-    }
-    }
-    else{
-      alert("Password verification does not match")
-    }
+  const actionCodeSettings = {
+    // URL you want to redirect back to. The domain (www.example.com) for this
+    // URL must be in the authorized domains list in the Firebase Console.
+    url: 'https://www.example.com/finishSignUp?cartId=1234',
+    // This must be true.
+    handleCodeInApp: true,
+    iOS: {
+      bundleId: 'com.example.ios'
+    },
+    android: {
+      packageName: 'com.example.android',
+      installApp: true,
+      minimumVersion: '12'
+    },
+    dynamicLinkDomain: 'example.page.link'
+  };
+  
+  const auth = getAuth();
+  sendSignInLinkToEmail(auth, email, actionCodeSettings)
+    .then(() => {
+      // The link was successfully sent. Inform the user.
+      // Save the email locally so you don't need to ask the user for it again
+      // if they open the link on the same device.
+      window.localStorage.setItem('emailForSignIn', email);
+      // ...
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      // ...
+    });
+    
+    
+  // CreateUser = async(email, password, passwordAuthentication) => {
+  //   if(password === passwordAuthentication){
+  //     try{
+  //       await createUserWithEmailAndPassword(auth, email, password)
+  //   } catch(error){
+  //       alert(error)
+  //   }
+  //   }
+  //   else{
+  //     alert("Password verification does not match")
+  //   }
  
-  }
+  // }
+
   return (
     <View>
       <View style = {styles.a}>
@@ -53,12 +88,19 @@ const Signup = () => {
                 autoCorrect = {false}
                 secureTextEntry={true}
                 />
-              <TouchableOpacity
+                 <TouchableOpacity
+                style = {styles.button}
+                // onPress={() => sendSignInLinkToEmail(email, password, passwordAuthentication)}
+                onPress={() => sendSignInLinkToEmail(email,actionCodeSettings)}
+            >
+                <Text style = {styles.buttonText}>Signup</Text>
+            </TouchableOpacity>
+              {/* <TouchableOpacity
                 style = {styles.button}
                 onPress={() => CreateUser(email, password, passwordAuthentication)}
             >
                 <Text style = {styles.buttonText}>Signup</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
                 
       
             </View>
