@@ -1,8 +1,7 @@
 import { StyleSheet, Text, View, TextInput ,TouchableOpacity} from 'react-native'
-import { getAuth, createUserWithEmailAndPassword, sendSignInLinkToEmail, isSignInWithEmailLink ,fetchSignInMethodsForEmail,EmailAuthProvider} from "firebase/auth";
+import { createUserWithEmailAndPassword, sendSignInLinkToEmail,fetchSignInMethodsForEmail,EmailAuthProvider} from "firebase/auth";
 import React , {useRef, useState} from 'react'
 import { auth } from '../../firebase'
-//import { getAuth, sendSignInLinkToEmail } from "firebase/auth";
 
 
 
@@ -28,79 +27,77 @@ const Signup = () => {
     dynamicLinkDomain: 'example.page.link'
   };
   
-  const auth = getAuth();
-  sendSignInLinkToEmail(auth, email, actionCodeSettings)
-    .then(() => {
-      // The link was successfully sent. Inform the user.
-      // Save the email locally so you don't need to ask the user for it again
-      // if they open the link on the same device.
-      window.localStorage.setItem('emailForSignIn', email);
-      // ...
-    })
-    .catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      // ...
-    });
+  // const auth = getAuth();
+  // sendSignInLinkToEmail(auth, email, actionCodeSettings)
+  //   .then(() => {
+  //     // The link was successfully sent. Inform the user.
+  //     // Save the email locally so you don't need to ask the user for it again
+  //     // if they open the link on the same device.
+  //     window.localStorage.setItem('emailForSignIn', email);
+  //     // ...
+  //   })
+  //   .catch((error) => {
+  //     const errorCode = error.code;
+  //     const errorMessage = error.message;
+  //     // ...
+  //   });
     
     
-  // CreateUser = async(email, password, passwordAuthentication) => {
-  //   if(password === passwordAuthentication){
-  //     try{
-  //       await createUserWithEmailAndPassword(auth, email, password)
-  //   } catch(error){
-  //       alert(error)
-  //   }
-  //   }
-  //   else{
-  //     alert("Password verification does not match")
-  //   }
+  CreateUser = async(email, password, passwordAuthentication) => {
+    if(password === passwordAuthentication){
+      try{
+        await createUserWithEmailAndPassword(auth, email, password)
+        await sendSignInLinkToEmail(auth, email)
+    } catch(error){
+        alert(error)
+    }
+    }
+    else{
+      alert("Password verification does not match")
+    }
  
-  // }
+  }
 
   return (
     <View>
       <View style = {styles.a}>
-      <Text style = {styles.title}>Signup</Text>
-      <TextInput
-                style = {styles.box}
-                placeholder="Email"
-                // ref={email}
-                onChangeText={(email) => setEmail(email)}
-                autoCapitalize="none"
-                autoCorrect = {false}
-                />
-                <TextInput
-                style = {styles.box}
-                placeholder="Password"
-                // ref={password}
-                onChangeText={(password) => setPassword(password)}
-                autoCapitalize="none"
-                autoCorrect = {false}
-                secureTextEntry={true}
-                />
-                 <TextInput
-                 style = {styles.box}
-                placeholder="Password Authentication"
-                // ref={password}
-                onChangeText={(passwordAuthentication) => setPasswordAuthentication(passwordAuthentication)}
-                autoCapitalize="none"
-                autoCorrect = {false}
-                secureTextEntry={true}
-                />
-                 <TouchableOpacity
+        <Text style = {styles.title}>Signup</Text>
+        <TextInput
+                  style = {styles.box}
+                  placeholder="Email"
+                  // ref={email}
+                  onChangeText={(email) => setEmail(email)}
+                  autoCapitalize="none"
+                  autoCorrect = {false}
+                  />
+        <TextInput
+                  style = {styles.box}
+                  placeholder="Password"
+                  // ref={password}
+                  onChangeText={(password) => setPassword(password)}
+                  autoCapitalize="none"
+                  autoCorrect = {false}
+                  secureTextEntry={true}
+                  />
+        <TextInput
+                  style = {styles.box}
+                  placeholder="Password Authentication"
+                  // ref={password}
+                  onChangeText={(passwordAuthentication) => setPasswordAuthentication(passwordAuthentication)}
+                  autoCapitalize="none"
+                  autoCorrect = {false}
+                  secureTextEntry={true}
+                  />
+        {/* <TouchableOpacity
                 style = {styles.button}
-                // onPress={() => sendSignInLinkToEmail(email, password, passwordAuthentication)}
-                onPress={() => sendSignInLinkToEmail(email,actionCodeSettings)}
-            >
-                <Text style = {styles.buttonText}>Signup</Text>
-            </TouchableOpacity>
-              {/* <TouchableOpacity
+                onPress={() => sendSignInLinkToEmail(email,actionCodeSettings)}>
+                  <Text style = {styles.buttonText}>Signup</Text>
+        </TouchableOpacity> */}
+        <TouchableOpacity
                 style = {styles.button}
-                onPress={() => CreateUser(email, password, passwordAuthentication)}
-            >
+                onPress={() => CreateUser(email, password, passwordAuthentication)}>
                 <Text style = {styles.buttonText}>Signup</Text>
-            </TouchableOpacity> */}
+        </TouchableOpacity>
                 
       
             </View>

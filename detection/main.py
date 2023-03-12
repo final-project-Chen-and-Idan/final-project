@@ -12,7 +12,8 @@ def child_or_adult(img, box):
 
 
 def predict(source, model, img):
-    output = model.predict(source, agnostic_nms=True)[0] # treat predict as a Python generator
+    # getting the predictions 
+    output = model.predict(source, agnostic_nms=True)[0]
     
     boxes, masks = output.boxes, output.masks
     
@@ -61,8 +62,7 @@ def onVideo(source):
         display_image = predict(image, model_pool, image)
         display_image = predict(image, model_person, display_image)
         
-        # applaying the information to the image
-        
+        # showing the image
         cv2.imshow("Result", display_image)
 
         key = cv2.waitKey(1) & 0xFF
