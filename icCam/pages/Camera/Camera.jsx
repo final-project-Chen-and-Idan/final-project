@@ -1,11 +1,9 @@
-import { ImageBackground, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { auth } from '../../firebase'
 import { signOut } from 'firebase/auth'
 import React, {useEffect, useState, useRef} from 'react';
 import { NavigationContainer, useNavigation } from '@react-navigation/native'
 import { Camera } from 'react-native-vision-camera';
-import { RNCamera } from 'react-native-camera';
-import { PermissionsAndroid } from 'react-native';
 
 
 const MyCamera = () => {
@@ -31,7 +29,7 @@ const MyCamera = () => {
         console.log(photo.path);
     }
     else{
-        console.log("camera not conected")
+        console.log("namera not conected")
     }
   }
 
@@ -49,20 +47,11 @@ const MyCamera = () => {
 
   return (
     <View>
-        <Text>Hello nfghgh</Text>
+        <Text>Hello</Text>
         <TouchableOpacity style={styles.button} onPress={cupturePhoto}>
         <Text style={styles.buttonText}>Take a Picture</Text>
       </TouchableOpacity>
       {image && <Image source={{ uri: image }} style={{ flex: 1 }} />}
-      <View style={styles.container}>
-        <RNCamera
-          style={styles.preview}
-          type={RNCamera.Constants.Type.back}
-          flashMode={RNCamera.Constants.FlashMode.on}
-          captureAudio={false}
-        />
-        <ImageBackground source={photo.path} style={styles.image}></ImageBackground>
-      </View>
       
     </View>
    

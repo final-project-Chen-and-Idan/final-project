@@ -36,21 +36,26 @@ export default function App() {
           </NavigationContainer>
         )
     }
-    
     if(auth.currentUser.emailVerified)
-      return(
-        <NavigationContainer>
-            <Stack.Navigator>
-                <Stack.Screen name = "Home" component = {Home}/>
-                <Stack.Screen name="Camera" component={Camera}/>
-            </Stack.Navigator>
-        </NavigationContainer>
-      )
+        return(
+            <NavigationContainer>
+                <Stack.Navigator>
+                    <Stack.Screen
+                        name = "Home"
+                        component = {Home}   
+                    />
+                    <Stack.Screen
+                        name="Camera"
+                        component={Camera}
+                    />
+                </Stack.Navigator>
+            </NavigationContainer>
+        )
 
-  
-      return(
-          <Verify/>
-      );
+    
+        return(
+            <Verify/>
+        );
   
 }
 
