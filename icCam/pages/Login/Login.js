@@ -56,7 +56,7 @@ const Login = () => {
                 style = {styles.button}
                 onPress={() => navigation.navigate('Signup')}
             >
-                <Text>Don't have an account? Register Now</Text>
+                <Text style={styles.title}>Don't have an account? Register Now</Text>
             </TouchableOpacity>
             </View>
         </View>

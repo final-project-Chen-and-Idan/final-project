@@ -1,12 +1,22 @@
 import { createStackNavigator } from '@react-navigation/stack'
-import React, {useState, useEffect}from 'react'
+import React, {useState, useEffect, Fragment, Component}from 'react'
 import {auth} from './firebase'
 import Login from './pages/Login/Login'
 import Camera from './pages/Camera/Camera'
 import Signup from './pages/Signup/Signup'
 import Home from './pages/Home/Home'
 import { NavigationContainer } from '@react-navigation/native'
-import {View, Text, StyleSheet} from 'react-native'
+import {View, Text, StyleSheet, PermissionsAndroid, SafeAreaView, 
+        ScrollView, StatusBar, Image,
+        Button, Dimensions, TouchableOpacity} from 'react-native'
+import * as ImagePicker from "react-native-image-picker";
+import {
+        Header,
+        LearnMoreLinks,
+        Colors,
+        DebugInstructions,
+        ReloadInstructions } from 'react-native/Libraries/NewAppScreen';``
+
 
 const Stack = createStackNavigator();
 
@@ -47,7 +57,7 @@ export default function App() {
         
         
     }
-    if(auth.currentUser.emailVerified)
+    if(!auth.currentUser.emailVerified)
         return(
             <NavigationContainer>
                 <Stack.Navigator>
@@ -68,7 +78,8 @@ export default function App() {
     
         return(
             <View>
-                <Text style = {{fontSize: 30,}}>pleass verify your email</Text>
+                <Text style = {{fontSize: 60,}}>pleass verify your email</Text>
+                
             </View>
         );
   
