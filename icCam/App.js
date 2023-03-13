@@ -6,7 +6,8 @@ import Camera from './pages/Camera/Camera'
 import Signup from './pages/Signup/Signup'
 import Home from './pages/Home/Home'
 import { NavigationContainer } from '@react-navigation/native'
-import {View, Text, StyleSheet} from 'react-native'
+import {StyleSheet} from 'react-native'
+import Verify from './pages/Signup/Verify'
 
 const Stack = createStackNavigator();
 
@@ -27,50 +28,29 @@ export default function App() {
 
     if(!user){
         return (
-            <NavigationContainer>
-
-          
+          <NavigationContainer>
             <Stack.Navigator>
-                <Stack.Screen
-                    name = "login"
-                    component = {Login}
-                />
-               
-                <Stack.Screen
-                    name = "Signup"
-                    component = {Signup}
-                />
-              
+                <Stack.Screen name = "login" component = {Login}/>
+                <Stack.Screen name = "Signup" component = {Signup}/>
             </Stack.Navigator>
-            </NavigationContainer>
+          </NavigationContainer>
         )
-        
-        
     }
-    if(auth.currentUser.emailVerified)
-        return(
-            <NavigationContainer>
-                <Stack.Navigator>
-                    <Stack.Screen
-                        name = "Home"
-                                component = {Home}
-                                
-                    />
-                    <Stack.Screen
-                        name="Camera"
-                        component={Camera}
-
-                    />
-                </Stack.Navigator>
-            </NavigationContainer>
-        )
-
     
-        return(
-            <View>
-                <Text style = {{fontSize: 30,}}>pleass verify your email</Text>
-            </View>
-        );
+    if(auth.currentUser.emailVerified)
+      return(
+        <NavigationContainer>
+            <Stack.Navigator>
+                <Stack.Screen name = "Home" component = {Home}/>
+                <Stack.Screen name="Camera" component={Camera}/>
+            </Stack.Navigator>
+        </NavigationContainer>
+      )
+
+  
+      return(
+          <Verify/>
+      );
   
 }
 
