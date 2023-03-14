@@ -1,9 +1,6 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import { auth } from '../../firebase'
-import { signOut } from 'firebase/auth'
 import React, {useEffect, useState, useRef} from 'react';
-import { NavigationContainer, useNavigation } from '@react-navigation/native'
-import { Camera } from 'react-native-vision-camera';
+import { Camera } from 'expo-camera';
 
 
 const MyCamera = () => {
@@ -42,38 +39,13 @@ const MyCamera = () => {
     }
   }
 
-
-  
-
-//  const takePicture = async () => {
-//     if (camera.current) {
-//       const photo = await camera.current.takePicture();
-//       console.log(photo.uri);
-      
-
-//     }
-//   }
-if (device == null) return <LoadingView />
-return (
-  <Camera
-    style={StyleSheet.absoluteFill}
-    device={device}
-    isActive={true}
-  />
-)
-
+  if (device == null) return <LoadingView />
   return (
-    <View>
-        <Text>Hello to</Text>
-        <TouchableOpacity style={styles.button} onPress={cupturePhoto}>
-        <Text style={styles.buttonText}>Take a Picture</Text>
-      </TouchableOpacity>
-    
-
-      {image && <Image source={{ uri: image }} style={{ flex: 1 }} />}
-      
-    </View>
-   
+    <Camera
+      style={StyleSheet.absoluteFill}
+      device={device}
+      isActive={true}
+    />
   )
 }
 
