@@ -18,19 +18,54 @@ const Verify = () => {
     }
   return (
     <View>
-        <Text style = {{fontSize: 30,}}>please verify your email</Text>
-        <TouchableOpacity onPress={()=>verify(auth.currentUser)}>
-            <View style={{height:50, backgroundColor:"blue"}}>
-            <Text>if link was not sent press here to Verify</Text>
-            </View>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={verified}>
-            <Text>Email has Been verified</Text>
-        </TouchableOpacity>
+        <View style={styles.box}>
+            <Text style = {{fontSize: 30,}}>please verify your email</Text>
+            <TouchableOpacity onPress={()=>verify(auth.currentUser)}>
+                <View >
+                <Text>if link was not sent press here to Verify</Text>
+                </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={verified}>
+                <Text>Email has Been verified</Text>
+            </TouchableOpacity>
+        </View>
     </View>
   )
 }
 
 export default Verify
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    title: {
+        //fontSize: 10,
+        fontWeight: 'bold',
+        fontSize: 20,
+      }
+         ,
+      button: {
+        borderWidth: 2,
+        alignSelf: 'center',
+        width: '40%',
+        paddingHorizontal: 8,
+        paddingVertical: 6,
+        borderRadius: 50,
+        backgroundColor: 'oldlace',
+        marginHorizontal: '1%',
+        marginBottom: 6,
+        minWidth: '48%',
+        textAlign: 'center',
+        backgroundColor: `#daa520`,
+      },
+      buttonText: {
+        textAlign: 'center',
+        justifyContent: 'center',
+        fontWeight: 'bold',
+        fontSize: 25,
+      },
+      box: {
+        textAlign: 'center',
+        justifyContent: 'center',
+        //backgroundColor: `#2f4f4f`,
+        height: '80%'
+      },
+})

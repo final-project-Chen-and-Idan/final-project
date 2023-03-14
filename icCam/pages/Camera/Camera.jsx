@@ -10,6 +10,8 @@ const MyCamera = () => {
 
     const camera = useRef(null);
     const [image, setImage] = useState(null);
+    const devices = useCameraDevices()
+    const device = devices.back
 
 
     useEffect(() => {
@@ -22,14 +24,21 @@ const MyCamera = () => {
       },[]);
 
   const cupturePhoto = async () => {
+    alert("gfsdgf");
+    const permission = await Camera.requestCameraPermission();
     if (camera.current !== null){
         const photo = await camera.current.takePhoto({});
         setImageSource(photo.path);
         setShowCamera(false);
         console.log(photo.path);
+        alert("gfsdgf");
+        
     }
     else{
-        console.log("namera not conected")
+        console.log("camera not conected")
+        console.log(gdf);
+        alert("camera not conected");
+        
     }
   }
 
@@ -44,13 +53,23 @@ const MyCamera = () => {
 
 //     }
 //   }
+if (device == null) return <LoadingView />
+return (
+  <Camera
+    style={StyleSheet.absoluteFill}
+    device={device}
+    isActive={true}
+  />
+)
 
   return (
     <View>
-        <Text>Hello</Text>
+        <Text>Hello to</Text>
         <TouchableOpacity style={styles.button} onPress={cupturePhoto}>
         <Text style={styles.buttonText}>Take a Picture</Text>
       </TouchableOpacity>
+    
+
       {image && <Image source={{ uri: image }} style={{ flex: 1 }} />}
       
     </View>

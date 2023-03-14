@@ -1,4 +1,4 @@
-package com.iccam.newarchitecture.components;
+package com.chenmoskovitz.icCam.newarchitecture.components;
 
 import com.facebook.jni.HybridData;
 import com.facebook.proguard.annotations.DoNotStrip;

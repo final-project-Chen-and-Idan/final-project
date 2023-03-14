@@ -1,4 +1,4 @@
-package com.iccam.newarchitecture;
+package com.chenmoskovitz.icCam.newarchitecture;
 
 import android.app.Application;
 import androidx.annotation.NonNull;
@@ -20,9 +20,9 @@ import com.facebook.react.fabric.EmptyReactNativeConfig;
 import com.facebook.react.fabric.FabricJSIModuleProvider;
 import com.facebook.react.fabric.ReactNativeConfig;
 import com.facebook.react.uimanager.ViewManagerRegistry;
-import com.iccam.BuildConfig;
-import com.iccam.newarchitecture.components.MainComponentsRegistry;
-import com.iccam.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
+import com.chenmoskovitz.icCam.BuildConfig;
+import com.chenmoskovitz.icCam.newarchitecture.components.MainComponentsRegistry;
+import com.chenmoskovitz.icCam.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
 import java.util.ArrayList;
 import java.util.List;
 

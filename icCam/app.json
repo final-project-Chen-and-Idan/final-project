@@ -7,8 +7,19 @@
       "**/*"
     ],
     "plugins": [
-      "react-native-vision-camera"
-    ]
+      [
+        "react-native-vision-camera",
+        {
+          "cameraPermissionText": "$(PRODUCT_NAME) needs access to your Camera."
+        }
+      ]
+    ],
+    "android": {
+      "permissions": [
+        "android.permission.CAMERA"
+      ],
+      "package": "com.chenmoskovitz.icCam"
+    }
   },
   "name": "icCam"
 }
