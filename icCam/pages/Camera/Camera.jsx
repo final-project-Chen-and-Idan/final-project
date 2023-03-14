@@ -38,7 +38,7 @@ const MyCamera = () => {
         onPress={()=>{
           cameraDirection?setCameraDirection(false):
                           setCameraDirection(true)}}>
-          <Icon name="md-camera-reverse" size={20}/>
+          <Icon name="md-camera-reverse" size={50}/>
         </TouchableOpacity>
       </View>
       :

@@ -15,6 +15,8 @@ const Verify = () => {
         await auth.currentUser.reload()
         if(!auth.currentUser.emailVerified)
             alert("email has not been verified")
+        else
+          auth.signOut()
     }
   return (
     <View>
