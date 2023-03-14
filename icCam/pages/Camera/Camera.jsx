@@ -38,7 +38,9 @@ const MyCamera = () => {
         onPress={()=>{
           cameraDirection?setCameraDirection(false):
                           setCameraDirection(true)}}>
-          <Icon name="md-camera-reverse" size={20}/>
+                          <View style = {styles.iconView}>
+                            <Icon style={styles.iconButton} name="md-camera-reverse" size={20}/>
+                          </View>
         </TouchableOpacity>
       </View>
       :
@@ -76,4 +78,24 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 25,
       },
+      iconView: {
+        alignSelf: 'center',
+        // height: '5%'
+        backgroundColor: `#daa520`,
+        borderRadius: 100,
+        height: 40,
+        width: 40,
+
+
+      },
+      iconButton: {
+        // height: '80%',
+        // backgroundColor: `#daa520`,
+        alignSelf: 'center',
+        justifyContent: 'center',
+        paddingTop: 9,
+        height: '90%',
+        // width: '90%'
+
+      }
 })
