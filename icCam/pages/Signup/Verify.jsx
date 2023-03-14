@@ -2,6 +2,8 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { auth } from '../../firebase'
 import { sendEmailVerification } from 'firebase/auth'
+import Icon from 'react-native-vector-icons/Feather'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 
 const Verify = () => {
@@ -19,7 +21,10 @@ const Verify = () => {
           auth.signOut()
     }
   return (
-    <View>
+    <SafeAreaView>
+        <TouchableOpacity onPress={()=>auth.signOut()}>
+          <Icon name="x" size={30}/>
+        </TouchableOpacity>
         <View style={styles.box}>
             <Text style = {{fontSize: 30,}}>please verify your email</Text>
             <TouchableOpacity onPress={()=>verify(auth.currentUser)}>
@@ -31,7 +36,7 @@ const Verify = () => {
                 <Text>Email has Been verified</Text>
             </TouchableOpacity>
         </View>
-    </View>
+    </SafeAreaView>
   )
 }
 
