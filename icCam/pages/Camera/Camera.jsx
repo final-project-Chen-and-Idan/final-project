@@ -1,51 +1,40 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, {useEffect, useState, useRef} from 'react';
 import { Camera } from 'expo-camera';
+import { async } from '@firebase/util';
 
 
 const MyCamera = () => {
-
-    const camera = useRef(null);
-    const [image, setImage] = useState(null);
-    const devices = useCameraDevices()
-    const device = devices.back
-
-
-    useEffect(() => {
-        async function getPermission(){
-          const permission = await Camera.requestCameraPermission();
-          console.log('camera pormission status: ${permission}');
-          if(permission === 'denied') await Linking.openSettings();
-        }
-        getPermission();
-      },[]);
-
-  const cupturePhoto = async () => {
-    alert("gfsdgf");
-    const permission = await Camera.requestCameraPermission();
-    if (camera.current !== null){
-        const photo = await camera.current.takePhoto({});
-        setImageSource(photo.path);
-        setShowCamera(false);
-        console.log(photo.path);
-        alert("gfsdgf");
-        
+    const [activeCamera, setActiveCamera] = useState (false)
+   const startCamera = async () => {
+    const {status} = await Camera.requestCameraPermissionsAsync()
+    if(status === 'granted'){
+      setActiveCamera(true)
     }
     else{
-        console.log("camera not conected")
-        console.log(gdf);
-        alert("camera not conected");
-        
+      alert("access denied")
     }
-  }
-
-  if (device == null) return <LoadingView />
+   }
+    
   return (
-    <Camera
-      style={StyleSheet.absoluteFill}
-      device={device}
-      isActive={true}
-    />
+  <View>
+{
+activeCamera?
+  <Camera
+  type={"front"}
+  style={{width: "100%", height: 550}}
+  >
+
+  
+  </Camera>:
+  <View>
+    <Text>no access</Text>
+    <TouchableOpacity onPress={startCamera}>
+      <Text>get permission</Text>
+    </TouchableOpacity>
+  </View>
+}
+  </View>
   )
 }
 
