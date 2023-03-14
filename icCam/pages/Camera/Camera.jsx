@@ -1,40 +1,55 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, {useEffect, useState, useRef} from 'react';
+import React, {useEffect, useState} from 'react';
 import { Camera } from 'expo-camera';
-import { async } from '@firebase/util';
-
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const MyCamera = () => {
-    const [activeCamera, setActiveCamera] = useState (false)
-   const startCamera = async () => {
+  const [cameraDirection, setCameraDirection] = useState(false)
+  const [activeCamera, setActiveCamera] = useState (false)
+
+  // activates the camera and asks for permission on the way
+  const startCamera = async () => {
+    // gets the permission
     const {status} = await Camera.requestCameraPermissionsAsync()
+    // saying the camera is active
     if(status === 'granted'){
       setActiveCamera(true)
     }
+    // access was not given
     else{
-      alert("access denied")
+      alert("you denied access")
     }
-   }
+  }
+
+  // when screen loads activate the camera
+  useEffect(()=>{
+    startCamera()
+  },[])
     
   return (
-  <View>
-{
-activeCamera?
-  <Camera
-  type={"front"}
-  style={{width: "100%", height: 550}}
-  >
-
-  
-  </Camera>:
-  <View>
-    <Text>no access</Text>
-    <TouchableOpacity onPress={startCamera}>
-      <Text>get permission</Text>
-    </TouchableOpacity>
-  </View>
-}
-  </View>
+    <>
+    {activeCamera?
+      <View>
+        <Camera
+        type={cameraDirection?"front": "back"}
+        style={{width: "100%", height: 550}}
+        />
+        <TouchableOpacity 
+        onPress={()=>{
+          cameraDirection?setCameraDirection(false):
+                          setCameraDirection(true)}}>
+          <Icon name="md-camera-reverse" size={20}/>
+        </TouchableOpacity>
+      </View>
+      :
+      <View>
+        <Text>no access</Text>
+        <TouchableOpacity onPress={startCamera}>
+          <Text>get permission</Text>
+        </TouchableOpacity>
+      </View>
+    }
+    </>
   )
 }
 
