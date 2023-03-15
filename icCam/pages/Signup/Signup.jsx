@@ -9,6 +9,7 @@ const Signup = () => {
   const[email, setEmail] = useState('');
   const[password, setPassword] = useState(''); 
   const[passwordAuthentication, setPasswordAuthentication] = useState(''); 
+  const[name , setName] = useState('')
     
   const CreateUser = (email, password, passwordAuthentication) => {
     if(password === passwordAuthentication){
@@ -29,6 +30,14 @@ const Signup = () => {
     <View>
       <View style = {styles.a}>
         <Text style = {styles.title}>Signup</Text>
+        <TextInput
+                  style = {styles.box}
+                  placeholder="Name"
+                  // ref={name}
+                  onChangeText={(name) => setName(name)}
+                  autoCapitalize="none"
+                  autoCorrect = {false}
+                  />
         <TextInput
                   style = {styles.box}
                   placeholder="Email"
