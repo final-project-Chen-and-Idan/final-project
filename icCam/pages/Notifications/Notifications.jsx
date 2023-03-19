@@ -1,31 +1,40 @@
 import { StyleSheet, Text, TouchableOpacity, View, Button, Platform } from 'react-native'
 import { useState, useEffect, useRef } from 'react';
-import * as Device from 'expo-device';
-import * as notification from 'expo-notifications';
+// import * as Device from 'expo-device';
+// import * as notification from 'expo-notifications';
 
 const MyNotifications = () => {
  
-  const [expoPushToken, setExpoPushToken] = useState('');
-  const [notification, setNotification] = useState(false);
-  const notificationListener = useRef();
-  const responseListener = useRef();
-
-  
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'space-around' }}>
-      {/* <Text>Your expo push token: {expoPushToken}</Text>
-      <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-        <Text>Title: {notification && notification.request.content.title} </Text>
-        <Text>Body: {notification && notification.request.content.body}</Text>
-        <Text>Data: {notification && JSON.stringify(notification.request.content.data)}</Text>
-      </View> */}
-      <Button
-        title="Press to Send Notification"
-        onPress={async () => {
-          await sendPushNotification(expoPushToken);
-        }}
-      />
+    <View>
+     <TouchableOpacity style = {styles.button}>
+                  <Text style={styles.buttonText}>Press to Send Notification</Text>
+                  </TouchableOpacity>
     </View>
   );
 }
 export default MyNotifications
+
+const styles = StyleSheet.create({
+
+  button: {
+    borderWidth: 2,
+    alignSelf: 'center',
+    width: '40%',
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+    borderRadius: 50,
+    backgroundColor: 'oldlace',
+    marginHorizontal: '1%',
+    marginBottom: 6,
+    minWidth: '48%',
+    textAlign: 'center',
+    backgroundColor: `#daa520`,
+  },
+  buttonText: {
+    textAlign: 'center',
+    justifyContent: 'center',
+    fontWeight: 'bold',
+    fontSize: 25,
+  },
+})
