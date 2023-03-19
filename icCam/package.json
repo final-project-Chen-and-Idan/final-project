@@ -16,9 +16,12 @@
     "expo": "~47.0.12",
     "expo-camera": "^13.2.1",
     "expo-cli": "^6.2.1",
+    "expo-device": "~5.0.0",
+    "expo-notifications": "~0.17.0",
     "expo-splash-screen": "~0.17.5",
     "expo-status-bar": "~1.4.2",
     "firebase": "^9.6.11",
+    "native-notify": "^3.0.4",
     "react": "18.1.0",
     "react-dom": "18.1.0",
     "react-native": "0.70.5",
@@ -28,9 +31,7 @@
     "react-native-screens": "~3.18.0",
     "react-native-vector-icons": "^9.2.0",
     "react-native-web": "~0.18.9",
-    "react-navigation": "^4.4.4",
-    "expo-notifications": "~0.17.0",
-    "expo-device": "~5.0.0"
+    "react-navigation": "^4.4.4"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"

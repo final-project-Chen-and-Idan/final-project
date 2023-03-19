@@ -1,10 +1,11 @@
 import { StyleSheet, Text, TouchableOpacity, View, Button, Platform } from 'react-native'
 import { useState, useEffect, useRef } from 'react';
+import registerNNPushToken from 'native-notify';
 // import * as Device from 'expo-device';
 // import * as notification from 'expo-notifications';
 
 const MyNotifications = () => {
- 
+  registerNNPushToken(6828, 'ZbDvAG9OgKWW3jVtqio59y');
   return (
     <View>
      <TouchableOpacity style = {styles.button}>

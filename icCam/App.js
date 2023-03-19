@@ -9,6 +9,7 @@ import Home from './pages/Home/Home'
 import { NavigationContainer } from '@react-navigation/native'
 import {StyleSheet} from 'react-native'
 import Verify from './pages/Signup/Verify'
+import registerNNPushToken from 'native-notify'
 
 const Stack = createStackNavigator();
 
