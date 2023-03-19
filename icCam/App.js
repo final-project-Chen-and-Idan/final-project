@@ -3,6 +3,7 @@ import React, {useState, useEffect}from 'react'
 import {auth} from './firebase'
 import Login from './pages/Login/Login'
 import Camera from './pages/Camera/Camera'
+import Notifications from './pages/Notifications/Notifications'
 import Signup from './pages/Signup/Signup'
 import Home from './pages/Home/Home'
 import { NavigationContainer } from '@react-navigation/native'
@@ -47,6 +48,10 @@ export default function App() {
                     <Stack.Screen
                         name="Camera"
                         component={Camera}
+                    />
+                     <Stack.Screen
+                        name="Notifications"
+                        component={Notifications}
                     />
                 </Stack.Navigator>
             </NavigationContainer>

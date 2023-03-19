@@ -3,6 +3,7 @@ import { auth } from '../../firebase'
 import { signOut } from 'firebase/auth'
 import React from 'react'
 import {Camera} from '../Camera/Camera'
+import { Notifications} from '../Notifications/Notifications'
 import { NavigationContainer, useNavigation } from '@react-navigation/native'
 
 
@@ -35,6 +36,11 @@ const Home = () => {
               <View>
                 <TouchableOpacity  onPress={() => {navigation.navigate('Camera')}} style={styles.button}>
                   <Text style={styles.buttonText}>go to camera</Text>
+                </TouchableOpacity>
+              </View>
+              <View>
+                <TouchableOpacity  onPress={() => {navigation.navigate('Notifications')}} style={styles.button}>
+                  <Text style={styles.buttonText}>go to notification</Text>
                 </TouchableOpacity>
               </View>
             </View>

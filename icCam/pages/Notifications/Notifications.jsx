@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 
-const Notifications = () => {
+const MyNotifications = () => {
     return(
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'space-around' }}>
         <Text>Your expo push token: {expoPushToken}</Text>
@@ -21,4 +21,4 @@ const Notifications = () => {
       </View>
     )
 }
-export default Notifications
+export default MyNotifications
