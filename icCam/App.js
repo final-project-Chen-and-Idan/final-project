@@ -10,6 +10,7 @@ import { NavigationContainer } from '@react-navigation/native'
 import {StyleSheet} from 'react-native'
 import Verify from './pages/Signup/Verify'
 import registerNNPushToken from 'native-notify'
+import ForgotPassword from './pages/Signup/ForgotPassword'
 
 const Stack = createStackNavigator();
 
@@ -34,6 +35,7 @@ export default function App() {
             <Stack.Navigator>
                 <Stack.Screen name = "login" component = {Login}/>
                 <Stack.Screen name = "Signup" component = {Signup}/>
+                <Stack.Screen name = "forgot" component = {ForgotPassword}/>
             </Stack.Navigator>
           </NavigationContainer>
         )

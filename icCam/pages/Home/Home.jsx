@@ -25,7 +25,7 @@ const Home = () => {
   return (
     <ImageBackground source={image} style={styles.image}>
       <View>
-            <Text style = {styles.title}>hello there  {auth.currentUser.name}</Text>
+            <Text style = {styles.title}>hello there  {auth.currentUser.displayName}</Text>
             <Text style={styles.logo}>IC-CAM</Text>
             <View style={styles.box}>
                 <View>

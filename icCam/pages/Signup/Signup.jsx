@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, TextInput ,TouchableOpacity} from 'react-native'
-import { createUserWithEmailAndPassword,sendEmailVerification} from "firebase/auth";
+import { createUserWithEmailAndPassword} from "firebase/auth";
 import React , {useState} from 'react'
 import { auth } from '../../firebase'
 
@@ -9,7 +9,6 @@ const Signup = () => {
   const[email, setEmail] = useState('');
   const[password, setPassword] = useState(''); 
   const[passwordAuthentication, setPasswordAuthentication] = useState(''); 
-  const[name , setName] = useState('')
     
   const CreateUser = (email, password, passwordAuthentication) => {
     if(password === passwordAuthentication){
@@ -32,16 +31,7 @@ const Signup = () => {
         <Text style = {styles.title}>Signup</Text>
         <TextInput
                   style = {styles.box}
-                  placeholder="Name"
-                  // ref={name}
-                  onChangeText={(name) => setName(name)}
-                  autoCapitalize="none"
-                  autoCorrect = {false}
-                  />
-        <TextInput
-                  style = {styles.box}
                   placeholder="Email"
-                  // ref={email}
                   onChangeText={(email) => setEmail(email)}
                   autoCapitalize="none"
                   autoCorrect = {false}
@@ -49,7 +39,6 @@ const Signup = () => {
         <TextInput
                   style = {styles.box}
                   placeholder="Password"
-                  // ref={password}
                   onChangeText={(password) => setPassword(password)}
                   autoCapitalize="none"
                   autoCorrect = {false}
@@ -58,7 +47,6 @@ const Signup = () => {
         <TextInput
                   style = {styles.box}
                   placeholder="Password Authentication"
-                  // ref={password}
                   onChangeText={(passwordAuthentication) => setPasswordAuthentication(passwordAuthentication)}
                   autoCapitalize="none"
                   autoCorrect = {false}
@@ -67,11 +55,9 @@ const Signup = () => {
         <TouchableOpacity
                 style = {styles.button}
                 onPress={() => CreateUser(email, password, passwordAuthentication)}>
-                <Text style = {styles.buttonText}>Signup</Text>
+                <Text style = {styles.buttonText}>next</Text>
         </TouchableOpacity>
-                
-      
-            </View>
+        </View>
     </View>
   )
 }

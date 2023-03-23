@@ -2,7 +2,7 @@ import { StyleSheet, Text, View , TouchableOpacity, TextInput} from 'react-nativ
 import React , {useRef, useState} from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { auth } from '../../firebase'
-import {signInWithEmailAndPassword} from 'firebase/auth'
+import {signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth'
 
 
 const Login = () => {
@@ -23,7 +23,6 @@ const Login = () => {
         <View>
             <View style = {styles.a}>
 
-            
             <Text style = {styles.title}>
                 Login
             </Text>
@@ -31,7 +30,6 @@ const Login = () => {
                 <TextInput
                 style = {styles.box}
                 placeholder="Email"
-                // ref={email}
                 onChangeText={(email) => setEmail(email)}
                 autoCapitalize="none"
                 autoCorrect = {false}
@@ -39,7 +37,6 @@ const Login = () => {
                 <TextInput
                 style = {styles.box}
                 placeholder="Password"
-                // ref={password}
                 onChangeText={(password) => setPassword(password)}
                 autoCapitalize="none"
                 autoCorrect = {false}
@@ -57,6 +54,10 @@ const Login = () => {
                 onPress={() => navigation.navigate('Signup')}
             >
                 <Text>Don't have an account? Register Now</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+                onPress={()=>{navigation.navigate('forgot')}}>
+                <Text>Forgot Password</Text>
             </TouchableOpacity>
             </View>
         </View>
