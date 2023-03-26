@@ -12,13 +12,14 @@ const ForgotPassword = () => {
             return
         }
         try{
-            signInWithEmailAndPassword(auth, email, "")
+            await sendPasswordResetEmail(auth, email)
+            alert("check your email to reset your password")
         }
         catch(e){
-            alert(e)
+            alert(e.code)
+            alert("invalid email")
         }
-        await sendPasswordResetEmail(auth, auth.currentUser.email)
-        alert("check your email to reset your password")
+        
     }
   return (
     <View>
