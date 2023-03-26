@@ -43,6 +43,11 @@ const Home = () => {
                   <Text style={styles.buttonText}>go to notification</Text>
                 </TouchableOpacity>
               </View>
+              <View>
+                <TouchableOpacity  onPress={() => {navigation.navigate('Contacts')}} style={styles.button}>
+                  <Text style={styles.buttonText}>Contacts</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           
           </View>

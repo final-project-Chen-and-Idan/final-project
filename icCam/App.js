@@ -9,8 +9,8 @@ import Home from './pages/Home/Home'
 import { NavigationContainer } from '@react-navigation/native'
 import {StyleSheet} from 'react-native'
 import Verify from './pages/Signup/Verify'
-import registerNNPushToken from 'native-notify'
 import ForgotPassword from './pages/Signup/ForgotPassword'
+import Contacts from './pages/Contacts/Contacts'
 
 const Stack = createStackNavigator();
 
@@ -56,6 +56,12 @@ export default function App() {
                         name="Notifications"
                         component={Notifications}
                     />
+                    
+                     <Stack.Screen
+                        name="Contacts"
+                        component={Contacts}
+                    />
+
                 </Stack.Navigator>
             </NavigationContainer>
         )
