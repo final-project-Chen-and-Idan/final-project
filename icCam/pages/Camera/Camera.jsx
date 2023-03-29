@@ -2,10 +2,16 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, {useEffect, useState} from 'react';
 import { Camera } from 'expo-camera';
 import Icon from 'react-native-vector-icons/Ionicons';
+// import Tflite from 'tflite-react-native';
+// import {RNCamera} from 'react-native-camera-tflite'
+
+// const tflite = new Tflite();
+
 
 const MyCamera = () => {
   const [cameraDirection, setCameraDirection] = useState(false)
   const [activeCamera, setActiveCamera] = useState (false)
+  const [model, setModel] = useState(null)
 
   // activates the camera and asks for permission on the way
   const startCamera = async () => {
@@ -21,6 +27,7 @@ const MyCamera = () => {
     }
   }
 
+  
   // when screen loads activate the camera
   useEffect(()=>{
     startCamera()

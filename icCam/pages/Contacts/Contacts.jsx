@@ -1,18 +1,28 @@
 import { StyleSheet, Text, View, TouchableOpacity, Modal, TextInput } from 'react-native'
 import React, { useState } from 'react'
-import { SearchBar } from 'react-native-elements'
+import { fetchSignInMethodsForEmail } from 'firebase/auth'
+import {auth} from "../../firebase"
 
 const Contacts = () => {
   const [visible, setVisible] = useState(false)
-  const [searchInput, setSearchInput] = useState("")
-  const addContact = ()=>{
-    
+  const [email, setEmail] = useState("")
+
+  const addContact = async()=>{
+    await search()?
+    alert("exists")
+    :
+    alert('given email is not registered')
   }
 
-  const search = (text)=>{
-
+  // finds whether or not the email exists for an active user
+  const search =async()=>{
+    let exists = await fetchSignInMethodsForEmail(auth, email).then(data=>{
+      console.log(data)
+      return data.length===0?false: true;
+    }
+    ).catch(error=>{return false})
+    return exists
   }
-
   return (
     <View>
       {/*----------------- the adding area ----------------*/}
@@ -22,14 +32,16 @@ const Contacts = () => {
           <Text>x</Text>
         </TouchableOpacity>
         
-        <SearchBar
-          placeholder='enter contact email'
-          lightTheme
-          round
-          value={searchInput}
-          onChangeText={(text) => {search(text); setSearchInput(text)}}
-          autoCorrect={false}
+        <TextInput
+                  style = {styles.box}
+                  placeholder="Email"
+                  onChangeText={(email) => setEmail(email)}
+                  autoCapitalize="none"
+                  autoCorrect = {false}
         />
+        <TouchableOpacity onPress={addContact}>
+          <Text>Send Invite</Text>
+        </TouchableOpacity>
       </Modal>
 
       {/* the adding button */}
