@@ -6,28 +6,46 @@ import registerNNPushToken from 'native-notify';
 // import React, { useState, useEffect } from 'react';
 import { getPushDataObject } from 'native-notify';
 import { Notifications } from 'expo';
+import PushNotification from 'react-native-push-notification';
 
 const MyNotifications = () => {
-  registerNNPushToken(6828, 'ZbDvAG9OgKWW3jVtqio59y');
+//   registerNNPushToken(6828, 'ZbDvAG9OgKWW3jVtqio59y');
 
-  let pushDataObject = getPushDataObject();
+//   let pushDataObject = getPushDataObject();
 
-  useEffect(() => {
-    console.log(pushDataObject);
-}, [pushDataObject]);
+//   useEffect(() => {
+//     console.log(pushDataObject);
+// }, [pushDataObject]);
 
 const sendNotification = async () => {
-  const content = {
-    title: 'Notification Title',
-    body: 'Notification body text',
-    data: { data: 'goes here' },
-  };
-  const trigger = { seconds: 2 };
-  await Notifications.scheduleNotificationAsync({ content, trigger });
+  
+  PushNotification.localNotification({
+    title: "title",
+    message: "remoteMessage.notification.body",
+    //ios and android properties
+    playSound: true,
+    soundName: 'sound.mp3',
+    //android only properties
+    channelId: 'your-channel-id',
+    autoCancel: true,
+    bigText: 'Face2Face: Beacon Timer Expired',
+    subText: 'Perhaps set your beacon timer for another hour?',
+    vibrate: true,
+    vibration: 300,
+    priority: 'high',
+  })
+//   const content = {
+//     title: 'Notification Title',
+//     body: 'Notification body text',
+//     data: { data: 'goes here' },
+//   };
+//   const trigger = { seconds: 2 };
+//   await Notifications.scheduleNotificationAsync({ content, trigger });
 };
 
   return (
     <View>
+  
      <TouchableOpacity style = {styles.button}>
         <Text style={styles.buttonText}>Press to Send Notification</Text>
      </TouchableOpacity>

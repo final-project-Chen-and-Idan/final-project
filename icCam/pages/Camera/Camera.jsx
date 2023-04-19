@@ -1,63 +1,170 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import { Camera } from 'expo-camera';
 import Icon from 'react-native-vector-icons/Ionicons';
+// import {
+//   bundleResourceIO,
+//   cameraWithTensors,
+// } from "@tensorflow/tfjs-react-native"
+import * as tf from "@tensorflow/tfjs"
+
+// const TensorCamera = cameraWithTensors(Camera);
+
 
 const MyCamera = () => {
-  const [cameraDirection, setCameraDirection] = useState(false)
-  const [activeCamera, setActiveCamera] = useState (false)
-  // activates the camera and asks for permission on the way
-  const startCamera = async () => {
-    // gets the permission
-    const {status} = await Camera.requestCameraPermissionsAsync()
-    // saying the camera is active
-    if(status === 'granted'){
-      setActiveCamera(true)
-    }
-    // access was not given
-    else{
-      alert("you denied access")
-    }
-  }
-
+  const cameraRef = useRef(null);
+  const [modelReady, setModelReady] = useState(false);
+  const [model, setModel] = useState();
+  const [cameraType, setCameraType] = useState(Camera.Constants.Type.front)
+  const [prediction, setPrediction] = useState();
   
-  // when screen loads activate the camera
-  useEffect(()=>{
-    startCamera()
-  },[])
+//   useEffect(()=>{
+//     async function prepare(){
+//       // Camera permission.
+//       await Camera.requestCameraPermissionsAsync();
+
+//       // Wait for tfjs to initialize the backend.
+//       await tf.ready();
+      
+//       //loading the model 
+//       const modelJson = require('../../tfjs/model.json');
+//       const modelWeights1 = require('../../tfjs/group1-shard1of4.bin')
+//       const modelWeights2 = require('../../tfjs/group1-shard2of4.bin')
+//       const modelWeights3 = require('../../tfjs/group1-shard3of4.bin')
+//       const modelWeights4 = require('../../tfjs/group1-shard4of4.bin')
+      
+
+//       const data = bundleResourceIO(modelJson,[
+//         modelWeights1,
+//         modelWeights2,
+//         modelWeights3,
+//         modelWeights4,
+//       ])
+//       console.log("somthing")
+//       //loading the model
+//       const model =await tf.loadGraphModel(data)
+      
+//       setModel(model);
+//       // saying that the model is ready 
+//       setModelReady(true);
+//     }
+
+//     prepare();
+//   },[])
+
+
+  // const handleCameraStream = async(images,updatePreview,gl)=>{
+  //   const loop = async()=>{
+  //     const imageTensor = images.next().value.shape
+
+      
+  //     const prediction = await model.predict(imageTensor);
+  //     setPrediction(prediction);
+  //     console.log(prediction)
+
+      
+  //     tf.dispose([imageTensor]);
+
+  //     updatePreview();
+  //     gl.endFrameEXP();
+
+  //   }
+  //   loop();
     
-  return (
+  // }
+
+
+
+
+  // if(!modelReady){
+  //   return(
+  //     <>
+  //       <View>
+  //         <Text>Loading.....</Text>
+  //       </View>
+  //     </>
+  //   )
+  // }
+  return(
     <>
-    {activeCamera?
       <View>
-        <Camera
-        type={cameraDirection?"front": "back"}
-        style={{width: "100%", height: 550}}
-        />
-        <TouchableOpacity 
-        onPress={()=>{
-          cameraDirection?setCameraDirection(false):
-                          setCameraDirection(true)}}>
-                          <View style = {styles.iconView}>
-                            <Icon style={styles.iconButton} name="md-camera-reverse" size={20}/>
-                          </View>
-        </TouchableOpacity>
+        {/* <TensorCamera
+          ref={cameraRef}
+          autorender={false}
+          type={cameraType}
+          style={styles.camera}
+          // tensor props
+          resizeWidth={640}
+          resizeHeight={640}
+          resizeDepth={3}
+          rotation={0}
+          onReady={handleCameraStream}
+        /> */}
       </View>
-      :
-      <View>
-        <Text>no access</Text>
-        <TouchableOpacity onPress={startCamera}>
-          <Text>get permission</Text>
-        </TouchableOpacity>
-      </View>
-    }
     </>
   )
+  
+  
+  
+  // const [cameraDirection, setCameraDirection] = useState(false)
+  // const [activeCamera, setActiveCamera] = useState (false)
+  // // activates the camera and asks for permission on the way
+  // const startCamera = async () => {
+  //   // gets the permission
+  //   const {status} = await Camera.requestCameraPermissionsAsync()
+  //   // saying the camera is active
+  //   if(status === 'granted'){
+  //     setActiveCamera(true)
+  //   }
+  //   // access was not given
+  //   else{
+  //     alert("you denied access")
+  //   }
+  // }
+
+  
+  // // when screen loads activate the camera
+  // useEffect(()=>{
+  //   startCamera()
+  // },[])
+    
+  // return (
+  //   <>
+  //   {activeCamera?
+  //     <View>
+  //       <Camera
+  //       type={cameraDirection?"front": "back"}
+  //       style={{width: "100%", height: 550}}
+  //       />
+  //       <TouchableOpacity 
+  //       onPress={()=>{
+  //         cameraDirection?setCameraDirection(false):
+  //                         setCameraDirection(true)}}>
+  //                         <View style = {styles.iconView}>
+  //                           <Icon style={styles.iconButton} name="md-camera-reverse" size={20}/>
+  //                         </View>
+  //       </TouchableOpacity>
+  //     </View>
+  //     :
+  //     <View>
+  //       <Text>no access</Text>
+  //       <TouchableOpacity onPress={startCamera}>
+  //         <Text>get permission</Text>
+  //       </TouchableOpacity>
+  //     </View>
+  //   }
+  //   </>
+  // )
 }
 
 export default MyCamera
 
 const styles = StyleSheet.create({
+  camera: {
+    width: '100%',
+    height: '100%',
+    zIndex: 1,
+  },
     button: {
         borderWidth: 2,
         width: '40%',
