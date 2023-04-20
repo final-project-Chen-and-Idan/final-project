@@ -1,12 +1,12 @@
 import { StyleSheet, Text, TouchableOpacity, View, Button, Platform } from 'react-native'
 import { useState, useEffect, useRef } from 'react';
-import registerNNPushToken from 'native-notify';
+// import registerNNPushToken from 'native-notify';
 // import * as Device from 'expo-device';
 // import * as notification from 'expo-notifications';
 // import React, { useState, useEffect } from 'react';
-import { getPushDataObject } from 'native-notify';
-import { Notifications } from 'expo';
-import PushNotification from 'react-native-push-notification';
+// import { getPushDataObject } from 'native-notify';
+// import { Notifications } from 'expo';
+// import PushNotification from 'react-native-push-notification';
 import { Audio } from 'expo-av';
 
 const MyNotifications = () => {
