@@ -2,13 +2,13 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, {useEffect, useState, useRef} from 'react';
 import { Camera } from 'expo-camera';
 import Icon from 'react-native-vector-icons/Ionicons';
-// import {
-//   bundleResourceIO,
-//   cameraWithTensors,
-// } from "@tensorflow/tfjs-react-native"
+import {
+  bundleResourceIO,
+  cameraWithTensors,
+} from "@tensorflow/tfjs-react-native"
 import * as tf from "@tensorflow/tfjs"
 
-// const TensorCamera = cameraWithTensors(Camera);
+const TensorCamera = cameraWithTensors(Camera);
 
 
 const MyCamera = () => {
@@ -18,77 +18,81 @@ const MyCamera = () => {
   const [cameraType, setCameraType] = useState(Camera.Constants.Type.front)
   const [prediction, setPrediction] = useState();
   
-//   useEffect(()=>{
-//     async function prepare(){
-//       // Camera permission.
-//       await Camera.requestCameraPermissionsAsync();
+  useEffect(()=>{
+    async function prepare(){
+      // Camera permission.
+      await Camera.requestCameraPermissionsAsync();
 
-//       // Wait for tfjs to initialize the backend.
-//       await tf.ready();
+      // Wait for tfjs to initialize the backend.
+      await tf.ready();
       
-//       //loading the model 
-//       const modelJson = require('../../tfjs/model.json');
-//       const modelWeights1 = require('../../tfjs/group1-shard1of4.bin')
-//       const modelWeights2 = require('../../tfjs/group1-shard2of4.bin')
-//       const modelWeights3 = require('../../tfjs/group1-shard3of4.bin')
-//       const modelWeights4 = require('../../tfjs/group1-shard4of4.bin')
+      //loading the model 
+      const modelJson = require('../../tfjs/model.json');
+      const modelWeights1 = require('../../tfjs/group1-shard1of4.bin')
+      const modelWeights2 = require('../../tfjs/group1-shard2of4.bin')
+      const modelWeights3 = require('../../tfjs/group1-shard3of4.bin')
+      const modelWeights4 = require('../../tfjs/group1-shard4of4.bin')
       
 
-//       const data = bundleResourceIO(modelJson,[
-//         modelWeights1,
-//         modelWeights2,
-//         modelWeights3,
-//         modelWeights4,
-//       ])
-//       console.log("somthing")
-//       //loading the model
-//       const model =await tf.loadGraphModel(data)
+      const data = bundleResourceIO(modelJson,[
+        modelWeights1,
+        modelWeights2,
+        modelWeights3,
+        modelWeights4,
+      ])
+      console.log("somthing")
+      //loading the model
+      const model =await tf.loadGraphModel(data)
       
-//       setModel(model);
-//       // saying that the model is ready 
-//       setModelReady(true);
-//     }
+      setModel(model);
+      // saying that the model is ready 
+      setModelReady(true);
+    }
 
-//     prepare();
-//   },[])
+    prepare();
+  },[])
 
 
-  // const handleCameraStream = async(images,updatePreview,gl)=>{
-  //   const loop = async()=>{
-  //     const imageTensor = images.next().value.shape
-
-      
-  //     const prediction = await model.predict(imageTensor);
-  //     setPrediction(prediction);
-  //     console.log(prediction)
+  const handleCameraStream = async(images,updatePreview,gl)=>{
+    const loop = async()=>{
+      const imageTensor = images.next().value.shape
 
       
-  //     tf.dispose([imageTensor]);
+      try{
+      const prediction = await model.predict(imageTensor);
+      setPrediction(prediction);
+      console.log(prediction)
+      tf.dispose([imageTensor]);
 
-  //     updatePreview();
-  //     gl.endFrameEXP();
+      updatePreview();
+      gl.endFrameEXP();
 
-  //   }
-  //   loop();
+      }
+       catch(e){
+        console.log("errpr")
+       } 
     
-  // }
+    }
+    loop();
+    
+  }
 
 
 
 
-  // if(!modelReady){
-  //   return(
-  //     <>
-  //       <View>
-  //         <Text>Loading.....</Text>
-  //       </View>
-  //     </>
-  //   )
-  // }
+  if(!modelReady){
+    return(
+      <>
+        <View>
+          <Text>Loading.....</Text>
+        </View>
+      </>
+    )
+  }
   return(
     <>
       <View>
-        {/* <TensorCamera
+        <TensorCamera
           ref={cameraRef}
           autorender={false}
           type={cameraType}
@@ -99,7 +103,7 @@ const MyCamera = () => {
           resizeDepth={3}
           rotation={0}
           onReady={handleCameraStream}
-        /> */}
+        />
       </View>
     </>
   )
