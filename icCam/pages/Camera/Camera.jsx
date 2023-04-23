@@ -18,6 +18,7 @@ const MyCamera = () => {
   const [model, setModel] = useState();
   const [cameraType, setCameraType] = useState(Camera.Constants.Type.front)
   const [prediction, setPrediction] = useState();
+  const amountRef = useRef(0)
   
   const prepare = async()=>{
     // Camera permission.
@@ -37,23 +38,74 @@ const MyCamera = () => {
     await tf.ready();
     
     //loading the model 
-    const modelJson = require('../../tfjs/model.json');
-    const modelWeights1 = require('../../tfjs/group1-shard1of4.bin')
-    const modelWeights2 = require('../../tfjs/group1-shard2of4.bin')
-    const modelWeights3 = require('../../tfjs/group1-shard3of4.bin')
-    const modelWeights4 = require('../../tfjs/group1-shard4of4.bin')
-    
+    const modelJson = require('../../assets/tfjs/people/model.json');
+    const modelWeights1 = require('../../assets/tfjs/people/group1-shard1of4.bin')
+    const modelWeights2 = require('../../assets/tfjs/people/group1-shard2of4.bin')
+    const modelWeights3 = require('../../assets/tfjs/people/group1-shard3of4.bin')
+    const modelWeights4 = require('../../assets/tfjs/people/group1-shard4of4.bin')
+    // const modelJson = require('../../assets/tfjs/pool/model.json')
+    // const modelWeights1 = require('../../assets/tfjs/pool/group1-shard1of27.bin')
+    // const modelWeights2 = require('../../assets/tfjs/pool/group1-shard2of27.bin')
+    // const modelWeights3 = require('../../assets/tfjs/pool/group1-shard3of27.bin')
+    // const modelWeights4 = require('../../assets/tfjs/pool/group1-shard4of27.bin')
+    // const modelWeights5 = require('../../assets/tfjs/pool/group1-shard5of27.bin')
+    // const modelWeights6 = require('../../assets/tfjs/pool/group1-shard6of27.bin')
+    // const modelWeights7 = require('../../assets/tfjs/pool/group1-shard7of27.bin')
+    // const modelWeights8 = require('../../assets/tfjs/pool/group1-shard8of27.bin')
+    // const modelWeights9 = require('../../assets/tfjs/pool/group1-shard9of27.bin')
+    // const modelWeights10 = require('../../assets/tfjs/pool/group1-shard10of27.bin')
+    // const modelWeights11 = require('../../assets/tfjs/pool/group1-shard11of27.bin')
+    // const modelWeights12 = require('../../assets/tfjs/pool/group1-shard12of27.bin')
+    // const modelWeights13 = require('../../assets/tfjs/pool/group1-shard13of27.bin')
+    // const modelWeights14 = require('../../assets/tfjs/pool/group1-shard14of27.bin')
+    // const modelWeights15 = require('../../assets/tfjs/pool/group1-shard15of27.bin')
+    // const modelWeights16 = require('../../assets/tfjs/pool/group1-shard16of27.bin')
+    // const modelWeights17 = require('../../assets/tfjs/pool/group1-shard17of27.bin')
+    // const modelWeights18 = require('../../assets/tfjs/pool/group1-shard18of27.bin')
+    // const modelWeights19 = require('../../assets/tfjs/pool/group1-shard19of27.bin')
+    // const modelWeights20 = require('../../assets/tfjs/pool/group1-shard20of27.bin')
+    // const modelWeights21 = require('../../assets/tfjs/pool/group1-shard21of27.bin')
+    // const modelWeights22 = require('../../assets/tfjs/pool/group1-shard22of27.bin')
+    // const modelWeights23 = require('../../assets/tfjs/pool/group1-shard23of27.bin')
+    // const modelWeights24 = require('../../assets/tfjs/pool/group1-shard24of27.bin')
+    // const modelWeights25 = require('../../assets/tfjs/pool/group1-shard25of27.bin')
+    // const modelWeights26 = require('../../assets/tfjs/pool/group1-shard26of27.bin')
+    // const modelWeights27 = require('../../assets/tfjs/pool/group1-shard27of27.bin')
+        
 
     const data = bundleResourceIO(modelJson,[
       modelWeights1,
       modelWeights2,
       modelWeights3,
       modelWeights4,
+      // modelWeights5,
+      // modelWeights6,
+      // modelWeights7,
+      // modelWeights8,
+      // modelWeights9,
+      // modelWeights10,
+      // modelWeights11,
+      // modelWeights12,
+      // modelWeights13,
+      // modelWeights14,
+      // modelWeights15,
+      // modelWeights16,
+      // modelWeights17,
+      // modelWeights18,
+      // modelWeights19,
+      // modelWeights20,
+      // modelWeights21,
+      // modelWeights22,
+      // modelWeights23,
+      // modelWeights24,
+      // modelWeights25,
+      // modelWeights26,
+      // modelWeights27,
     ])
-    console.log("somthing")
+    console.log("loading the model")
     //loading the model
     const model =await tf.loadGraphModel(data)
-    
+    console.log("finished loading the model")
     setModel(model);
     // saying that the model is ready 
     setModelReady(true);
@@ -66,13 +118,20 @@ const MyCamera = () => {
 
   const handleCameraStream = async(images)=>{
     const loop = async()=>{
+      amountRef.current++;
+      if(amountRef.current == 5){
+        amountRef.current=0;
+        loop()
+      }
+      
       let imageTensor = images.next().value
-      imageTensor = imageTensor.reshape([1, 640, 640, 3])
-      console.log(imageTensor)
+      imageTensor = (imageTensor.reshape([1, 640, 640, 3])).cast('float32')
+      
       try{
-        const prediction = await model.predict(imageTensor);
+        // console.log(tf.browser.fromPixels(images))
+        let prediction = await model.execute(imageTensor);
+        prediction = await prediction
         setPrediction(prediction);
-        console.log(prediction)
         tf.dispose([imageTensor]);
       }
        catch(e){

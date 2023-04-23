@@ -13,8 +13,7 @@ const Home = () => {
   const navigation = useNavigation();
 
   const image = {uri: "https://img.freepik.com/free-vector/scene-swimming-pool-with_1308-37683.jpg"}
-  // https://img.freepik.com/free-vector/scene-swimming-pool-with_1308-37683.jpg "../icCam/assets/logo.png"
-// const logo = {require:( "../../assets/logo.png")}
+
   const logOut = async()=>{
     try{
       await signOut(auth)
