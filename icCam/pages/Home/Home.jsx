@@ -4,6 +4,7 @@ import { signOut } from 'firebase/auth'
 import React from 'react'
 import {Camera} from '../Camera/Camera'
 import { Notifications} from '../Notifications/Notifications'
+// import {logo} from '../assets'
 import { NavigationContainer, useNavigation } from '@react-navigation/native'
 
 
@@ -12,7 +13,8 @@ const Home = () => {
   const navigation = useNavigation();
 
   const image = {uri: "https://img.freepik.com/free-vector/scene-swimming-pool-with_1308-37683.jpg"}
-
+  // https://img.freepik.com/free-vector/scene-swimming-pool-with_1308-37683.jpg "../icCam/assets/logo.png"
+// const logo = {require:( "../../assets/logo.png")}
   const logOut = async()=>{
     try{
       await signOut(auth)
@@ -26,7 +28,11 @@ const Home = () => {
     <ImageBackground source={image} style={styles.image}>
       <View>
             <Text style = {styles.title}>hello there  {auth.currentUser.displayName}</Text>
-            <Text style={styles.logo}>IC-CAM</Text>
+            {/* <Text style={styles.logo}>IC-CAM</Text> */}
+            <View>
+            <Image source={require('../../assets/a.png')}/>
+            </View>
+           
             <View style={styles.box}>
                 <View>
                 <TouchableOpacity onPress={logOut} style = {styles.button}>
@@ -68,7 +74,11 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     borderCurve: '#cd5c5c',
   },
-
+  logologo: {
+    backgroundColor: '#b8860b',
+    height: '10%',
+    width: '90%'
+  },
   title: {
     //fontSize: 10,
     fontWeight: 'bold',
