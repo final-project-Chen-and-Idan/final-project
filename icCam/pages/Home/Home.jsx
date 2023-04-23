@@ -11,7 +11,7 @@ const Home = () => {
 
   const navigation = useNavigation();
 
-  const image = {uri: "https://img.freepik.com/free-vector/scene-swimming-pool-with_1308-37683.jpg"}
+  const image = require("../../assets/background.jpg")
 
   const logOut = async()=>{
     try{
