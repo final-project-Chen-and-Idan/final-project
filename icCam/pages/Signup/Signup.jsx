@@ -13,7 +13,12 @@ const Signup = () => {
   const CreateUser = (email, password, passwordAuthentication) => {
     if(password === passwordAuthentication){
       try{
-        createUserWithEmailAndPassword(auth, email, password)
+        createUserWithEmailAndPassword(auth, email, password).catch(e=>{
+          if(e.code == "auth/email-already-in-use")
+            alert("the email is already being used")
+          else
+            alert(e)
+        })
         
       } catch(error){
           alert(error)
