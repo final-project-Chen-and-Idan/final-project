@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, TouchableOpacity, TextInput } from 'react-native'
 import React, { useState } from 'react'
-import { auth } from '../../firebase'
+import { auth, db } from '../../firebase'
+import { addDoc, collection } from 'firebase/firestore'
 import { sendEmailVerification, updateProfile } from 'firebase/auth'
 import Icon from 'react-native-vector-icons/Feather'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -20,8 +21,14 @@ const Verify = () => {
         await auth.currentUser.reload()
         if(!auth.currentUser.emailVerified)
             alert("email has not been verified")
-        else
+        else{
+          addDoc(collection(db,'Users'),{
+            id:auth.currentUser.uid,
+            email:auth.currentUser.email,
+            contacts:{}
+          });
           auth.signOut()
+        }
     }
 
     const next = async()=>{
