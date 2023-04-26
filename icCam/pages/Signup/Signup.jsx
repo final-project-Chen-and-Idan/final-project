@@ -11,13 +11,23 @@ const Signup = () => {
   const[passwordAuthentication, setPasswordAuthentication] = useState(''); 
     
   const CreateUser = (email, password, passwordAuthentication) => {
-    if(password === passwordAuthentication){
-      try{
-        createUserWithEmailAndPassword(auth, email, password)
-        
-      } catch(error){
-          alert(error)
-      }
+    if(password == ""){
+      alert("fill in the password")
+    }
+    else if(password === passwordAuthentication){
+        createUserWithEmailAndPassword(auth, email, password).catch(e=>{
+          switch(e.code){
+            case "auth/email-already-in-use":
+              alert("the email is already being used");
+              break;
+            
+            case "auth/invalid-email":
+              alert("invalid email")
+              break
+            default:
+              alert(e)
+          }
+        })
     }
     else{
       alert("Password verification does not match")

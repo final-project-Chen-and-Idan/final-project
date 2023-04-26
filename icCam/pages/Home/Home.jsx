@@ -21,7 +21,7 @@ const Home = () => {
   };
   const navigation = useNavigation();
 
-  const image = {uri: "https://img.freepik.com/free-vector/scene-swimming-pool-with_1308-37683.jpg"}
+  const image = { uri: "https://img.freepik.com/free-vector/scene-swimming-pool-with_1308-37683.jpg" }
 
 
   
@@ -29,7 +29,7 @@ const Home = () => {
     try{
       await signOut(auth)
     }
-    catch(error){
+    catch (error) {
       alert(error)
     }
   }
@@ -110,11 +110,6 @@ const Home = () => {
                     </TouchableOpacity>
                   </View>
                   <View>
-                    <TouchableOpacity  onPress={() => {navigation.navigate('Notifications')}} style={styles.button}>
-                      <Text style={styles.buttonText}>alarms</Text>
-                    </TouchableOpacity>
-                  </View> 
-                  <View>
                   <TouchableOpacity  onPress={() => {navigation.navigate('Contacts')}} style={styles.button}>
                     <Text style={styles.buttonText}>Contacts</Text>
                   </TouchableOpacity>
@@ -183,21 +178,21 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginTop: 30,
   }
-     ,
-  // button: {
-  //   borderWidth: 2,
-  //   alignSelf: 'center',
-  //   width: '40%',
-  //   paddingHorizontal: 8,
-  //   paddingVertical: 6,
-  //   borderRadius: 50,
-  //   backgroundColor: 'oldlace',
-  //   marginHorizontal: '1%',
-  //   marginBottom: 6,
-  //   minWidth: '48%',
-  //   textAlign: 'center',
-  //   backgroundColor: `#daa520`,
-  // },
+  ,
+  button: {
+    borderWidth: 2,
+    alignSelf: 'center',
+    width: '40%',
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+    borderRadius: 50,
+    backgroundColor: 'oldlace',
+    marginHorizontal: '1%',
+    marginBottom: 6,
+    minWidth: '48%',
+    textAlign: 'center',
+    backgroundColor: `#daa520`,
+  },
   buttonText: {
     textAlign: 'center',
     justifyContent: 'center',
