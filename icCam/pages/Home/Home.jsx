@@ -64,7 +64,7 @@ const Home = () => {
   
   return (
     // <ImageBackground source={image} style={styles.image}>
-      <SafeAreaView>
+      <SafeAreaView style = {styles.SafeAreaViewStyle}>
             <Text style = {styles.title}>hello there {auth.currentUser.displayName}</Text>
             {/* <Text style={styles.logo}>IC-CAM</Text> */}
             <View style = {styles.logoView}>
@@ -121,7 +121,7 @@ const Home = () => {
                   {/* <Text style = {styles.logoutText}>log out view 4r</Text> */}
                   <View>
                     <TouchableOpacity onPress={logOut} style = {styles.FuncButton}>
-                      <Text style={styles.buttonText}>Log out</Text>
+                      <Text style={styles.logoutText}>Log out</Text>
                       </TouchableOpacity>
                   </View>
                 </View>
@@ -139,19 +139,22 @@ const Home = () => {
 export default Home
 
 const styles = StyleSheet.create({
+  SafeAreaViewStyle: {
+    backgroundColor: `#5f9ea0`,
+  },
   FuncButton: {
     borderWidth: 2,
     alignSelf: 'center',
     maxWidth: '90%',
     paddingHorizontal: 8,
     paddingVertical: 6,
-    borderRadius: 80,
+    // borderRadius: 100,
     backgroundColor: 'oldlace',
     marginHorizontal: '1%',
     marginBottom: 6,
-    minWidth: '88%',
+    minWidth: '40%',
     textAlign: 'center',
-    backgroundColor: `#ffe4c4`,
+    backgroundColor: `#deb887`,
   },
   logOutView: {
     backgroundColor: `#2f4f4f`,
@@ -165,7 +168,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     justifyContent: 'center',
     fontWeight: 'bold',
-    fontSize: 25,
+    // fontSize: 10,
+    shadowRadius: '30%',
+    shadowColor : `#8a2be2`,
+  
   },
   logoView: {
     marginTop: 50,
@@ -173,8 +179,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     alignItems: 'center',
     width: '90%',
-
-
   },
   container: {
     flex: 1,
