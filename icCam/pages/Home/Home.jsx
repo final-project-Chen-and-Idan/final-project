@@ -105,17 +105,19 @@ const Home = () => {
                       <Text style={styles.buttonText}>Log out</Text>
                       </TouchableOpacity>
                   </View> */}
-                  <View>
-                    <TouchableOpacity  onPress={() => {navigation.navigate('Camera')}} style={styles.button}>
-                      {/* <Text style={styles.buttonText}>Camera</Text> */}
-                      <Icon name="video-camera" size={50} color="#900" />
-                    </TouchableOpacity>
-                  </View>
-                  <View>
-                  <TouchableOpacity  onPress={() => {navigation.navigate('Contacts')}} style={styles.button}>
-                    {/* <Text style={styles.buttonText}>Contacts</Text> */}
-                    <Icon name="address-book" size={50} color="#900" />
-                  </TouchableOpacity>
+                  <View style = {styles.buttonBox}>
+                      <View >
+                        <TouchableOpacity  onPress={() => {navigation.navigate('Camera')}} style={styles.button}>
+                          {/* <Text style={styles.buttonText}>Camera</Text> */}
+                          <Icon name="video-camera" size={50} color="#900" />
+                        </TouchableOpacity>
+                      </View>
+                      <View>
+                      <TouchableOpacity  onPress={() => {navigation.navigate('Contacts')}} style={styles.button}>
+                        {/* <Text style={styles.buttonText}>Contacts</Text> */}
+                        <Icon name="address-book" size={50} color="#900" />
+                      </TouchableOpacity>
+                    </View>
                 </View>
                 </FadeInView>
                 
@@ -142,6 +144,9 @@ const Home = () => {
 export default Home
 
 const styles = StyleSheet.create({
+  buttonBox: {
+    padding: '20%',
+  },
   SafeAreaViewStyle: {
     backgroundColor: `#5f9ea0`,
   },
