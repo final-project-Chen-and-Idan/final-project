@@ -1,4 +1,4 @@
-package com.iccam;
+package com.idankid.icCam;
 
 import android.app.Application;
 import android.content.res.Configuration;

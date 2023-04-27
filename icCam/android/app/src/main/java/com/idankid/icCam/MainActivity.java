@@ -1,4 +1,4 @@
-package com.iccam;
+package com.idankid.icCam;
 
 import android.os.Build;
 import android.os.Bundle;
