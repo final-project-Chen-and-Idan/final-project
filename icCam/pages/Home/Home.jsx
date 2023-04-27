@@ -7,6 +7,7 @@ import {Camera} from '../Camera/Camera'
 import { Notifications} from '../Notifications/Notifications'
 // import {logo} from '../assets'
 import { NavigationContainer, useNavigation } from '@react-navigation/native'
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 
 const Home = () => {
@@ -106,12 +107,14 @@ const Home = () => {
                   </View> */}
                   <View>
                     <TouchableOpacity  onPress={() => {navigation.navigate('Camera')}} style={styles.button}>
-                      <Text style={styles.buttonText}>Camera</Text>
+                      {/* <Text style={styles.buttonText}>Camera</Text> */}
+                      <Icon name="video-camera" size={50} color="#900" />
                     </TouchableOpacity>
                   </View>
                   <View>
                   <TouchableOpacity  onPress={() => {navigation.navigate('Contacts')}} style={styles.button}>
-                    <Text style={styles.buttonText}>Contacts</Text>
+                    {/* <Text style={styles.buttonText}>Contacts</Text> */}
+                    <Icon name="address-book" size={50} color="#900" />
                   </TouchableOpacity>
                 </View>
                 </FadeInView>
@@ -168,7 +171,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     justifyContent: 'center',
     fontWeight: 'bold',
-    // fontSize: 10,
+    fontSize: 20,
     shadowRadius: '30%',
     shadowColor : `#8a2be2`,
   
@@ -224,20 +227,24 @@ const styles = StyleSheet.create({
   ,
   button: {
     borderWidth: 2,
+    height: "50%",
     alignSelf: 'center',
+    alignItems: 'center',
     maxWidth: '90%',
     paddingHorizontal: 8,
     paddingVertical: 6,
-    borderRadius: 80,
-    backgroundColor: 'oldlace',
+    borderRadius: 40,
+    // backgroundColor: 'oldlace',
     marginHorizontal: '1%',
-    marginBottom: 6,
+    // marginBottom: 6,
+    margin: 10,
     minWidth: '88%',
     textAlign: 'center',
     backgroundColor: `#ffe4c4`,
   },
   buttonText: {
     textAlign: 'center',
+    alignSelf: 'center',
     justifyContent: 'center',
     fontWeight: 'bold',
     fontSize: 25,
