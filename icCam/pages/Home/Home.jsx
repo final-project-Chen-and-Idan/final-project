@@ -15,7 +15,7 @@ const Home = () => {
   const moveSquare = () => {
     Animated.timing(animation, {
       toValue: { x: 200, y: 200 },
-      duration: 1000,
+      duration: 1000000000,
       useNativeDriver: false, // this property must be set to false when using LayoutAnimation on Android
     }).start();
   };
@@ -42,7 +42,7 @@ const Home = () => {
         fadeAnim,
         {
           toValue: 1,
-          duration: props.duration || 1000,
+          duration: props.duration || 90000,
           useNativeDriver: true
         }
       ).start();
@@ -65,7 +65,7 @@ const Home = () => {
   return (
     // <ImageBackground source={image} style={styles.image}>
       <SafeAreaView>
-            <Text style = {styles.title}>hello there  {auth.currentUser.displayName}</Text>
+            <Text style = {styles.title}>hello there {auth.currentUser.displayName}</Text>
             {/* <Text style={styles.logo}>IC-CAM</Text> */}
             <View style = {styles.logoView}>
             <Image source={require('../../assets/a.png')}
@@ -95,18 +95,18 @@ const Home = () => {
                 </View> */}
             {/* </View> */}
             <View style={styles.newBox}>
-                <FadeInView duration={10000}>
-                    <Text style={{ fontSize: 28, fontWeight: 'bold' }}>
+                <FadeInView duration={1000}>
+                    {/* <Text style={{ fontSize: 28, fontWeight: 'bold' }}>
                       Welcome to my app!
-                    </Text>
-                    <View>
+                    </Text> */}
+                    {/* <View>
                     <TouchableOpacity onPress={logOut} style = {styles.button}>
-                      <Text style={styles.buttonText}>signOut</Text>
+                      <Text style={styles.buttonText}>Log out</Text>
                       </TouchableOpacity>
-                  </View>
+                  </View> */}
                   <View>
                     <TouchableOpacity  onPress={() => {navigation.navigate('Camera')}} style={styles.button}>
-                      <Text style={styles.buttonText}>camera</Text>
+                      <Text style={styles.buttonText}>Camera</Text>
                     </TouchableOpacity>
                   </View>
                   <View>
@@ -115,13 +115,20 @@ const Home = () => {
                   </TouchableOpacity>
                 </View>
                 </FadeInView>
+                
             </View>
-            <View style={styles.container}>
-              <Animated.View style={[styles.square, animation.getLayout()]} />
-              <TouchableOpacity onPress={moveSquare}>
-                <Text style={styles.button}>Move square</Text>
-              </TouchableOpacity>
-          </View>
+            <View style = {styles.logOutView}>
+                  {/* <Text style = {styles.logoutText}>log out view 4r</Text> */}
+                  <View>
+                    <TouchableOpacity onPress={logOut} style = {styles.FuncButton}>
+                      <Text style={styles.buttonText}>Log out</Text>
+                      </TouchableOpacity>
+                  </View>
+                </View>
+            {/* <View style={styles.container}> */}
+              {/* <Animated.View style={[styles.square, animation.getLayout()]} /> */}
+              
+          {/* </View> */}
           </SafeAreaView>
     // </ImageBackground>
    
@@ -132,6 +139,43 @@ const Home = () => {
 export default Home
 
 const styles = StyleSheet.create({
+  FuncButton: {
+    borderWidth: 2,
+    alignSelf: 'center',
+    maxWidth: '90%',
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+    borderRadius: 80,
+    backgroundColor: 'oldlace',
+    marginHorizontal: '1%',
+    marginBottom: 6,
+    minWidth: '88%',
+    textAlign: 'center',
+    backgroundColor: `#ffe4c4`,
+  },
+  logOutView: {
+    backgroundColor: `#2f4f4f`,
+    alignSelf: 'center',
+    alignItems: 'center',
+    margin: 50,
+    width: '90%',
+    
+  },
+  logoutText: {
+    textAlign: 'center',
+    justifyContent: 'center',
+    fontWeight: 'bold',
+    fontSize: 25,
+  },
+  logoView: {
+    marginTop: 50,
+    backgroundColor: `#2f4f4f`,
+    alignSelf: 'center',
+    alignItems: 'center',
+    width: '90%',
+
+
+  },
   container: {
     flex: 1,
     justifyContent: 'center',
@@ -143,16 +187,15 @@ const styles = StyleSheet.create({
     backgroundColor: 'red',
     backgroundColor: `#2f4f4f`,
   },
-  button: {
-    marginTop: 20,
-    color: 'blue',
-  },
+ 
   newBox: {
     justifyContent: 'center', 
     alignItems: 'center', 
+    alignSelf: 'center',
     height: '60%' , 
-    marginTop: 100 , 
-    width: '80%' 
+    backgroundColor: `#a52a2a`,
+    // marginTop: 10 , 
+    // width: '80%' 
   },
   logo: {
     fontWeight: 'bold',
@@ -167,11 +210,7 @@ const styles = StyleSheet.create({
     // width: '50%',
     alignSelf: 'center',
   },
-  logoView: {
-    // margin: 50,
-    // backgroundColor: `#2f4f4f`,
-
-  },
+  
   title: {
     //fontSize: 10,
     fontWeight: 'bold',
@@ -182,16 +221,16 @@ const styles = StyleSheet.create({
   button: {
     borderWidth: 2,
     alignSelf: 'center',
-    width: '40%',
+    maxWidth: '90%',
     paddingHorizontal: 8,
     paddingVertical: 6,
-    borderRadius: 50,
+    borderRadius: 80,
     backgroundColor: 'oldlace',
     marginHorizontal: '1%',
     marginBottom: 6,
-    minWidth: '48%',
+    minWidth: '88%',
     textAlign: 'center',
-    backgroundColor: `#daa520`,
+    backgroundColor: `#ffe4c4`,
   },
   buttonText: {
     textAlign: 'center',
