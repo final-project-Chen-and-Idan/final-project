@@ -109,13 +109,13 @@ const Home = () => {
                       <View >
                         <TouchableOpacity  onPress={() => {navigation.navigate('Camera')}} style={styles.button}>
                           {/* <Text style={styles.buttonText}>Camera</Text> */}
-                          <Icon name="video-camera" size={50} color="#900" />
+                          <Icon name="video-camera" size={90} color="#900" />
                         </TouchableOpacity>
                       </View>
                       <View>
                       <TouchableOpacity  onPress={() => {navigation.navigate('Contacts')}} style={styles.button}>
                         {/* <Text style={styles.buttonText}>Contacts</Text> */}
-                        <Icon name="address-book" size={50} color="#900" />
+                        <Icon name="address-book" size={90} color="#900" />
                       </TouchableOpacity>
                     </View>
                 </View>
