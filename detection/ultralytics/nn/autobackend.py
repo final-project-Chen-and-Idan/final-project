@@ -1,4 +1,4 @@
-# Ultralytics YOLO 🚀, GPL-3.0 license
+# Ultralytics YOLO 🚀, AGPL-3.0 license
 import ast
 import contextlib
 import json
@@ -21,12 +21,12 @@ from ultralytics.yolo.utils.ops import xywh2xyxy
 
 
 def check_class_names(names):
-    # Check class names. Map imagenet class codes to human-readable names if required. Convert lists to dicts.
+    """Check class names. Map imagenet class codes to human-readable names if required. Convert lists to dicts."""
     if isinstance(names, list):  # names is a list
         names = dict(enumerate(names))  # convert to dict
     if isinstance(names, dict):
-        if not all(isinstance(k, int) for k in names.keys()):  # convert string keys to int, i.e. '0' to 0
-            names = {int(k): v for k, v in names.items()}
+        # Convert 1) string keys to int, i.e. '0' to 0, and non-string values to strings, i.e. True to 'True'
+        names = {int(k): str(v) for k, v in names.items()}
         n = len(names)
         if max(names.keys()) >= n:
             raise KeyError(f'{n}-class dataset requires class indices 0-{n - 1}, but you have invalid class indices '
@@ -91,8 +91,10 @@ class AutoBackend(nn.Module):
         if nn_module:
             model = weights.to(device)
             model = model.fuse(verbose=verbose) if fuse else model
-            names = model.module.names if hasattr(model, 'module') else model.names  # get class names
+            if hasattr(model, 'kpt_shape'):
+                kpt_shape = model.kpt_shape  # pose-only
             stride = max(int(model.stride.max()), 32)  # model stride
+            names = model.module.names if hasattr(model, 'module') else model.names  # get class names
             model.half() if fp16 else model.float()
             self.model = model  # explicitly assign for to(), cpu(), cuda(), half()
             pt = True
@@ -102,6 +104,8 @@ class AutoBackend(nn.Module):
                                          device=device,
                                          inplace=True,
                                          fuse=fuse)
+            if hasattr(model, 'kpt_shape'):
+                kpt_shape = model.kpt_shape  # pose-only
             stride = max(int(model.stride.max()), 32)  # model stride
             names = model.module.names if hasattr(model, 'module') else model.names  # get class names
             model.half() if fp16 else model.float()
@@ -184,7 +188,7 @@ class AutoBackend(nn.Module):
             LOGGER.info(f'Loading {w} for CoreML inference...')
             import coremltools as ct
             model = ct.models.MLModel(w)
-            metadata = model.user_defined_metadata
+            metadata = dict(model.user_defined_metadata)
         elif saved_model:  # TF SavedModel
             LOGGER.info(f'Loading {w} for TensorFlow SavedModel inference...')
             import tensorflow as tf
@@ -198,6 +202,7 @@ class AutoBackend(nn.Module):
             from ultralytics.yolo.engine.exporter import gd_outputs
 
             def wrap_frozen_graph(gd, inputs, outputs):
+                """Wrap frozen graphs for deployment."""
                 x = tf.compat.v1.wrap_function(lambda: tf.compat.v1.import_graph_def(gd, name=''), [])  # wrapped
                 ge = x.graph.as_graph_element
                 return x.prune(tf.nest.map_structure(ge, inputs), tf.nest.map_structure(ge, outputs))
@@ -225,7 +230,7 @@ class AutoBackend(nn.Module):
             interpreter.allocate_tensors()  # allocate
             input_details = interpreter.get_input_details()  # inputs
             output_details = interpreter.get_output_details()  # outputs
-            # load metadata
+            # Load metadata
             with contextlib.suppress(zipfile.BadZipFile):
                 with zipfile.ZipFile(w, 'r') as model:
                     meta_file = model.namelist()[0]
@@ -256,10 +261,10 @@ class AutoBackend(nn.Module):
             nhwc = model.runtime.startswith("tensorflow")
             '''
         else:
-            from ultralytics.yolo.engine.exporter import EXPORT_FORMATS_TABLE
+            from ultralytics.yolo.engine.exporter import export_formats
             raise TypeError(f"model='{w}' is not a supported model format. "
-                            'See https://docs.ultralytics.com/tasks/detection/#export for help.'
-                            f'\n\n{EXPORT_FORMATS_TABLE}')
+                            'See https://docs.ultralytics.com/modes/predict for help.'
+                            f'\n\n{export_formats()}')
 
         # Load external metadata YAML
         if isinstance(metadata, (str, Path)) and Path(metadata).exists():
@@ -268,13 +273,14 @@ class AutoBackend(nn.Module):
             for k, v in metadata.items():
                 if k in ('stride', 'batch'):
                     metadata[k] = int(v)
-                elif k in ('imgsz', 'names') and isinstance(v, str):
+                elif k in ('imgsz', 'names', 'kpt_shape') and isinstance(v, str):
                     metadata[k] = eval(v)
             stride = metadata['stride']
             task = metadata['task']
             batch = metadata['batch']
             imgsz = metadata['imgsz']
             names = metadata['names']
+            kpt_shape = metadata.get('kpt_shape')
         elif not (pt or triton or nn_module):
             LOGGER.warning(f"WARNING ⚠️ Metadata not found for 'model={weights}'")
 
@@ -332,13 +338,6 @@ class AutoBackend(nn.Module):
             y = [self.bindings[x].data for x in sorted(self.output_names)]
         elif self.coreml:  # CoreML
             im = im[0].cpu().numpy()
-            if self.task == 'classify':
-                from ultralytics.yolo.data.utils import IMAGENET_MEAN, IMAGENET_STD
-
-                # im_pil = Image.fromarray(((im / 6 + 0.5) * 255).astype('uint8'))
-                for i in range(3):
-                    im[..., i] *= IMAGENET_STD[i]
-                    im[..., i] += IMAGENET_MEAN[i]
             im_pil = Image.fromarray((im * 255).astype('uint8'))
             # im = im.resize((192, 320), Image.ANTIALIAS)
             y = self.model.predict({'image': im_pil})  # coordinates are xywh normalized
@@ -371,10 +370,10 @@ class AutoBackend(nn.Module):
                     self.names = {i: f'class{i}' for i in range(nc)}
             else:  # Lite or Edge TPU
                 input = self.input_details[0]
-                int8 = input['dtype'] == np.uint8  # is TFLite quantized uint8 model
+                int8 = input['dtype'] == np.int8  # is TFLite quantized int8 model
                 if int8:
                     scale, zero_point = input['quantization']
-                    im = (im / scale + zero_point).astype(np.uint8)  # de-scale
+                    im = (im / scale + zero_point).astype(np.int8)  # de-scale
                 self.interpreter.set_tensor(input['index'], im)
                 self.interpreter.invoke()
                 y = []
@@ -429,6 +428,7 @@ class AutoBackend(nn.Module):
 
     @staticmethod
     def _apply_default_class_names(data):
+        """Applies default class names to an input YAML file or returns numerical class names."""
         with contextlib.suppress(Exception):
             return yaml_load(check_yaml(data))['names']
         return {i: f'class{i}' for i in range(999)}  # return default if above errors
