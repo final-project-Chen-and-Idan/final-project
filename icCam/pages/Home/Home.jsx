@@ -65,37 +65,19 @@ const Home = () => {
   
   return (
     // <ImageBackground source={image} style={styles.image}>
-      <SafeAreaView style = {styles.SafeAreaViewStyle}>
-            <Text style = {styles.title}>hello there {auth.currentUser.displayName}</Text>
-            {/* <Text style={styles.logo}>IC-CAM</Text> */}
-            <View style = {styles.logoView}>
+    <View>
+      {/* <SafeAreaView style = {styles.SafeAreaViewStyle}> */}
+        <View style={styles.titleView}>
+          <Text style = {styles.title}>hello there {auth.currentUser.displayName}</Text>
+          <View style = {styles.logoView}>
             <Image source={require('../../assets/a.png')}
-            style = {styles.logologo}/>
-            </View>
-           
-            {/* <View style={styles.box}> */}
-                {/* <View>
-                  <TouchableOpacity onPress={logOut} style = {styles.button}>
-                    <Text style={styles.buttonText}>signOut</Text>
-                    </TouchableOpacity>
-                </View>
-                <View>
-                  <TouchableOpacity  onPress={() => {navigation.navigate('Camera')}} style={styles.button}>
-                    <Text style={styles.buttonText}>camera</Text>
-                  </TouchableOpacity>
-                </View>
-                <View>
-                  <TouchableOpacity  onPress={() => {navigation.navigate('Notifications')}} style={styles.button}>
-                    <Text style={styles.buttonText}>alarms</Text>
-                  </TouchableOpacity>
-                </View>
-                <View>
-                  <TouchableOpacity  onPress={() => {navigation.navigate('Contacts')}} style={styles.button}>
-                    <Text style={styles.buttonText}>Contacts</Text>
-                  </TouchableOpacity>
-                </View> */}
-            {/* </View> */}
+                style = {styles.logologo}/>
+          </View>
+        </View>
+        {/* --------------------------------------------------------------------------------------------------------------------------- */}
+         <ImageBackground source={image} style={styles.pool}>
             <View style={styles.newBox}>
+             {/* <ImageBackground source={image} style={styles.imageNew}> */}
                 <FadeInView duration={1000}>
                     {/* <Text style={{ fontSize: 28, fontWeight: 'bold' }}>
                       Welcome to my app!
@@ -106,35 +88,55 @@ const Home = () => {
                       </TouchableOpacity>
                   </View> */}
                   <View style = {styles.buttonBox}>
-                      <View >
+                    {/* <Image source={image} style={styles.buttonBox}> */}
+
+                    {/* </Image> */}
+                      <View style = {{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 30}}>
                         <TouchableOpacity  onPress={() => {navigation.navigate('Camera')}} style={styles.button}>
                           {/* <Text style={styles.buttonText}>Camera</Text> */}
                           <Icon name="video-camera" size={90} color="#900" />
                         </TouchableOpacity>
                       </View>
-                      <View>
-                      <TouchableOpacity  onPress={() => {navigation.navigate('Contacts')}} style={styles.button}>
-                        {/* <Text style={styles.buttonText}>Contacts</Text> */}
-                        <Icon name="address-book" size={90} color="#900" />
-                      </TouchableOpacity>
-                    </View>
-                </View>
+                    {/* <View> */}
+                        {/* <TouchableOpacity  onPress={() => {navigation.navigate('Contacts')}} style={styles.button}> */}
+                          {/* <Text style={styles.buttonText}>Contacts</Text> */}
+                          {/* <Icon name="address-book" size={90} color="#900" /> */}
+                        {/* </TouchableOpacity> */}
+                    {/* </View>  */}
+                    
+                  </View>
+                  
                 </FadeInView>
+              {/* </ImageBackground> */}
                 
             </View>
-            <View style = {styles.logOutView}>
+            <View style = {{padding: 10,alignItems: 'center' ,width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 30, alignSelf: 'center',backgroundColor: `#2f4f4f` }}>
+                      <TouchableOpacity  onPress={() => {navigation.navigate('Contacts')}} style={styles.button}>
+                        <Text style={styles.logoutText}>Contacts</Text>
+                        {/* <Icon name="address-book" size={90} color="#900" /> */}
+                      </TouchableOpacity>
+                      <Text style = {styles.logoutText}>|</Text>
+                      <TouchableOpacity onPress={logOut} style = {styles.FuncButton}>
+                      <Text style={styles.logoutText}>Log out</Text>
+                      </TouchableOpacity>
+                </View>
+          </ImageBackground>
+             
+             {/* ------------------------------------------------------------------------------------------------------------------------------------ */}
+                {/* <View style = {styles.logOutView}> */}
                   {/* <Text style = {styles.logoutText}>log out view 4r</Text> */}
-                  <View>
+                  {/* <View>
                     <TouchableOpacity onPress={logOut} style = {styles.FuncButton}>
                       <Text style={styles.logoutText}>Log out</Text>
                       </TouchableOpacity>
-                  </View>
-                </View>
+                  </View> */}
+                {/* </View> */}
             {/* <View style={styles.container}> */}
               {/* <Animated.View style={[styles.square, animation.getLayout()]} /> */}
               
           {/* </View> */}
-          </SafeAreaView>
+      {/* </SafeAreaView> */}
+      </View>
     // </ImageBackground>
    
    
@@ -144,50 +146,81 @@ const Home = () => {
 export default Home
 
 const styles = StyleSheet.create({
-  buttonBox: {
-    padding: '20%',
+  pool: {
+    
+    width: '100%',
+    height: '80%'
+    
   },
   SafeAreaViewStyle: {
-    backgroundColor: `#5f9ea0`,
-  },
-  FuncButton: {
-    borderWidth: 2,
-    alignSelf: 'center',
-    maxWidth: '90%',
-    paddingHorizontal: 8,
-    paddingVertical: 6,
-    // borderRadius: 100,
-    backgroundColor: 'oldlace',
-    marginHorizontal: '1%',
-    marginBottom: 6,
-    minWidth: '40%',
-    textAlign: 'center',
-    backgroundColor: `#deb887`,
-  },
-  logOutView: {
     backgroundColor: `#2f4f4f`,
+    // borderColor: `#ff0000`,
+    borderWidth: 5,
+    maxHeight: '100%',
+    minHeight: '100%',
+    maxWidth: '100%',
+    minHeight: '100%',
+  },
+  titleView: {
+    // borderWidth: 10,
+    backgroundColor: `#2f4f4f`,
+  },
+  logoView: {
+    margin: 50,
+    // backgroundColor: `#2f4f4f`,
     alignSelf: 'center',
     alignItems: 'center',
-    margin: 50,
     width: '90%',
-    
+  },
+  buttonBox: {
+    // margin: 10,
+    // backgroundColor: `#6495ed`,
+    // borderRadius: 75,
+    // // borderColor: `#7fff00`,
+    // borderWidth: 10,
+    paddingTop: 20
+  },
+  imageNew: {
+    // borderRadius: 50,
+    // margin: 10,
+    // height: 20,
+    // maxHeight: '80%',
+    // minHeight: '80%',
+    // maxWidth: '80%',
+    // minWidth: '80%',
+    alignSelf: 'center',
+    justifyContent: 'center',
+  },
+ 
+  
+  FuncButton: {
+    // borderWidth: 2,
+    // alignSelf: 'center',
+    // maxWidth: '90%',
+    // paddingHorizontal: 8,
+    // paddingVertical: 6,
+    // // borderRadius: 100,
+    // backgroundColor: 'oldlace',
+    // marginHorizontal: '1%',
+    // marginBottom: 6,
+    // minWidth: '40%',
+    // textAlign: 'center',
+    // backgroundColor: `#deb887`,
+  },
+  logOutView: {
+    backgroundColor: `#008b8b`,
   },
   logoutText: {
     textAlign: 'center',
     justifyContent: 'center',
     fontWeight: 'bold',
-    fontSize: 20,
-    shadowRadius: 40,
-    shadowColor : `#8a2be2`,
+    fontSize: 25,
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 2, 
+    textShadowColor: `#dc143c`,
   
   },
-  logoView: {
-    marginTop: 50,
-    backgroundColor: `#2f4f4f`,
-    alignSelf: 'center',
-    alignItems: 'center',
-    width: '90%',
-  },
+  
   container: {
     flex: 1,
     justifyContent: 'center',
@@ -201,11 +234,12 @@ const styles = StyleSheet.create({
   },
  
   newBox: {
-    justifyContent: 'center', 
-    alignItems: 'center', 
-    alignSelf: 'center',
-    height: '60%' , 
-    backgroundColor: `#a52a2a`,
+    // borderRadius: 75,
+    // justifyContent: 'center', 
+    // alignItems: 'center', 
+    // alignSelf: 'center',
+    // height: '40%' , 
+    // backgroundColor: `#a52a2a`,
     // marginTop: 10 , 
     // width: '80%' 
   },
@@ -231,21 +265,21 @@ const styles = StyleSheet.create({
   }
   ,
   button: {
-    borderWidth: 2,
-    height: "50%",
-    alignSelf: 'center',
-    alignItems: 'center',
-    maxWidth: '90%',
-    paddingHorizontal: 8,
-    paddingVertical: 6,
-    borderRadius: 40,
-    // backgroundColor: 'oldlace',
-    marginHorizontal: '1%',
-    // marginBottom: 6,
-    margin: 10,
-    minWidth: '88%',
-    textAlign: 'center',
-    backgroundColor: `#ffe4c4`,
+    // borderWidth: 2,
+    // height: "60%",
+    // alignSelf: 'center',
+    // alignItems: 'center',
+    // maxWidth: '90%',
+    // paddingHorizontal: 8,
+    // paddingVertical: 6,
+    // borderRadius: 40,
+    // // backgroundColor: 'oldlace',
+    // marginHorizontal: '1%',
+    // // marginBottom: 6,
+    // // margin: 10,
+    // minWidth: '88%',
+    // textAlign: 'center',
+    // backgroundColor: `#ffe4c4`,
   },
   buttonText: {
     textAlign: 'center',
@@ -263,5 +297,6 @@ const styles = StyleSheet.create({
   },
   image: {
     height: '100%'
-  }
+  },
+  
 })

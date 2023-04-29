@@ -1,11 +1,13 @@
-import { StyleSheet, Text, View, TouchableOpacity, Modal, TextInput, FlatList, ToastAndroid, Alert} from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Modal, TextInput, FlatList, ToastAndroid, Alert, ImageBackground, Image} from 'react-native'
 import React, { useState, useEffect} from 'react'
 import { fetchSignInMethodsForEmail } from 'firebase/auth'
 import { collection, query, onSnapshot, where, getDocs, updateDoc} from 'firebase/firestore'
 import {auth, db} from "../../firebase"
 import  Icon from 'react-native-vector-icons/Ionicons'
+import { BackgroundImage } from 'react-native-elements/dist/config'
 
 const Contacts = () => {
+  const image = { uri: "https://img.freepik.com/free-vector/scene-swimming-pool-with_1308-37683.jpg" }
   const [visible, setVisible] = useState(false)
   const [email, setEmail] = useState("")
   const [contacts, setContacts] = useState([]) 
@@ -56,11 +58,11 @@ const Contacts = () => {
   const Contact = ({user})=>{
     return(
       <TouchableOpacity onLongPress={()=>{deleteContact(user)}}>
-        <View style={{backgroundColor:"red"}}>
-          <Text>name: {user.name}</Text>
-          <Text>email: {user.email}</Text>
-          <TouchableOpacity style={styles.activeButton} onPress={()=>toggleActive(user)}>
-            <Text>{user.active?"Active":"not Active"}</Text>
+        <View style={styles.contactsItem}>
+          <Text style={styles.contactsItemText}   >name: {user.name}</Text>
+          <Text style={styles.contactsItemText}  >email: {user.email}</Text>
+          <TouchableOpacity style={styles.contactsItemButton} onPress={()=>toggleActive(user)}>
+            <Text style={styles.contactsItemButtonText}>{user.active?"Active":"not Active"}</Text>
           </TouchableOpacity>
         </View>
       </TouchableOpacity>
@@ -257,7 +259,8 @@ const Contacts = () => {
     },[])
 
   return (
-    <View>
+    <BackgroundImage source={image} style = {styles.page}>
+    <View style = {styles.pageContent}>
       {/*----------------- the adding area ----------------*/}
       {/* the pop up for adding */}
       <Modal visible={visible}>
@@ -317,6 +320,7 @@ const Contacts = () => {
       <Text>you currently have no contact - try clicking the add button to add a contact</Text>
       }
     </View>
+    </BackgroundImage>
   )
 }
 
@@ -335,5 +339,44 @@ const styles = StyleSheet.create({
     width:50,
     height:50,
     backgroundColor: "blue"
-  }
+  },
+  page: {
+    minHeight: '100%',
+    maxHeight: '100%',
+    minWidth: '100%',
+    maxWidth: '100%',
+  },
+  pageContent: {
+    minHeight: '85%',
+    maxHeight: '85%',
+    minWidth: '85%',
+    maxWidth: '85%',
+    alignSelf: 'center',
+    marginVertical: 40,
+    padding: 5,
+    backgroundColor: 'rgba(255, 255, 255, 0.5)',
+  },
+  contactsItem: {
+    backgroundColor: 'rgba(255, 255, 255, 0.5)',
+    borderRadius: 30,
+    margin: 5,
+    padding: 7,
+  },
+  contactsItemText: {
+    fontSize: 20,
+    fontWeight: '500',
+
+  },
+  contactsItemButton: {
+    alignSelf: 'center',
+    backgroundColor: `#008b8b`,
+    borderRadius: 30,
+    width: '30%',
+    
+  },
+  contactsItemButtonText: {
+    fontSize: 15,
+    textAlign: 'center',
+    fontWeight: '500',
+  },
 })
