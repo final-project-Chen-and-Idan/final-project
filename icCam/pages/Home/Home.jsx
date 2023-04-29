@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View ,Image, ImageBackground, Animated, SafeAreaView} from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View ,Image, ImageBackground, Animated, SafeAreaView, Modal} from 'react-native'
 import { auth } from '../../firebase'
 import { signOut } from 'firebase/auth'
 // import React from 'react'
@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     fontWeight: 'bold',
     fontSize: 20,
-    shadowRadius: '30%',
+    shadowRadius: 40,
     shadowColor : `#8a2be2`,
   
   },
