@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TouchableOpacity, View, Button, Platform } from 'react-native'
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useContext } from 'react';
 // import registerNNPushToken from 'native-notify';
 // import * as Device from 'expo-device';
 // import * as notification from 'expo-notifications';
@@ -9,8 +9,9 @@ import { useState, useEffect, useRef } from 'react';
 // import PushNotification from 'react-native-push-notification';
 import { Audio } from 'expo-av';
 
-const MyNotifications = () => {
+const MyNotifications = ({context}) => {
   const [sound, setSound] = useState()
+  const play = useContext(context)
 //   registerNNPushToken(6828, 'ZbDvAG9OgKWW3jVtqio59y');
 
 //   let pushDataObject = getPushDataObject();
@@ -45,28 +46,46 @@ const MyNotifications = () => {
 //   await Notifications.scheduleNotificationAsync({ content, trigger });
 // };
 
-const playSound = async() => {
-  console.log('Loading Sound');
-  const { sound } = await Audio.Sound.createAsync( require('../../assets/alarm.mp3')
-  );
-  setSound(sound);
+useEffect(()=>{
+  loadSound();
+},[])
 
+useEffect(()=>{
+  console.log(play)
+  play?playSound():stopSound()
+},[play])
+
+const loadSound = async()=>{
+  console.log('Loading Sound');
+  const { sound } = await Audio.Sound.createAsync( require('../../assets/alarm.mp3'));
+  setSound(sound);
+}
+
+const playSound = async() => {
+  if(!sound)
+    loadSound()
   console.log('Playing Sound');
   await sound.playAsync();
 }
 
 const stopSound = async ()=> {
-  sound.unloadAsync();
+  try{
+    if(sound != undefined)
+      sound.unloadAsync();
+    setSound(null);
+  }
+  catch(e){
+    console.log(e);
+  }
 }
 
   return (
     <View>
-  
-      <TouchableOpacity style = {styles.button}>
-          <Text style={styles.buttonText}>Press to Send Notification</Text>
-      </TouchableOpacity>
-      <Button title="play sound" onPress={playSound} />
-      <Button title="stop sound" onPress={stopSound} />
+      {/* // <TouchableOpacity style = {styles.button}>
+      //     <Text style={styles.buttonText}>Press to Send Notification</Text>
+      // </TouchableOpacity>
+      // <Button title="play sound" onPress={playSound} />
+      // <Button title="stop sound" onPress={stopSound} /> */}
     </View>
   );
 }

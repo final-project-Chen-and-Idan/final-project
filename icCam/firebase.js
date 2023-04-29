@@ -3,7 +3,7 @@ import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import {onAuthStateChanged, initializeAuth } from 'firebase/auth';
 import {getStorage} from 'firebase/storage'
-// import { getMessaging, getToken } from "firebase/messaging";
+// import { getMessaging} from "firebase/messaging";
 import { getReactNativePersistence } from 'firebase/auth/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -26,4 +26,4 @@ const db = getFirestore(app);
 const storage = getStorage(app)
 // const messaging  = getMessaging(app)
 // const token = getToken(messaging, {vapidKey:"BNEYA0gwLvwuHwV8_Q5kuwxFD1_6e1OTDa7rpfiVe-kGSgu9Ml2ukq2Xfoo8TzKCStlsZzlugflmEFOXa3JDDIU"})
-export { db, auth, storage, onAuthStateChanged};
+export { db, auth, storage,onAuthStateChanged};

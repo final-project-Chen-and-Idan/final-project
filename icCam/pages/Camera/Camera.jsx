@@ -1,42 +1,36 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, {useEffect, useState, useRef} from 'react';
+import { Dimensions, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
+import React, {useEffect, useState, useRef, createContext} from 'react';
 import { Camera } from 'expo-camera';
+import Canvas from 'react-native-canvas'
 import Icon from 'react-native-vector-icons/Ionicons';
 import {
   bundleResourceIO,
   cameraWithTensors,
 } from "@tensorflow/tfjs-react-native"
 import * as tf from "@tensorflow/tfjs"
+import * as cocossd from '@tensorflow-models/coco-ssd'
+import * as posenet from '@tensorflow-models/posenet'
+import MyNotifications from '../Notifications/Notifications';
+
 
 const TensorCamera = cameraWithTensors(Camera);
 
+
+export const alarmContext = createContext();
 
 const MyCamera = () => {
   const cameraRef = useRef(null);
   const [modelReady, setModelReady] = useState(false);
   const [permission, setPermission] = useState(false);
   const [model, setModel] = useState();
-  const [cameraType, setCameraType] = useState(Camera.Constants.Type.front)
-  const [prediction, setPrediction] = useState();
+  const [cameraType, setCameraType] = useState(Camera.Constants.Type.front);
+  const [alarm, setAlarm] = useState(false);
   const amountRef = useRef(0)
+  const context = useRef()
+  const canvas = useRef()
+  const {width, height} = Dimensions.get('window')
   
-  const prepare = async()=>{
-    // Camera permission.
-    const {status} = await Camera.requestCameraPermissionsAsync()
-    // saying the camera is active
-    if(status === 'granted'){
-      setPermission(true)
-    }
-    // access was not given
-    else{
-      alert("you denied access")
-      setPermission(false)
-      return
-    }
-
-    // Wait for tfjs to initialize the backend.
-    await tf.ready();
-    
+  const loadYoloV8 =async()=>{
     //loading the model 
     const modelJson = require('../../assets/tfjs/people/model.json');
     const modelWeights1 = require('../../assets/tfjs/people/group1-shard1of4.bin')
@@ -102,11 +96,70 @@ const MyCamera = () => {
       // modelWeights26,
       // modelWeights27,
     ])
-    console.log("loading the model")
-    //loading the model
+    
+    // loading the model
+    console.log("model is loading")
     const model =await tf.loadGraphModel(data)
+    console.log("model finished loading")
+
+    //setting the model
+    setModel(model);
+  }
+
+  //loads the cocossd model for object detection
+  const loadDetectionModel = async()=>{
+    //  loading the model
+    console.log("loading the model")
+    let model = await cocossd.load()
     console.log("finished loading the model")
     setModel(model);
+  }
+
+  //loads the pose detection model
+  const loadPoseModel = async()=>{
+     //  loading the model
+     console.log("loading the model")
+     let model = await posenet.load({
+        architecture: 'MobileNetV1',
+        outputStride: 16,
+        inputResolution: { width: 640, height: 640 },
+        multiplier: 0.75
+     })
+     console.log("finished loading the model")
+     setModel(model);
+
+  }
+
+  //asks for the camera permissions
+  const cameraPermissions = async()=>{
+     // Camera permission.
+     const {status} = await Camera.requestCameraPermissionsAsync()
+     // saying the camera is active
+     if(status == 'granted'){
+      setPermission(true)
+      return true;
+     }
+     // access was not given
+     else{
+      alert("you denied access")
+      setPermission(false)
+      return false;
+     }
+  }
+
+  const prepare = async()=>{
+    //getting and checking the camera permissions
+    if (!cameraPermissions()) 
+      return
+
+    // Wait for tfjs to initialize the backend.
+    await tf.ready();
+
+    // await loadDetectionModel();
+    // await loadPoseModel();   
+    await loadYoloV8();
+    // loadYoloV8Tflite();
+     
     // saying that the model is ready 
     setModelReady(true);
   }
@@ -116,42 +169,142 @@ const MyCamera = () => {
   },[])
 
 
-  const handleCameraStream = async(images)=>{
-    const loop = async()=>{
-      amountRef.current++;
-      if(amountRef.current == 5){
-        amountRef.current=0;
-        loop()
+  //handles the properties of the canvas 
+  const handleCanvas = async(can)=>{
+    if(can){
+      can.width = width;
+      can.height = height;
+      const ctx = can.getContext('2d');
+      ctx.strokeStyle = 'black';
+      ctx.fillStyle = 'red';
+      ctx.lineWidth = 2;
+
+      context.current = ctx;
+      canvas.current = can;
+    }
+
+  }
+
+  //draws the bounding boxes onto the canvas
+  const drawBoundingBoxes = (prediction, image)=>{
+
+    // if the canvas or context have not been created
+    if(!canvas.current || !context.current)
+      return;
+    //making the height and width to scale
+    const width2Scale = width/image.shape[1]
+    const height2Scale = height/image.shape[0]
+    
+    // clearing the previous canvas drawings
+    context.current.clearRect(0, 0, width, height)
+
+    // adding all the bounding boxes for the prediction
+    for(const pred of prediction){
+      const [x, y, width, height] = pred.bbox;
+
+      // calculating the position of the x in the canvas
+      const xBoundingBox = canvas.current.width - x * width2Scale - width * width2Scale  
+      // calculating the y
+      const yBoundingBox = y* height2Scale;
+
+      // drawing the actual bounding box
+      context.current.strokeRect(xBoundingBox, yBoundingBox, width*width2Scale, height* height2Scale)
+
+      // draw the labels
+      context.current.strokeText(
+        pred.class + pred.score,
+        xBoundingBox - 5,
+        yBoundingBox - 5
+      )
+    }
+  }
+
+  const drawPose = (pose, image)=>{
+    // if the canvas or context have not been created
+    if(!canvas.current || !context.current)
+    return;
+
+     //making the height and width to scale
+    const width2Scale = width/image.shape[1]
+    const height2Scale = height/image.shape[0]
+    
+    // clearing the previous canvas drawings
+    context.current.clearRect(0, 0, width, height)
+
+     pose.keypoints.forEach(keypoint => {
+      if (keypoint.score >= 0.5) {
+        const { x, y } = keypoint.position;
+        console.log(x, y)
+        console.log(canvas.current.width)
+        console.log(canvas.current.height)
+        console.log(width)
+        console.log(height)
+
+        // calculating the position of the x in the canvas
+        const scaleX = canvas.current.width - x * width2Scale - width * width2Scale  
+        // calculating the y
+        const ScaleY = y* height2Scale;
+        
+        context.current.beginPath();
+        context.current.arc(scaleX, ScaleY, 6, 0, 2 * Math.PI, false);
+        context.current.fillStyle = 'rgba(220,152,21,0.5)';
+        context.current.fill();
+        context.current.closePath();
       }
-      
+    });
+  }
+  //gets the camera stream and does the detection on it
+  const handleCameraStream = async(images, updatePreview, gl)=>{
+    
+    const loop = async()=>{
+      if(amountRef.current != 24){
+        amountRef.current++;
+        updatePreview();
+        gl?.endFrameEXP();
+        requestAnimationFrame(loop);
+        return;
+      }
+
+      amountRef.current=0;
       let imageTensor = images.next().value
-      imageTensor = (imageTensor.reshape([1, 640, 640, 3])).cast('float32')
+
+      //if there is no model or image
+      if(!imageTensor || !model){
+        alert("no model or image");
+        return 
+      }
+      imageTensor = (imageTensor.cast("float32")).reshape([1, 640, 640, 3])
       
       try{
-        // console.log(tf.browser.fromPixels(images))
-        let prediction = await model.execute(imageTensor);
-        prediction = await prediction
-        setPrediction(prediction);
+        //detecting the 
+        // let output = await model.execute(imageTensor)
+        // let output = await model.detect(imageTensor);
+        // let output = await model.estimateSinglePose(imageTensor);
+        console.log(output)
+        // drawPose(prediction, imageTensor)
+        // prediction.map(item=>console.log(item))
+        // prediction.length > 0?setAlarm(true): setAlarm(false)
+        
+        // drawBoundingBoxes(prediction, imageTensor)
+
+        //clearing memory
         tf.dispose([imageTensor]);
       }
        catch(e){
-        console.log("errpr")
+        console.log("error")
         console.log(e)
        } 
+
+       //updating the camera preview to be able to see the next image
+        updatePreview();
+        gl.endFrameEXP();
+      
+        //go to the next image
+        requestAnimationFrame(loop);
       }
       loop();
-    
+      setModel(null)
   }
-  // Run object detection on captured image
-  // const handleCapture = async () => {
-  //   if (cameraRef.current) {
-  //     const photo = await cameraRef.current.takePictureAsync();
-  //     const tensor = tf.browser.fromPixels(photo.uri);
-  //     const result = await model.executeAsync(tensor);
-  //     console.log(result);
-  //   }
-  //   handleCapture();
-  // };
 
 
   if(!permission){
@@ -165,8 +318,6 @@ const MyCamera = () => {
     )
   }
 
-
-
   if(!modelReady){
     return(
       <>
@@ -178,12 +329,16 @@ const MyCamera = () => {
   }
   return(
     <>    
-      <View style={{...StyleSheet.absoluteFill,...styles.view}}>
+      <alarmContext.Provider value={alarm}>
+        <MyNotifications context={alarmContext}/>
+      </alarmContext.Provider>
+  
+      <View style={StyleSheet.absoluteFill}>
         <TensorCamera
           ref={cameraRef}
           autorender={false}
           type={cameraType}
-          style={{...styles.camera,...StyleSheet.absoluteFill}}
+          style={styles.camera}
           // tensor props
           cameraTextureHeight={1200}
           cameraTextureWidth={1600}
@@ -193,12 +348,8 @@ const MyCamera = () => {
           rotation={0}
           onReady={handleCameraStream}
         />
-        {/* <Camera
-          style={StyleSheet.absoluteFill}
-          type={cameraType}
-          ref={cameraRef}
-          onCameraReady={handleCapture}
-        /> */}
+        
+        <Canvas style={styles.canvas} ref={handleCanvas}/>
         <TouchableOpacity 
         onPress={()=>{
           cameraType==Camera.Constants.Type.front?
@@ -211,64 +362,14 @@ const MyCamera = () => {
       </View>
     </>
   )
-  
-  
-  
-  // const [cameraDirection, setCameraDirection] = useState(false)
-  // const [activeCamera, setActiveCamera] = useState (false)
-  // // activates the camera and asks for permission on the way
-  // const startCamera = async () => {
-  //   // gets the permission
-  //   const {status} = await Camera.requestCameraPermissionsAsync()
-  //   // saying the camera is active
-  //   if(status === 'granted'){
-  //     setActiveCamera(true)
-  //   }
-  //   // access was not given
-  //   else{
-  //     alert("you denied access")
-  //   }
-  // }
-
-  
-  // // when screen loads activate the camera
-  // useEffect(()=>{
-  //   startCamera()
-  // },[])
-    
-  // return (
-  //   <>
-  //   {activeCamera?
-  //     <View>
-  //       <Camera
-  //       type={cameraDirection?"front": "back"}
-  //       style={{width: "100%", height: 550}}
-  //       />
-        // <TouchableOpacity 
-        // onPress={()=>{
-        //   cameraDirection?setCameraDirection(false):
-        //                   setCameraDirection(true)}}>
-        //                   <View style = {styles.iconView}>
-        //                     <Icon style={styles.iconButton} name="md-camera-reverse" size={20}/>
-        //                   </View>
-        // </TouchableOpacity>
-  //     </View>
-  //     :
-      // <View>
-      //   <Text>no access</Text>
-      //   <TouchableOpacity onPress={startCamera}>
-      //     <Text>get permission</Text>
-      //   </TouchableOpacity>
-      // </View>
-  //   }
-  //   </>
-  // )
 }
 
 export default MyCamera
 
 const styles = StyleSheet.create({
     camera: {
+      width:'100%',
+      height:'100%',
       zIndex: 1,
     },
     view:{
@@ -296,7 +397,8 @@ const styles = StyleSheet.create({
       },
       iconView: {
         alignSelf: 'center',
-        bottom:30,
+        position:'absolute',
+        // bottom:30,
         backgroundColor: `#daa520`,
         borderRadius: 100,
         height: 60,
@@ -312,6 +414,12 @@ const styles = StyleSheet.create({
         paddingTop: 9,
         height: '90%',
         // width: '90%'
+      },
+      canvas:{
+        position: 'absolute',
+        height:'100%',
+        width: '100%',
+        zIndex: 1000000,
 
       }
 })
