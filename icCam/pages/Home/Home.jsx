@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View ,Image, ImageBackground, Animated, SafeAreaView, Modal} from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View ,Image, ImageBackground, Animated, SafeAreaView, Modal, Dimensions } from 'react-native'
 import { auth } from '../../firebase'
 import { signOut } from 'firebase/auth'
 // import React from 'react'
@@ -12,6 +12,13 @@ import { minimum } from '@tensorflow/tfjs/dist';
 
 
 const Home = () => {
+  const [modalVisible, setModalVisible] = useState(false);
+  const toggleModal = () => {
+    setModalVisible(!modalVisible);
+  }
+  const closeModal = () => {
+    setModalVisible(false);
+  }
   const [animation] = useState(new Animated.ValueXY({ x: 0, y: 0 }));
 
   const moveSquare = () => {
@@ -65,7 +72,7 @@ const Home = () => {
   
   
   return (
-  <ImageBackground source={image} style={styles.image}>
+  <ImageBackground source={require('../../assets/pool3.png')} style={styles.image}>
     <View style={{minHeight: '100%'}}>
       {/* <SafeAreaView style = {styles.SafeAreaViewStyle}> */}
       {/* ============================================================================================================================== */}
@@ -86,7 +93,7 @@ const Home = () => {
               <View style = {{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 30}}>
                 <TouchableOpacity  onPress={() => {navigation.navigate('Camera')}} style={styles.button}>
                   {/* <Text style={styles.buttonText}>Camera</Text> */}
-                  <Icon name="video-camera" size={90} color="#900" />
+                  <Icon name="video-camera" size={150} color="#f4a460" style={{borderColor: `#000000`,borderRadius: 5, shadowRadius:  3, shadowColor: `#000000`, shadowOpacity: 0.5, shadowOffset: 'left' }} />
                 </TouchableOpacity>
               </View>
                     {/* <View> */}
@@ -100,7 +107,7 @@ const Home = () => {
         </View>
         {/* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */}
         {/* (((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((()))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))) */}
-         <View style = {{maxHeight:'10%',minHeight: '10%', padding: 10,alignItems: 'center' ,width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 30, alignSelf: 'center',backgroundColor: 'rgba(0, 139, 139, 0.6)' }}>
+         <View style = {{maxHeight:'10%',minHeight: '10%', padding: 10,alignItems: 'center' ,width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 30, alignSelf: 'center',backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
                       <TouchableOpacity  onPress={() => {navigation.navigate('Contacts')}} style={styles.button}>
                         <Text style={styles.logoutText}>Contacts</Text>
                         {/* <Icon name="address-book" size={90} color="#900" /> */}
@@ -110,9 +117,20 @@ const Home = () => {
                       <Text style={styles.logoutText}>Log Out</Text>
                       </TouchableOpacity>
                       <Text style = {styles.logoutText}>|</Text>
-                      <TouchableOpacity  style = {styles.FuncButton}>
+                      <TouchableOpacity  style = {styles.FuncButton} onPress={toggleModal}>
                       <Text style={styles.logoutText}>How It Works</Text>
                       </TouchableOpacity>
+                      <Modal visible={modalVisible} animationType="slide"
+                              style={styles.modalContent}>
+                                <ImageBackground source={image} style = {styles.page}>
+                        <View style={styles.modalContent}>
+                          <TouchableOpacity style={styles.contactsItemButton}   onPress={closeModal}>
+                            <Text style={styles.closeButton}>Close Modal</Text>
+                          </TouchableOpacity>
+                        </View>
+                        </ImageBackground>
+                      </Modal>
+
 
          </View>
          {/* (((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((()))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))) */}
@@ -140,6 +158,29 @@ const Home = () => {
 export default Home
 
 const styles = StyleSheet.create({
+  contactsItemButton: {
+    alignSelf: 'center',
+    backgroundColor: `#008b8b`,
+    borderRadius: 30,
+    width: '30%',
+    
+  },
+  page: {
+    minHeight: '100%',
+    maxHeight: '100%',
+    minWidth: '100%',
+    maxWidth: '100%',
+  },
+  modalContent: {
+    minHeight: '85%',
+    maxHeight: '85%',
+    minWidth: '85%',
+    maxWidth: '85%',
+    alignSelf: 'center',
+    marginVertical: 40,
+    padding: 5,
+    backgroundColor: 'rgba(255, 255, 255, 0.5)',
+  },
   pool: {
     width: '100%',
     height: '80%',
@@ -155,9 +196,10 @@ const styles = StyleSheet.create({
   },
   titleView: {
     // borderWidth: 10,
-    backgroundColor: 'rgba(0, 139, 139, 0.5)',
-    maxHeight: '40%',
-    minHeight: '40%',
+    // backgroundColor: 'rgba(0, 139, 139, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    maxHeight: '30%',
+    minHeight: '30%',
   },
   logoView: {
     margin: 50,
@@ -200,7 +242,7 @@ const styles = StyleSheet.create({
     // backgroundColor: `#deb887`,
   },
   logOutView: {
-    backgroundColor: 'rgba(0, 139, 139, 0.5)',
+    backgroundColor: 'rgba(0, 139, 139, 0.3)',
   },
   logoutText: {
     textAlign: 'center',
@@ -209,21 +251,21 @@ const styles = StyleSheet.create({
     fontSize: 25,
     textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 2, 
-    textShadowColor: `#dc143c`,
+    textShadowColor: `#cd853f`,
   
   },
   
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  square: {
-    width: 100,
-    height: 100,
-    backgroundColor: 'red',
-    backgroundColor: `#2f4f4f`,
-  },
+  // container: {
+  //   flex: 1,
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  // },
+  // square: {
+  //   width: 100,
+  //   height: 100,
+  //   backgroundColor: 'red',
+  //   backgroundColor: `#2f4f4f`,
+  // },
  
   newBox: {
     // borderRadius: 75,
@@ -232,33 +274,53 @@ const styles = StyleSheet.create({
     // alignSelf: 'center',
     // height: '40%' , 
     // backgroundColor: `#d2691e`,
-    maxHeight: '50%',
-    minHeight: '50%',
+    maxHeight: '60%',
+    minHeight: '60%',
     // marginTop: 10 , 
     // width: '80%' ,
-    borderWidth: 5,
+    // borderWidth: 5,
   },
-  logo: {
-    fontWeight: 'bold',
-    color: '#b8860b',
-    shadowColor: '#cd5c5c',
-    fontSize: 60,
-    alignSelf: 'center',
-    borderCurve: '#cd5c5c',
-  },
-  logologo: {
-    // height: '90%',
-    // width: '50%',
-    alignSelf: 'center',
-  },
+  // logo: {
+  //   fontWeight: 'bold',
+  //   color: '#b8860b',
+  //   shadowColor: '#cd5c5c',
+  //   fontSize: 60,
+  //   alignSelf: 'center',
+  //   borderCurve: '#cd5c5c',
+  //   background: {
+  //     position: 'absolute',
+  //     top: 1,
+  //     bottom: 1,
+  //     left: 1,
+  //     right: 1,
+  //     backgroundColor: `#000000`,
+  //     borderRadius: Dimensions.get('window').height / 2,
+  //     overflow: 'hidden'
+  //   }
+  // },
+  // logologo: {
+  //   // height: '90%',
+  //   // width: '50%',
+  //   // alignSelf: 'center',
+  //   background: {
+  //     position: 'absolute',
+  //     top: 1,
+  //     bottom: 1,
+  //     left: 1,
+  //     right: 1,
+  //     backgroundColor: `#000000`,
+  //     borderRadius: Dimensions.get('window').height / 9,
+  //     overflow: 'hidden'
+  //   },
+  //   // backgroundColor: `#000000`,
+  // },
   
   title: {
     //fontSize: 10,
     fontWeight: 'bold',
     fontSize: 20,
     marginTop: 30,
-  }
-  ,
+  },
   button: {
     // borderWidth: 2,
     // height: "60%",

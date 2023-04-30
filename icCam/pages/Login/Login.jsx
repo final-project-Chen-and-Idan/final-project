@@ -22,13 +22,13 @@ const Login = () => {
 
     return(
         <ImageBackground source={image} style={styles.image}>
-            <View>
-                <View style = {styles.a}>
+            <View style = {styles.a}>
+                <View style = {styles.b}>
 
                 <Text style = {styles.title}>
                     Login
                 </Text>
-                <View>
+                <View style={styles.c}>
                     <TextInput
                     style = {styles.box}
                     placeholder="Email"
@@ -44,23 +44,29 @@ const Login = () => {
                     autoCorrect = {false}
                     secureTextEntry={true}
                     />
-                </View>
-                <TouchableOpacity
+                    <TouchableOpacity
                     style = {styles.button}
                     onPress={() => loginUser(email, password)}
                 >
                     <Text>Login</Text>
                 </TouchableOpacity>
-                <TouchableOpacity
-                    style = {styles.button}
-                    onPress={() => navigation.navigate('Signup')}
-                >
-                    <Text>Don't have an account? Register Now</Text>
-                </TouchableOpacity>
+                </View>
                 <TouchableOpacity 
-                    onPress={()=>{navigation.navigate('forgot')}}>
-                    <Text>Forgot Password</Text>
+                    onPress={()=>{navigation.navigate('forgot')}}
+                    style={{}}>
+                    <Text style={styles.logoutText}>Forgot Password</Text>
                 </TouchableOpacity>
+                <View style = {styles.d}>
+                    <Text>Don't have an account?</Text>  
+                    <TouchableOpacity
+                        style = {styles.button}
+                        onPress={() => navigation.navigate('Signup')}
+                    >
+                        <Text>Register Now</Text>
+                    </TouchableOpacity>
+                </View>
+                
+                
                 </View>
             </View>
         </ImageBackground>
@@ -73,13 +79,13 @@ export default Login
 const styles = StyleSheet.create({
     
     box: {
-        backgroundColor: `#7fffd4`,
-        // backgroundColor: `#7fffd4`,
+        backgroundColor: `#ffe4c4`,
         fontSize: 20,
         borderWidth: 2,
         margin: 10,
-        padding: 1,
+        padding: 3,
         paddingLeft: 3,
+        borderRadius: 10,
     },
     button: {
         borderWidth: 2,
@@ -103,12 +109,53 @@ const styles = StyleSheet.create({
       },
       a: {
         // backgroundColor: `#5f9ea0`,
-        backgroundColor: `#dcdcdc`,
+        backgroundColor: 'rgba(255, 255, 255, 0.5)',
+        borderRadius: 30,
         // opacity: '50%',
         Transparent: '50%',
-        padding: 2,
+        padding: 1,
         margin:30,
-        height: '70%'
+        height: '70%',
+        width: '70%',
+        alignSelf: 'center',
+        alignItems: 'center',
+        justifyContent: 'center',
+        
+      },
+      b: {
+        height: '80%',
+        width: '80%',
+      },
+      c: {
+        backgroundColor: 'rgba(255, 255, 255, 0.5)',
+        borderRadius: 30,
+        padding: 3,
+        margin:30,
+        height: '50%',
+        width: '99%',
+        alignSelf: 'center',
+        
+      },
+      d: {
+        backgroundColor: 'rgba(255, 255, 255, 0.5)',
+        borderRadius: 30,
+        padding: 3,
+        margin:30,
+        height: '25%',
+        width: '99%',
+        alignSelf: 'center',
+        justifyContent: 'center',
+        alignItems: 'center'
+      },
+      logoutText: {
+        textAlign: 'center',
+        justifyContent: 'center',
+        fontWeight: 'bold',
+        fontSize: 20,
+        textShadowOffset: { width: 2, height: 2 },
+        textShadowRadius: 2, 
+        textShadowColor: `#cd853f`,
+      
       },
       image: {
         height: '105%',
