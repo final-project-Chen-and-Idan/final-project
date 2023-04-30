@@ -8,6 +8,7 @@ import { Notifications} from '../Notifications/Notifications'
 // import {logo} from '../assets'
 import { NavigationContainer, useNavigation } from '@react-navigation/native'
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { minimum } from '@tensorflow/tfjs/dist';
 
 
 const Home = () => {
@@ -64,9 +65,10 @@ const Home = () => {
   
   
   return (
-    // <ImageBackground source={image} style={styles.image}>
-    <View>
+  <ImageBackground source={image} style={styles.image}>
+    <View style={{minHeight: '100%'}}>
       {/* <SafeAreaView style = {styles.SafeAreaViewStyle}> */}
+      {/* ============================================================================================================================== */}
         <View style={styles.titleView}>
           <Text style = {styles.title}>hello there {auth.currentUser.displayName}</Text>
           <View style = {styles.logoView}>
@@ -74,53 +76,47 @@ const Home = () => {
                 style = {styles.logologo}/>
           </View>
         </View>
+        {/* ================================================================================================================================= */}
         {/* --------------------------------------------------------------------------------------------------------------------------- */}
-         <ImageBackground source={image} style={styles.pool}>
-            <View style={styles.newBox}>
-             {/* <ImageBackground source={image} style={styles.imageNew}> */}
-                <FadeInView duration={1000}>
-                    {/* <Text style={{ fontSize: 28, fontWeight: 'bold' }}>
-                      Welcome to my app!
-                    </Text> */}
-                    {/* <View>
-                    <TouchableOpacity onPress={logOut} style = {styles.button}>
-                      <Text style={styles.buttonText}>Log out</Text>
-                      </TouchableOpacity>
-                  </View> */}
-                  <View style = {styles.buttonBox}>
-                    {/* <Image source={image} style={styles.buttonBox}> */}
-
-                    {/* </Image> */}
-                      <View style = {{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 30}}>
-                        <TouchableOpacity  onPress={() => {navigation.navigate('Camera')}} style={styles.button}>
-                          {/* <Text style={styles.buttonText}>Camera</Text> */}
-                          <Icon name="video-camera" size={90} color="#900" />
-                        </TouchableOpacity>
-                      </View>
+         {/* <ImageBackground source={image} style={styles.pool}> */}
+         {/* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */}
+        <View style={styles.newBox}>
+          <FadeInView duration={1000}> 
+            <View style = {styles.buttonBox}>
+              <View style = {{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 30}}>
+                <TouchableOpacity  onPress={() => {navigation.navigate('Camera')}} style={styles.button}>
+                  {/* <Text style={styles.buttonText}>Camera</Text> */}
+                  <Icon name="video-camera" size={90} color="#900" />
+                </TouchableOpacity>
+              </View>
                     {/* <View> */}
                         {/* <TouchableOpacity  onPress={() => {navigation.navigate('Contacts')}} style={styles.button}> */}
                           {/* <Text style={styles.buttonText}>Contacts</Text> */}
                           {/* <Icon name="address-book" size={90} color="#900" /> */}
                         {/* </TouchableOpacity> */}
                     {/* </View>  */}
-                    
-                  </View>
-                  
-                </FadeInView>
-              {/* </ImageBackground> */}
-                
-            </View>
-            <View style = {{padding: 10,alignItems: 'center' ,width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 30, alignSelf: 'center',backgroundColor: `#2f4f4f` }}>
+            </View>       
+          </FadeInView>
+        </View>
+        {/* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */}
+        {/* (((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((()))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))) */}
+         <View style = {{maxHeight:'10%',minHeight: '10%', padding: 10,alignItems: 'center' ,width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 30, alignSelf: 'center',backgroundColor: 'rgba(0, 139, 139, 0.6)' }}>
                       <TouchableOpacity  onPress={() => {navigation.navigate('Contacts')}} style={styles.button}>
                         <Text style={styles.logoutText}>Contacts</Text>
                         {/* <Icon name="address-book" size={90} color="#900" /> */}
                       </TouchableOpacity>
                       <Text style = {styles.logoutText}>|</Text>
                       <TouchableOpacity onPress={logOut} style = {styles.FuncButton}>
-                      <Text style={styles.logoutText}>Log out</Text>
+                      <Text style={styles.logoutText}>Log Out</Text>
                       </TouchableOpacity>
-                </View>
-          </ImageBackground>
+                      <Text style = {styles.logoutText}>|</Text>
+                      <TouchableOpacity  style = {styles.FuncButton}>
+                      <Text style={styles.logoutText}>How It Works</Text>
+                      </TouchableOpacity>
+
+         </View>
+         {/* (((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((()))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))) */}
+          {/* </ImageBackground> */}
              
              {/* ------------------------------------------------------------------------------------------------------------------------------------ */}
                 {/* <View style = {styles.logOutView}> */}
@@ -135,11 +131,9 @@ const Home = () => {
               {/* <Animated.View style={[styles.square, animation.getLayout()]} /> */}
               
           {/* </View> */}
-      {/* </SafeAreaView> */}
+      {/* </SafeAreaView> */} 
       </View>
-    // </ImageBackground>
-   
-   
+    </ImageBackground>
   )
 }
 
@@ -147,13 +141,11 @@ export default Home
 
 const styles = StyleSheet.create({
   pool: {
-    
     width: '100%',
-    height: '80%'
-    
+    height: '80%',
   },
   SafeAreaViewStyle: {
-    backgroundColor: `#2f4f4f`,
+    backgroundColor: 'rgba(0, 139, 139, 0.6)',
     // borderColor: `#ff0000`,
     borderWidth: 5,
     maxHeight: '100%',
@@ -163,7 +155,9 @@ const styles = StyleSheet.create({
   },
   titleView: {
     // borderWidth: 10,
-    backgroundColor: `#2f4f4f`,
+    backgroundColor: 'rgba(0, 139, 139, 0.5)',
+    maxHeight: '40%',
+    minHeight: '40%',
   },
   logoView: {
     margin: 50,
@@ -191,8 +185,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     justifyContent: 'center',
   },
- 
-  
   FuncButton: {
     // borderWidth: 2,
     // alignSelf: 'center',
@@ -208,7 +200,7 @@ const styles = StyleSheet.create({
     // backgroundColor: `#deb887`,
   },
   logOutView: {
-    backgroundColor: `#008b8b`,
+    backgroundColor: 'rgba(0, 139, 139, 0.5)',
   },
   logoutText: {
     textAlign: 'center',
@@ -235,13 +227,16 @@ const styles = StyleSheet.create({
  
   newBox: {
     // borderRadius: 75,
-    // justifyContent: 'center', 
-    // alignItems: 'center', 
+    justifyContent: 'center', 
+    alignItems: 'center', 
     // alignSelf: 'center',
     // height: '40%' , 
-    // backgroundColor: `#a52a2a`,
+    // backgroundColor: `#d2691e`,
+    maxHeight: '50%',
+    minHeight: '50%',
     // marginTop: 10 , 
-    // width: '80%' 
+    // width: '80%' ,
+    borderWidth: 5,
   },
   logo: {
     fontWeight: 'bold',
