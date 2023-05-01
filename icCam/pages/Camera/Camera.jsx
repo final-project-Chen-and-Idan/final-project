@@ -1,4 +1,4 @@
-import { Dimensions, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
+import { Dimensions, ImageBackground, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
 import React, {useEffect, useState, useRef, createContext} from 'react';
 import { Camera } from 'expo-camera';
 import Canvas from 'react-native-canvas'
@@ -328,7 +328,8 @@ const MyCamera = () => {
     )
   }
   return(
-    <>    
+    <>
+    {/* <ImageBackground source={require('../../assets/pool4.png')} style={styles.image}>     */}
       <alarmContext.Provider value={alarm}>
         <MyNotifications context={alarmContext}/>
       </alarmContext.Provider>
@@ -360,6 +361,7 @@ const MyCamera = () => {
           </View>
         </TouchableOpacity>
       </View>
+    {/* </ImageBackground> */}
     </>
   )
 }
@@ -368,9 +370,12 @@ export default MyCamera
 
 const styles = StyleSheet.create({
     camera: {
-      width:'100%',
-      height:'100%',
+      width:'90%',
+      height:'80%',
       zIndex: 1,
+      alignSelf: 'center',
+      borderRadius: 30,
+      borderWidth: 6
     },
     view:{
       justifyContent:'flex-end'
