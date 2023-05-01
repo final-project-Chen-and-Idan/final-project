@@ -360,9 +360,9 @@ if __name__ == "__main__":
     
     # loading video
     # onVideo("vid.mp4")
-    # onVideo("0")
+    onVideo("0")
     # onVideo("test.mp4")
-    current = 0
-    for i in range(2,11):
-        onImage("test_images/test"+str(i)+".jpg")
-        current += 1
+    # current = 0
+    # for i in range(2,11):
+    #     onImage("test_images/test"+str(i)+".jpg")
+    #     current += 1

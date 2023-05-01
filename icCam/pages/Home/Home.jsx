@@ -8,7 +8,6 @@ import { Notifications} from '../Notifications/Notifications'
 // import {logo} from '../assets'
 import { NavigationContainer, useNavigation } from '@react-navigation/native'
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { minimum } from '@tensorflow/tfjs/dist';
 
 
 const Home = () => {
@@ -93,7 +92,7 @@ const Home = () => {
               <View style = {{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 30}}>
                 <TouchableOpacity  onPress={() => {navigation.navigate('Camera')}} style={styles.button}>
                   {/* <Text style={styles.buttonText}>Camera</Text> */}
-                  <Icon name="video-camera" size={150} color="#f4a460" style={{borderColor: `#000000`,borderRadius: 5, shadowRadius:  3, shadowColor: `#000000`, shadowOpacity: 0.5, shadowOffset: 'left' }} />
+                  <Icon name="video-camera" size={150} color="#f4a460" style={{borderColor: `#000000`,borderRadius: 5, shadowRadius:  3, shadowColor: `#000000`, shadowOpacity: 0.5, shadowOffset: "left" }} />
                 </TouchableOpacity>
               </View>
                     {/* <View> */}
