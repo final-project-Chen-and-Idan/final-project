@@ -1,12 +1,131 @@
-from cv2 import KeyPoint
-from sympy import false
-from zmq import NULL
 from ultralytics import YOLO
 import cv2
 import math
 import numpy as np
-import supervision as sv
 
+#  ======================== unit tests ============================
+# a test to see if finds the right amount of people in the frame
+# def test_amount_of_people():
+#     print("testing amount of people")
+    
+#     for i in range(2,11):
+#         img = cv2.imread("test_images/test"+str(i)+".jpg")
+#         predict(img, pose_model, img)
+        
+#     true = [1] * 9
+#     correct = 0
+#     for i,j in zip(true, predicted_amount):
+#         if i == np.sum(j):
+#             correct += 1
+    
+#     correct_percent = correct / len(true)
+    
+#     assert correct_percent > 0.9 , "failed"
+    
+#     print("passesd")
+
+# a test to see if recognizes it correctly as a child or adult
+def recognize_child_or_adult():
+    pass
+
+# a test to see if the child is in danger
+def danger():
+    pass
+
+# ============================= Danger area ======================================
+
+# calculates the distance to the pool
+def distance_to_pool(child, pools):
+    # when there are no pools
+    if pools == [] :
+        return -1
+    
+    # getting the location of the child
+    child_box = child.boxes.xywh.tolist()[0]
+    center = (child_box[0] ,child_box[1] + child_box[3]/2)
+    
+    # finding the two closest vertices
+    closest_distance = np.Infinity
+    closest_vertex = []
+    second_closest_distance = np.Infinity
+    second_closest_vertex = []
+    
+    # looping through the pools if there are a few
+    for pool in pools:
+        for vertex in pool:
+            # calculating the distace to the vertex
+            distance = math.dist(center, vertex)
+            
+            # found new closest vertex
+            if distance < closest_distance:
+                # updating the second colsest vertex
+                second_closest_distance = closest_distance
+                second_closest_vertex = closest_vertex
+                # updataing the closest vertex
+                closest_distance = distance
+                closest_vertex = vertex
+            
+            # found a new second closest vertex
+            elif distance < second_closest_distance:
+                # updating the second colsest vertex
+                second_closest_distance = distance
+                second_closest_vertex = vertex
+                
+    # ----- calculating the distance between the child and the pool -------------
+    # edge case where it is the same point
+    if closest_vertex[0] == second_closest_vertex[0] and closest_vertex[1] == second_closest_vertex[1]:
+        x = closest_vertex[0]
+        y = closest_vertex[1]
+    # edge case where the slope is inf
+    elif closest_vertex[0] == second_closest_vertex[0]:
+        x = closest_vertex[0]
+        y = center[1]
+    # edge case where the slope is 0
+    elif closest_vertex[0] == second_closest_vertex[0]:
+        x = center[0]
+        y = closest_vertex[1]
+        
+    else:
+        # finding the line equation for the two closest vertiecs
+        slope = (closest_vertex[1] - second_closest_vertex[1]) / (closest_vertex[0] - second_closest_vertex[0])
+        intercept  = closest_vertex[1] - np.multiply(slope, closest_vertex[0])
+        
+        # finding the line equation for the orthogonal line with the center
+        center_slope = -1 / slope
+        center_intercept = center[1] - np.multiply(center[0], center_slope)
+        
+        # find the dot that is in the intersect between both line
+        x = (center_intercept - intercept) / (slope - center_slope)
+        y = np.multiply(center_slope, x) + center_intercept
+    
+    # finding the distance from the child
+    if (closest_vertex[0] < x and second_closest_vertex[0] < x)  or (closest_vertex[0] > x and second_closest_vertex[0] > x):
+        pool_distance = closest_distance
+    elif (closest_vertex[1] < y and second_closest_vertex[1] < y)  or (closest_vertex[1] > y and second_closest_vertex[1] > y):
+        pool_distance = closest_distance
+    else:
+        pool_distance = math.dist((x,y), center)
+    
+
+    # returning the ratio of the distance to the child
+    return pool_distance / child_box[3]            
+
+
+# checks if there is danger
+def check_danger(children, adult_num, unknown_num):
+    # no children no danger
+    if len(children) == 0:
+        return
+    
+    # there is an adult nearby to watch over them
+    if adult_num > 0:
+        return 
+    
+    for child in children:
+        if child < 1:
+            print("DANGER")
+    
+    pass
 
 # ============================= child or adult area ================================
 
@@ -111,16 +230,6 @@ def calculate_sholders_width(keypoints):
     
     return shoulders
 
-# calculates the width between the hips
-def calculate_hip_width(keypoints):
-    # calculating the hip width
-    hips = calculate_keypoint_distance(keypoints, "Left Hip", "Right Hip")
-    
-    if hips == -1:
-        return -1
-    
-    return hips
-
 # calculating an estimated height
 def estimate_height(head, torso, limbs):
     # checking if there is a missing feture
@@ -200,12 +309,61 @@ def head_to_body_ratio(head, height):
     ratio = head / height
     return 0
 
+# calculating the limb to torso ratio
+def limb_to_torso_ratio(limbs, torso, type):
+    # checking missing variables
+    if torso == -1:
+        return -1
+    if limbs["left " + type] == -1 and limbs["right " + type] == -1:
+        return -1
+    
+    # calculating the limbs to torso ratio
+    left_ratio = limbs["left "+ type] / torso
+    right_ratio = limbs["right " + type] / torso
+    
+    ratio = -1
+
+    # getting the average ratio
+    if left_ratio < 0:
+        ratio = right_ratio
+    elif right_ratio < 0:
+        ratio = left_ratio
+    else:
+        ratio = (left_ratio + right_ratio) / 2
+    
+    return ratio
+
+# calculates the arm to torso ratio
+def arm_to_torso_ratio(limbs, torso):
+    ratio = limb_to_torso_ratio(limbs, torso, "arm")
+    # bad calculation 
+    if ratio == -1:
+        return -1
+    
+    # returning if child or adult
+    if ratio < 0.93:
+        return 0
+    else:
+        return 1
+
+# calculates the leg to torso ratio   
+def leg_to_torso_ratio(limbs, torso):
+    ratio = limb_to_torso_ratio(limbs, torso, "leg")
+    
+    # bad calculation 
+    if ratio == -1:
+        return -1
+    
+    # returning if child or adult
+    if ratio > 1.2:
+        return 0
+    else:
+        return 1
+
 def head_to_shoulder_ratio(head, shoulder):
     if head == -1 or shoulder == -1:
         return -1
     
-
-
 # ------------------- child or adult main -----------------
 # calculates if it is a child or adult
 def child_or_adult(keypoints):
@@ -215,35 +373,27 @@ def child_or_adult(keypoints):
     limbs = calculate_limb_length(keypoints)
     head = calculate_head_size(keypoints)
     shoulders = calculate_sholders_width(keypoints)
-    hips = calculate_hip_width(keypoints)
     height = estimate_height(head, torso, limbs)
     
     
     child , adult = 0, 0
-    if height != -1:
-        # running the ratio function that requie height
-        function_array = (leg_to_body_ratio, arm_to_body_ratio, head_to_body_ratio)
-        for i, func in enumerate(function_array):
-            if i == 2:
-                result = func(head, height)
-            else:
-                result = func(limbs, height)
-                
-            # updating the majority count
-            match result:
-                case 0:
-                    child += 1
-                case 1:
-                    adult += 1
-    
-    # getting the answer from head to shoulder ratio
-    result = head_to_shoulder_ratio(head, shoulders)
-    match result:
-        case 0:
-            child += 1
-        case 1:
-            adult += 1
-    
+    # running the ratio function that requie height
+    function_array = ([leg_to_body_ratio, [limbs, height]],
+                      [arm_to_body_ratio, [limbs, height]],
+                      [head_to_body_ratio, [head, height]],
+                      [head_to_shoulder_ratio, [head, shoulders]],
+                      [arm_to_torso_ratio, [limbs, torso]],
+                      [leg_to_torso_ratio, [limbs, torso]])
+    for func in function_array:
+        result = func[0](func[1][0], func[1][1])
+            
+        # updating the majority count
+        match result:
+            case 0:
+                child += 1
+            case 1:
+                adult += 1
+
     # majority rules
     if child > adult:
         return 0
@@ -251,16 +401,17 @@ def child_or_adult(keypoints):
         return 1
     return -1
 
+
 # ======================== detection area ================= 
 
-def predict(source, model, img):
+def predict(source, model, img=[], pools = []):
     # getting the predictions 
-    output = model.predict(source, verbose=False, conf=0.45, boxes=False)[0]
+    output = model.predict(source, verbose=False, boxes=False)[0]
     
     # handling the people detection
     if model.names[0] != 'pool':  
         # resetting the count from the last frame 
-        child_num = 0
+        children = []
         adult_num = 0
         unknown_num = 0
         
@@ -275,7 +426,7 @@ def predict(source, model, img):
             match age:
                 # child case
                 case 0:
-                    child_num += 1
+                    children.append(distance_to_pool(key, pools))
                 # adult case
                 case 1:
                     adult_num += 1
@@ -283,8 +434,12 @@ def predict(source, model, img):
                 case _:
                     unknown_num += 1 
                     
-        # print(f"{child_num} children, {adult_num} adults, {unknown_num} unknown")
+        # for testing 
+        # predicted_amount.append([child_num, adult_num, unknown_num])
+        # print(f"{len(children)} children, {adult_num} adults, {unknown_num} unknown")
+        check_danger(children, adult_num, unknown_num)
         return output.plot()
+    
     # if there are no masks
     if output.masks == None:
         return img
@@ -292,10 +447,10 @@ def predict(source, model, img):
     # adding the polygon to the image
     for mask in output.masks.xy:
         # adding the polygon
+        pools.append(mask)
         cv2.fillPoly(img, pts = np.int32([mask]), color =(0,100,0,0.5))
 
     return img
-
 
 # predicting on image (for testing)
 def onImage(source):
@@ -309,10 +464,13 @@ def onImage(source):
     # showing the image
     cv2.imshow("Result", display_image)
 
-    cv2.waitKey(0)
+    cv2.waitKey(1)
 
 # running the prediction on 
 def onVideo(source):
+    # loading the feed
+    print("loading feed .......")
+    
     if source == "0":
         cap = cv2.VideoCapture(int(source))
     else:
@@ -321,19 +479,24 @@ def onVideo(source):
         print("error on opening file....")
         return
     
+    print("feed loaded")
+    
     predict_every = 0
     (success, image) = cap.read()
     while success:
         # predict every third frame to keep it in real time
-        if predict_every != 2:
+        if predict_every != 3:
             predict_every += 1
             (success, image) = cap.read()
             continue
         predict_every = 0
         
+        # holder for the pool detections
+        pools = []
+        
         # getting the predictions of the pool and people and adding to image
-        display_image = predict(image, pose_model, image)
-        # display_image = predict(image, model_pool, display_image)
+        display_image = predict(image, model_pool, img=image, pools=pools)
+        display_image = predict(image, pose_model, pools=pools)
         
         # showing the image
         cv2.imshow("Result", display_image)
@@ -344,7 +507,6 @@ def onVideo(source):
 
         (success, image) = cap.read()   
     cv2.destroyAllWindows()
-
 
 
 if __name__ == "__main__":
@@ -359,10 +521,19 @@ if __name__ == "__main__":
     print("finished loading models")
     
     # loading video
-    # onVideo("vid.mp4")
-    onVideo("0")
+    onVideo("vid.mp4")
+    # onVideo("vid1.mp4")
+    # onVideo("0")
     # onVideo("test.mp4")
-    # current = 0
-    # for i in range(2,11):
+    
+    # # print testing
+    # current = 2
+    # true_amount_of_people = [1]*9
+    # predicted_amount = []
+    # is_child = []
+    # for i in range(2,12):
     #     onImage("test_images/test"+str(i)+".jpg")
     #     current += 1
+        
+    # predicted_amount = []
+    # test_amount_of_people()
