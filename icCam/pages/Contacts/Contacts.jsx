@@ -296,7 +296,7 @@ const Contacts = () => {
           keyExtractor = {item=> item.email}
           renderItem = {(data)=><RequestItem user={data.item}/>}
         />:
-        <Text>There are currently no requests</Text>
+        <Text style={{fontWeight: '400', fontSize: 20}}>There are currently no requests</Text>
         }
         </View>
 </ImageBackground>
@@ -337,7 +337,8 @@ const styles = StyleSheet.create({
     height:10,
     width: 10,
     borderRadius:25,
-    backgroundColor:"red"
+    backgroundColor:"red",
+    padding: 3,
   },
   activeButton:{
     width:50,
@@ -419,7 +420,7 @@ a: {
   borderRadius: 30,
   // opacity: '50%',
   Transparent: '50%',
-  padding: 1,
+  padding: 9,
   margin:30,
   height: '30%',
   width: '80%',

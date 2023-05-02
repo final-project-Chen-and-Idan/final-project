@@ -8,6 +8,7 @@ import { Notifications} from '../Notifications/Notifications'
 // import {logo} from '../assets'
 import { NavigationContainer, useNavigation } from '@react-navigation/native'
 import Icon from 'react-native-vector-icons/FontAwesome';
+import LinearGradient from 'react-native-linear-gradient';
 
 
 const Home = () => {
@@ -78,6 +79,13 @@ const Home = () => {
         <View style={styles.titleView}>
           <Text style = {styles.title}>hello there {auth.currentUser.displayName}</Text>
           <View style = {styles.logoView}>
+          {/* <LinearGradient
+        colors={['#FFFFFF', '#000000']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+        locations={[0, 1]}
+        style={styles.gradient}
+      /> */}
             <Image source={require('../../assets/a.png')}
                 style = {styles.logologo}/>
           </View>
@@ -108,16 +116,16 @@ const Home = () => {
         {/* (((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((()))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))) */}
          <View style = {{maxHeight:'10%',minHeight: '10%', padding: 10,alignItems: 'center' ,width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 30, alignSelf: 'center',backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
                       <TouchableOpacity  onPress={() => {navigation.navigate('Contacts')}} style={styles.button}>
-                        <Text style={styles.logoutText}>Contacts</Text>
+                        <Text style={styles.logoutText}> Contacts</Text>
                         {/* <Icon name="address-book" size={90} color="#900" /> */}
                       </TouchableOpacity>
                       <Text style = {styles.logoutText}>|</Text>
                       <TouchableOpacity onPress={logOut} style = {styles.FuncButton}>
-                      <Text style={styles.logoutText}>Log Out</Text>
+                      <Text style={styles.logoutText}> Log Out </Text>
                       </TouchableOpacity>
                       <Text style = {styles.logoutText}>|</Text>
                       <TouchableOpacity  style = {styles.FuncButton} onPress={toggleModal}>
-                      <Text style={styles.logoutText}>How It Works</Text>
+                      <Text style={styles.logoutText}>How It Works </Text>
                       </TouchableOpacity>
                       <Modal visible={modalVisible} animationType="slide"
                               style={styles.modalContent}>
@@ -179,6 +187,7 @@ const styles = StyleSheet.create({
     marginVertical: 40,
     padding: 5,
     backgroundColor: 'rgba(255, 255, 255, 0.5)',
+    // borderRadius: [10, 20, 30, 40],
   },
   pool: {
     width: '100%',
@@ -246,7 +255,7 @@ const styles = StyleSheet.create({
   logoutText: {
     textAlign: 'center',
     justifyContent: 'center',
-    fontWeight: 'bold',
+    fontWeight: '400',
     fontSize: 25,
     textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 2, 
