@@ -41,40 +41,42 @@ const Signup = () => {
     <ImageBackground source={image} style={styles.image}>
     
       <View style = {styles.a}>
-      <View style={styles.b}>
-        <Text style = {styles.title}>Signup</Text>
-        <View style={styles.c}>
-        <TextInput
-                  style = {styles.box}
-                  placeholder="Email"
-                  onChangeText={(email) => setEmail(email)}
-                  autoCapitalize="none"
-                  autoCorrect = {false}
-                  />
-        <TextInput
-                  style = {styles.box}
-                  placeholder="Password"
-                  onChangeText={(password) => setPassword(password)}
-                  autoCapitalize="none"
-                  autoCorrect = {false}
-                  secureTextEntry={true}
-                  />
-        <TextInput
-                  style = {styles.box}
-                  placeholder="Password Authentication"
-                  onChangeText={(passwordAuthentication) => setPasswordAuthentication(passwordAuthentication)}
-                  autoCapitalize="none"
-                  autoCorrect = {false}
-                  secureTextEntry={true}
-                  />
-        
-        </View>
-        <TouchableOpacity
-                style = {styles.button}
-                onPress={() => CreateUser(email, password, passwordAuthentication)}>
-                <Text >next</Text>
-        </TouchableOpacity>
-        </View>
+        <View style = {styles.b}>
+            <Text style = {styles.title}>Signup</Text>
+            <View style={styles.c}>
+              <TextInput
+                        style = {styles.box}
+                        placeholder="Email"
+                        onChangeText={(email) => setEmail(email)}
+                        autoCapitalize="none"
+                        autoCorrect = {false}
+                        />
+              <TextInput
+                        style = {styles.box}
+                        placeholder="Password"
+                        onChangeText={(password) => setPassword(password)}
+                        autoCapitalize="none"
+                        autoCorrect = {false}
+                        secureTextEntry={true}
+                        />
+              <TextInput
+                        style = {styles.box}
+                        placeholder="Password Authentication"
+                        onChangeText={(passwordAuthentication) => setPasswordAuthentication(passwordAuthentication)}
+                        autoCapitalize="none"
+                        autoCorrect = {false}
+                        secureTextEntry={true}
+                        />
+              
+            </View>
+            <TouchableOpacity
+                    style = {styles.button}
+                    onPress={() => CreateUser(email, password, passwordAuthentication)}>
+                    <Text >next</Text>
+            </TouchableOpacity>
+            
+           
+          </View>
         </View>
     
     </ImageBackground>
@@ -85,10 +87,19 @@ export default Signup
 
 const styles = StyleSheet.create({
   a: {
-    backgroundColor: `#5f9ea0`,
-    padding: 2,
+    // backgroundColor: `#5f9ea0`,
+    backgroundColor: 'rgba(255, 255, 255, 0.5)',
+    borderRadius: 30,
+    // opacity: '50%',
+    Transparent: '50%',
+    padding: 1,
     margin:30,
-    height: '70%'
+    height: '70%',
+    width: '70%',
+    alignSelf: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+    
   },
   b: {
     height: '80%',
@@ -143,19 +154,5 @@ button: {
     height: '105%',
     // marginBottom: 200,
   },
-  a: {
-    // backgroundColor: `#5f9ea0`,
-    backgroundColor: 'rgba(255, 255, 255, 0.5)',
-    borderRadius: 30,
-    // opacity: '50%',
-    Transparent: '50%',
-    padding: 1,
-    margin:30,
-    height: '70%',
-    width: '70%',
-    alignSelf: 'center',
-    alignItems: 'center',
-    justifyContent: 'center',
-    
-  },
+  
 })
