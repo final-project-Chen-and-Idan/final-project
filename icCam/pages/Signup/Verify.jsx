@@ -28,7 +28,8 @@ const Verify = () => {
           addDoc(collection(db,'Users'),{
             id:auth.currentUser.uid,
             email:auth.currentUser.email,
-            contacts:{}
+            contacts:{},
+            danger: false
           });
           auth.signOut()
         }
