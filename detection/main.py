@@ -2,6 +2,9 @@ from ultralytics import YOLO
 import cv2
 import math
 import numpy as np
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import firestore
 
 #  ======================== unit tests ============================
 # a test to see if finds the right amount of people in the frame
@@ -123,6 +126,7 @@ def check_danger(children, adult_num, unknown_num):
     
     for child in children:
         if child < 1:
+            signal_danger()
             print("DANGER")
     
     pass
@@ -509,19 +513,85 @@ def onVideo(source):
     cv2.destroyAllWindows()
 
 
+
+# ============================= firebase area ==================================
+# connecting to the firebase
+def connect_to_firebase():
+    # getting the credentials
+    cred = credentials.Certificate("./firebase_key.json")
+    
+    # initializing the connection
+    firebase_admin.initialize_app(cred)
+    
+    # connecting to the firestore
+    db = firestore.client()
+    
+    # getting all the users
+    users_ref = db.collection(u"Users")
+    
+    return users_ref
+
+# logging into the account
+def get_account():
+    connected = False
+    while not connected:
+        email = input("enter your email: ")
+        
+        # no account and wants to stop the program
+        if email == '0':
+            return -1
+        
+        # getting the refrences
+        doc_id = get_doc_id(email, user_ref)
+        
+        # if the account was not found
+        if doc_id == -1:
+            print("invalid email - you can enter 0 to stop the program")
+        else:
+            print("connected")
+            return doc_id
+
+# returns the doc id for the account
+def get_doc_id(email, users_ref):
+    
+    # getting the account details
+    account_ref = users_ref.where(u"email","==", email)
+    
+    # returning the doc id for the account
+    docs = account_ref.stream()
+    for doc in docs:
+        return doc.id
+    return -1
+
+# signals the account that there is danger
+def signal_danger():
+    user_ref.document(doc_id).update({u"danger" : True})
+    
+
+# ============================= main =============================================
 if __name__ == "__main__":
-    conf = 0.5
     
-    print("loading models.....")
+    # connecting to the firebase
+    user_ref = connect_to_firebase()
     
-    pose_model = YOLO("weights/yolov8m-pose.pt")
-    model_pool = YOLO("weights/poolm.pt")
-    # model_person = YOLO("weights/yolov8m.pt")
+    # getting the account refrence and doc id
+    doc_id = get_account()
     
-    print("finished loading models")
+    signal_danger()
+   
+    # conf = 0.5
     
+    # print("loading models.....")
+    
+    # pose_model = YOLO("weights/yolov8m-pose.pt")
+    # model_pool = YOLO("weights/poolm.pt")
+    # # model_person = YOLO("weights/yolov8m.pt")
+    
+    # print("finished loading models")
+    
+   
     # loading video
-    onVideo("vid.mp4")
+    # onVideo("vid.mp4")
     # onVideo("vid1.mp4")
     # onVideo("0")
     # onVideo("test.mp4")
