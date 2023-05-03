@@ -47,9 +47,9 @@ const Contacts = () => {
              await handleUserSide(contact, false);
              handleRequsteeSide(contact, true)
           },
-      },
-  ],
-  );
+        },
+      ],
+    );
 
     return false;
   }

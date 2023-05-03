@@ -1,58 +1,60 @@
-import { StyleSheet, Text, TouchableOpacity, View, Button, Platform } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Button, Platform, Alert } from 'react-native'
 import { useState, useEffect, useRef, useContext } from 'react';
-// import registerNNPushToken from 'native-notify';
-// import * as Device from 'expo-device';
-// import * as notification from 'expo-notifications';
-// import React, { useState, useEffect } from 'react';
-// import { getPushDataObject } from 'native-notify';
-// import { Notifications } from 'expo';
-// import PushNotification from 'react-native-push-notification';
 import { Audio } from 'expo-av';
+import { db, auth } from '../../firebase';
+import { collection, query, where, onSnapshot, updateDoc, doc } from 'firebase/firestore';
+
 
 const MyNotifications = ({context}) => {
   const [sound, setSound] = useState()
-  const play = useContext(context)
-//   registerNNPushToken(6828, 'ZbDvAG9OgKWW3jVtqio59y');
-
-//   let pushDataObject = getPushDataObject();
-
-//   useEffect(() => {
-//     console.log(pushDataObject);
-// }, [pushDataObject]);
-
-// const sendNotification = async () => {
-  
-//   PushNotification.localNotification({
-//     title: "title",
-//     message: "remoteMessage.notification.body",
-//     //ios and android properties
-//     playSound: true,
-//     soundName: 'sound.mp3',
-//     //android only properties
-//     channelId: 'your-channel-id',
-//     autoCancel: true,
-//     bigText: 'Face2Face: Beacon Timer Expired',
-//     subText: 'Perhaps set your beacon timer for another hour?',
-//     vibrate: true,
-//     vibration: 300,
-//     priority: 'high',
-//   })
-//   const content = {
-//     title: 'Notification Title',
-//     body: 'Notification body text',
-//     data: { data: 'goes here' },
-//   };
-//   const trigger = { seconds: 2 };
-//   await Notifications.scheduleNotificationAsync({ content, trigger });
-// };
+  const [play, setPlay] = useState(false)
 
 useEffect(()=>{
   loadSound();
 },[])
 
+//loading the whether there is danger with a listener
+useEffect (()=>{
+  // getting theusers collection
+  const ref = collection(db, 'Users');
+
+  // creating a query to get the current user
+  const que = query (ref, where("id",'==', auth.currentUser.uid));
+
+  // calling the query
+  const unsubscribe = onSnapshot(que, querySnapshot => {
+    querySnapshot.docs.forEach(docs=>{
+      // if there is danger play the alarm
+      let danger = docs.data().danger
+      if(danger){
+        setPlay(true);
+        // alert box to turn off the alarm
+        Alert.alert(
+          "Danger",
+          "press here to turn off the alarm",
+          [
+            {
+              text: "Stop Alarm",
+              onPress: () => {
+                setPlay(false)
+                update_ref = doc(db, "Users", docs.id)
+                updateDoc(update_ref,{"danger":false});
+              },
+            },
+          ],
+        );
+        // add here notification later ---------------------------------------
+
+      }
+    })
+  });
+  
+  return ()=>unsubscribe()
+  },[])
+
 useEffect(()=>{
-  console.log(play)
   play?playSound():stopSound()
+  
 },[play])
 
 const loadSound = async()=>{
