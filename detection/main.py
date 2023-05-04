@@ -577,21 +577,21 @@ if __name__ == "__main__":
     # getting the account refrence and doc id
     doc_id = get_account()
     
-    signal_danger()
+    # signal_danger()
    
-    # conf = 0.5
+    conf = 0.5
     
-    # print("loading models.....")
+    print("loading models.....")
     
-    # pose_model = YOLO("weights/yolov8m-pose.pt")
-    # model_pool = YOLO("weights/poolm.pt")
-    # # model_person = YOLO("weights/yolov8m.pt")
+    pose_model = YOLO("weights/yolov8m-pose.pt")
+    model_pool = YOLO("weights/poolm.pt")
+    # model_person = YOLO("weights/yolov8m.pt")
     
-    # print("finished loading models")
+    print("finished loading models")
     
    
     # loading video
-    # onVideo("vid.mp4")
+    onVideo("vid.mp4")
     # onVideo("vid1.mp4")
     # onVideo("0")
     # onVideo("test.mp4")

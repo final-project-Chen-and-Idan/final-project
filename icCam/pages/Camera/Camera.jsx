@@ -81,7 +81,7 @@ const MyCamera = () => {
           ref={cameraRef}
           type={cameraType}
           style = {StyleSheet.absoluteFill}
-          onCameraReady={()=>alert("ready")}
+          onCameraReady={()=>alert("remember to put you volume all the way up")}
         />
         <TouchableOpacity 
         onPress={()=>{

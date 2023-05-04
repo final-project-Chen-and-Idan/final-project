@@ -10,11 +10,6 @@
     ],
     "android": {
       "package": "com.idankid.icCam"
-    },
-    "extra": {
-      "eas": {
-        "projectId": "a68154f4-94d4-4117-b52e-555c68755a6f"
-      }
     }
   },
   "name": "icCam"
