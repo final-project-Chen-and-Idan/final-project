@@ -8,7 +8,6 @@ import Notifications from '../Notifications/Notifications'
 // import {logo} from '../assets'
 import { NavigationContainer, useNavigation } from '@react-navigation/native'
 import Icon from 'react-native-vector-icons/FontAwesome';
-import LinearGradient from 'react-native-linear-gradient';
 
 
 const Home = () => {

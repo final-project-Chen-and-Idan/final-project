@@ -1,30 +1,27 @@
-import { StyleSheet, Text, View, PermissionsAndroid, TouchableOpacity } from 'react-native'
-// import { messaging } from '../../firebase'
-import React, { useEffect } from 'react'
+import { StyleSheet, Text, View, PermissionsAndroid, TouchableOpacity , Alert} from 'react-native'
+import React, { useEffect, useState } from 'react'
+import messaging from '@react-native-firebase/messaging'
 
-const SendNotification = () => {
+  const SendNotification = () => {
+    
+    PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
+    
+    // Register background handler
+    messaging().setBackgroundMessageHandler(async remoteMessage => {
+      console.log('Message handled in the background!', remoteMessage);
+    });
 
-  const getPermission = async()=> {
-    const authStatus = await messaging().requestPermission();
-    const enabled =
-      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+    useEffect(() => {
+      const unsubscribe = messaging().onMessage(async remoteMessage => {
+        Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+      });
   
-    if (enabled) {
-      console.log('Authorization status:', authStatus);
-    }
-    else
-      console.log("else")
-  }
-    // useEffect(()=>{
-    //     // PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
-    //     getPermission()
-    // },[])
-
+      return unsubscribe;
+    }, []);
 
     return (
     <View>
-      <TouchableOpacity onPress={getPermission}>
+      <TouchableOpacity>
         <Text>click here</Text>
       </TouchableOpacity>
     </View>

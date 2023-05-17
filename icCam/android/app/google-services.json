@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "645684529003",
+    "firebase_url": "https://ic-cam-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "ic-cam",
+    "storage_bucket": "ic-cam.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:645684529003:android:465f930b7d5c82d2f2ee2e",
+        "android_client_info": {
+          "package_name": "com.iccam"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "645684529003-5l32u0utkvdqffpl9j3ko01llbbs82vr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBEfb6PbHH0fAWXiFsmWiAafxhs0P6oLjQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "645684529003-5l32u0utkvdqffpl9j3ko01llbbs82vr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

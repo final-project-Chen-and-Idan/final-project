@@ -1,16 +1,4 @@
 {
-  "expo": {
-    "name": "icCam",
-    "slug": "icCam",
-    "version": "1.0.0",
-    "jsEngine": "jsc",
-    "orientation": "portrait",
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-    "android": {
-      "package": "com.idankid.icCam"
-    }
-  },
-  "name": "icCam"
+  "name": "icCam",
+  "displayName": "icCam"
 }

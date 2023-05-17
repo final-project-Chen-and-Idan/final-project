@@ -1,17 +1,19 @@
 import { Alert } from 'react-native'
 import { useState, useEffect, useRef, useContext } from 'react';
-import { Audio } from 'expo-av';
 import { db, auth } from '../../firebase';
 import { collection, query, where, onSnapshot, updateDoc, doc } from 'firebase/firestore';
+import  Sound from 'react-native-sound'
+import SendNotification from './SendNotification';
 
-
-const Notifications = ({context}) => {
+const Notifications = () => {
   const [sound, setSound] = useState()
   const [play, setPlay] = useState(false)
 
 
+  //loading and releasing the sound
   useEffect(()=>{
     loadSound();
+    return ()=>{if(sound)sound.release()}
   },[])
 
   //loading the whether there is danger with a listener
@@ -40,7 +42,6 @@ const Notifications = ({context}) => {
                   setPlay(false)
                   update_ref = doc(db, "Users", docs.id)
                   updateDoc(update_ref,{"danger":false});
-                  loadSound()
                 },
               },
             ],
@@ -62,24 +63,37 @@ const Notifications = ({context}) => {
 
   // loading the sound to be played
   const loadSound = async()=>{
-    const { sound } = await Audio.Sound.createAsync( require('../../assets/alarm.mp3'));
-    setSound(sound);
+    Sound.setCategory('Playback');
+    let sound = new Sound("alarm.mp3", Sound.MAIN_BUNDLE, (error)=>{
+      if(error){
+        console.log("failed to load sound", error);
+        return;
+      }
+      // loaded successfully
+      setSound(sound);
+
+      // making sure the valume is up
+      sound.setVolume(1);
+      // Loop indefinitely until stop() is called
+      sound.setNumberOfLoops(-1);
+    })
+   
   }
 
   // playing the alarm
   const playSound = async() => {
     if(!sound)
       loadSound()
+
     console.log('Playing Sound');
-    await sound.playAsync();
+    await sound.play();
   }
 
   // stopping the alarm by unloading it
   const stopSound = async ()=> {
     try{
-      if(sound != undefined)
-        sound.unloadAsync();
-      setSound(null);
+      if(sound)
+        sound.stop();
     }
     catch(e){
       console.log(e);
@@ -88,6 +102,7 @@ const Notifications = ({context}) => {
 
   return (
     <>  
+    <SendNotification/>
     </>
   );
 }
