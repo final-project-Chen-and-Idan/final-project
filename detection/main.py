@@ -1,3 +1,4 @@
+import priority
 from ultralytics import YOLO
 import cv2
 import math
@@ -5,6 +6,7 @@ import numpy as np
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
+from firebase_admin import messaging
 
 #  ======================== unit tests ============================
 # a test to see if finds the right amount of people in the frame
@@ -566,7 +568,36 @@ def get_doc_id(email, users_ref):
 # signals the account that there is danger
 def signal_danger():
     user_ref.document(doc_id).update({u"danger" : True})
+
+# gets the list of notification tokens from the contacts
+def get_active_tokens():
     
+    pass
+
+# sends push notifications to the active users
+def send_notifications(type_of_danger = "child is alone near the pool"):
+    
+    # Create a list containing up to 500 registration tokens.
+    # These registration tokens come from the client FCM SDKs.
+    registration_tokens = get_active_tokens()
+
+    message = messaging.MulticastMessage(
+        notification=messaging.Notification(
+            title = "DANGER",
+            body = type_of_danger,
+            image="image_url"
+        ),
+        data={'score': '850', 'time': '2:45'},
+        tokens=registration_tokens,
+        android= messaging.AndroidConfig(
+            priority= "high"
+        )
+        
+    )
+    response = messaging.send_multicast(message)
+    # See the BatchResponse reference documentation
+    # for the contents of response.
+    print('{0} messages were sent successfully'.format(response.success_count))
 
 # ============================= main =============================================
 if __name__ == "__main__":

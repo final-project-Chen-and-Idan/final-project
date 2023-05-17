@@ -1,32 +1,49 @@
 import { Dimensions, ImageBackground, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
 import React, {useEffect, useState, useRef, createContext} from 'react';
-import { Camera } from 'expo-camera';
+// import { Camera } from 'expo-camera';
 import Icon from 'react-native-vector-icons/Ionicons';
 // import { io } from 'socket.io-client';
 // import Connection from './Connection';
+import { Camera ,useCameraDevices} from 'react-native-vision-camera';
 
 const MyCamera = () => {
   const cameraRef = useRef(null);
   const [permission, setPermission] = useState(false);
-  const [cameraType, setCameraType] = useState(Camera.Constants.Type.front);
+  const devices = useCameraDevices()
+  const [cameraType, setCameraType] = useState(devices.back);
   const [activeUsers, setActiveUsers] = useState([])
+  
   // let socket;
   //asks for the camera permissions
   const cameraPermissions = async()=>{
      // Camera permission.
-     const {status} = await Camera.requestCameraPermissionsAsync()
+     const status = await Camera.getCameraPermissionStatus()
      // saying the camera is active
-     if(status == 'granted'){
+     if(status == 'authorized'){
       setPermission(true)
-      return true;
+      const devices = await Camera.getAvailableCameraDevices()
      }
      // access was not given
      else{
       alert("you denied access")
       setPermission(false)
-      return false;
      }
   }
+  // const cameraPermissions = async()=>{
+  //    // Camera permission.
+  //    const {status} = await Camera.requestCameraPermissionsAsync()
+  //    // saying the camera is active
+  //    if(status == 'granted'){
+  //     setPermission(true)
+  //     return true;
+  //    }
+  //    // access was not given
+  //    else{
+  //     alert("you denied access")
+  //     setPermission(false)
+  //     return false;
+  //    }
+  // }
 
   useEffect(()=>{
      cameraPermissions();
@@ -62,7 +79,7 @@ const MyCamera = () => {
   //   })
   // }
 
-  if(!permission){
+  if(!permission || cameraType == null){
    return(
     <View>
       <Text>no access</Text>
@@ -79,15 +96,21 @@ const MyCamera = () => {
       <View style={StyleSheet.absoluteFill}>
         <Camera
           ref={cameraRef}
-          type={cameraType}
+          device={cameraType}
           style = {StyleSheet.absoluteFill}
           onCameraReady={()=>alert("remember to put you volume all the way up")}
         />
+        {/* <Camera
+          ref={cameraRef}
+          type={cameraType}
+          style = {StyleSheet.absoluteFill}
+          onCameraReady={()=>alert("remember to put you volume all the way up")}
+        /> */}
         <TouchableOpacity 
         onPress={()=>{
-          cameraType==Camera.Constants.Type.front?
-          setCameraType(Camera.Constants.Type.back):
-          setCameraType(Camera.Constants.Type.front)}}>
+          cameraType==devices.back?
+          setCameraType(devices.front):
+          setCameraType(devices.back)}}>
           <View style = {styles.iconView}>
             <Icon style={styles.iconButton} name="md-camera-reverse" size={40}/>
           </View>

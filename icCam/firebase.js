@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
+import { initializeFirestore,getFirestore } from 'firebase/firestore';
 import {onAuthStateChanged, initializeAuth } from 'firebase/auth';
 import {getStorage} from 'firebase/storage'
 // import { getMessaging} from "firebase/messaging";
@@ -22,8 +22,9 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = initializeAuth(app, {persistence: getReactNativePersistence(AsyncStorage),});
-const db = getFirestore(app);
+const db = initializeFirestore(app,{experimentalForceLongPolling: true,   useFetchStreams: false,});
 const storage = getStorage(app)
+
 // const messaging  = getMessaging(app)
 // const token = getToken(messaging, {vapidKey:"BNEYA0gwLvwuHwV8_Q5kuwxFD1_6e1OTDa7rpfiVe-kGSgu9Ml2ukq2Xfoo8TzKCStlsZzlugflmEFOXa3JDDIU"})
 export { db, auth, storage,onAuthStateChanged};
