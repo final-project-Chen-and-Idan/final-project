@@ -43,9 +43,6 @@ import { updateDoc, collection, query , where, getDocs } from 'firebase/firestor
 
     return (
       <>
-      <TouchableOpacity onPress={()=>{uploadToken()}}>
-        <Text>click here</Text>
-      </TouchableOpacity>
       </>
     )
 }
