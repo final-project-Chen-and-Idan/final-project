@@ -1,4 +1,5 @@
 import priority
+from sympy import false, true
 from ultralytics import YOLO
 import cv2
 import math
@@ -126,11 +127,15 @@ def check_danger(children, adult_num, unknown_num):
     if adult_num > 0:
         return 
     
+    flag = false
     for child in children:
         if child < 1:
-            signal_danger()
             print("DANGER")
+            flag = true
     
+    if flag:
+        signal_danger()
+        send_notifications()
     pass
 
 # ============================= child or adult area ================================
@@ -529,7 +534,7 @@ def connect_to_firebase():
     db = firestore.client()
     
     # getting all the users
-    users_ref = db.collection(u"Users")
+    users_ref = db.collection("Users")
     
     return users_ref
 
@@ -557,7 +562,7 @@ def get_account():
 def get_doc_id(email, users_ref):
     
     # getting the account details
-    account_ref = users_ref.where(u"email","==", email)
+    account_ref = users_ref.where("email","==", email)
     
     # returning the doc id for the account
     docs = account_ref.stream()
@@ -567,19 +572,28 @@ def get_doc_id(email, users_ref):
 
 # signals the account that there is danger
 def signal_danger():
-    user_ref.document(doc_id).update({u"danger" : True})
+    user_ref.document(doc_id).update({"danger" : True})
 
 # gets the list of notification tokens from the contacts
 def get_active_tokens():
+    # getting the users conrtact list
+    doc = user_ref.document(doc_id).get()
+    contacts = doc.to_dict()["contacts"]
     
-    pass
+    active_tokens = []
+    
+    # getting the token of each active contact
+    for contact in contacts:
+        # taking the token of the uesr who is active and not a request
+        if contacts[contact]["active"] and not contacts[contact]["request"]:
+            # getting the doc of the contact to get his token
+            contact_id = get_doc_id(contact, user_ref)
+            active_tokens.append(user_ref.document(contact_id).get().to_dict()["token"])
+    
+    return active_tokens
 
 # sends push notifications to the active users
 def send_notifications(type_of_danger = "child is alone near the pool"):
-    
-    # Create a list containing up to 500 registration tokens.
-    # These registration tokens come from the client FCM SDKs.
-    registration_tokens = get_active_tokens()
 
     message = messaging.MulticastMessage(
         notification=messaging.Notification(
@@ -587,8 +601,7 @@ def send_notifications(type_of_danger = "child is alone near the pool"):
             body = type_of_danger,
             image="image_url"
         ),
-        data={'score': '850', 'time': '2:45'},
-        tokens=registration_tokens,
+        tokens=active_token,
         android= messaging.AndroidConfig(
             priority= "high"
         )
@@ -601,15 +614,15 @@ def send_notifications(type_of_danger = "child is alone near the pool"):
 
 # ============================= main =============================================
 if __name__ == "__main__":
-    
     # connecting to the firebase
     user_ref = connect_to_firebase()
     
     # getting the account refrence and doc id
     doc_id = get_account()
-    
-    # signal_danger()
    
+    # getting the active contacts
+    active_token = get_active_tokens()    
+    
     conf = 0.5
     
     print("loading models.....")
