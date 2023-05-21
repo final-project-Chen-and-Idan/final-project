@@ -71,23 +71,24 @@ const Home = () => {
   
   
   return (
-  <ImageBackground source={require('../../assets/pool3.png')} style={styles.image}>
+  <ImageBackground source={require('../../assets/background.jpg')} style={styles.image}>
     <Notifications/>
-    <View style={{minHeight: '100%'}}>
+    <View style={{minHeight: '100%' , flex: 1}}>
       {/* <SafeAreaView style = {styles.SafeAreaViewStyle}> */}
       {/* ============================================================================================================================== */}
         <View style={styles.titleView}>
-          <Text style = {styles.title}>hello there {auth.currentUser.displayName}</Text>
+          <Text style = {styles.title}>hello there {auth.currentUser.displayName} Welcome to:</Text>
           <View style = {styles.logoView}>
-          {/* <LinearGradient
-        colors={['#FFFFFF', '#000000']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-        locations={[0, 1]}
-        style={styles.gradient}
-      /> */}
-            <Image source={require('../../assets/a.png')}
-                style = {styles.logologo}/>
+              {/* <LinearGradient
+            colors={['#FFFFFF', '#000000']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            locations={[0, 1]}
+            style={styles.gradient}
+          /> */}
+                <Image source={require('../../assets/a1.png')}
+                    style = {styles.logologo}/>
+                    {/* <Text style={styles}>IC-CAM</Text> */}
           </View>
         </View>
         {/* ================================================================================================================================= */}
@@ -98,9 +99,9 @@ const Home = () => {
           <FadeInView duration={1000}> 
             <View style = {styles.buttonBox}>
               <View style = {{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 30}}>
-                <TouchableOpacity  onPress={() => {navigation.navigate('Camera')}} style={styles.button}>
+                <TouchableOpacity  onPress={() => {navigation.navigate('Camera')}} style={styles.camButton}>
                   {/* <Text style={styles.buttonText}>Camera</Text> */}
-                  <Icon name="video-camera" size={150} color="#f4a460" style={{borderColor: `#000000`,borderRadius: 5, shadowRadius:  3, shadowColor: `#000000`, shadowOpacity: 0.5}} />
+                  <Icon name="video-camera" size={150} color="darkslategrey" style={{borderColor: `#000000`,borderRadius: 5, shadowRadius:  3, shadowColor: `#000000`, shadowOpacity: 0.5}} />
                 </TouchableOpacity>
               </View>
                     {/* <View> */}
@@ -165,6 +166,17 @@ const Home = () => {
 export default Home
 
 const styles = StyleSheet.create({
+  camButton: {
+    borderColor: "darkslategrey",
+    borderRadius: 200,
+    borderWidth: 10,
+    height: 300,
+    width: 300,
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.5)'
+  },
   contactsItemButton: {
     alignSelf: 'center',
     backgroundColor: `#008b8b`,
@@ -205,9 +217,11 @@ const styles = StyleSheet.create({
   titleView: {
     // borderWidth: 10,
     // backgroundColor: 'rgba(0, 139, 139, 0.5)',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    // backgroundColor: 'rgba(100, 120, 130, 0.7)',
     maxHeight: '30%',
     minHeight: '30%',
+    flex: 1,
+    
   },
   logoView: {
     margin: 50,
@@ -215,25 +229,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     alignItems: 'center',
     width: '90%',
-  },
-  buttonBox: {
-    // margin: 10,
-    // backgroundColor: `#6495ed`,
-    // borderRadius: 75,
-    // // borderColor: `#7fff00`,
-    // borderWidth: 10,
-    paddingTop: 20
-  },
-  imageNew: {
-    // borderRadius: 50,
-    // margin: 10,
-    // height: 20,
-    // maxHeight: '80%',
-    // minHeight: '80%',
-    // maxWidth: '80%',
-    // minWidth: '80%',
-    alignSelf: 'center',
-    justifyContent: 'center',
   },
   FuncButton: {
     // borderWidth: 2,
@@ -306,28 +301,22 @@ const styles = StyleSheet.create({
   //     overflow: 'hidden'
   //   }
   // },
-  // logologo: {
-  //   // height: '90%',
-  //   // width: '50%',
-  //   // alignSelf: 'center',
-  //   background: {
-  //     position: 'absolute',
-  //     top: 1,
-  //     bottom: 1,
-  //     left: 1,
-  //     right: 1,
-  //     backgroundColor: `#000000`,
-  //     borderRadius: Dimensions.get('window').height / 9,
-  //     overflow: 'hidden'
-  //   },
-  //   // backgroundColor: `#000000`,
-  // },
+  logologo: {
+    //  maxHeight: 500,
+    //  width: 400,
+     margin: 20,
+    alignSelf: 'center',
+    
+
+  },
   
   title: {
     //fontSize: 10,
     fontWeight: 'bold',
-    fontSize: 20,
+    fontSize: 25,
     marginTop: 30,
+    alignSelf: 'center',
+    color: "darkslategrey",
   },
   button: {
     // borderWidth: 2,
