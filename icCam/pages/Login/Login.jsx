@@ -21,14 +21,16 @@ const Login = () => {
     }
 
     return(
-        
-        <ImageBackground source={image} style={styles.image}>
+        <View style={styles.all}>
+        {/* <ImageBackground source={image} style={styles.image}> */}
             {/* <SafeAreaView style={{}}> */}
             <ScrollView>
-                <KeyboardAvoidingView style={styles.container} behavior="position">
+                {/* <KeyboardAvoidingView style={styles.container} behavior="position"> */}
                     <View style = {styles.a}>
                         <View style={styles.c}>
                             <Text style = {styles.title}> Login </Text>
+                            
+                            <KeyboardAvoidingView>
                             <TextInput
                             style = {styles.box}
                             placeholder="Email"
@@ -50,6 +52,7 @@ const Login = () => {
                             >
                                 <Text>Login</Text>
                             </TouchableOpacity>
+                            </KeyboardAvoidingView>
                         </View>
                         <View style = {styles.c}>
                                 <Text style = {styles.title}>Don't have an account?</Text>  
@@ -69,19 +72,22 @@ const Login = () => {
                                 </TouchableOpacity>
                         </View>
                     </View>
-                </KeyboardAvoidingView>
+                {/* </KeyboardAvoidingView> */}
             </ScrollView>
             {/* </SafeAreaView> */}
-        </ImageBackground>
+        {/* </ImageBackground> */}
           
-        
+        </View> 
     )
 }
 
 export default Login
 
 const styles = StyleSheet.create({
-    
+    all: {
+        backgroundColor: 'cadetblue',
+        height: '100%',
+      } ,
     container:{
         // flex: 1,
     },

@@ -67,11 +67,13 @@ const Home = () => {
       </Animated.View>
     );
   };
-  
+  // <ImageBackground source={require('../../assets/background.jpg')} style={styles.image}>
+  //   </ImageBackground>
+
   
   
   return (
-  <ImageBackground source={require('../../assets/background.jpg')} style={styles.image}>
+    <View>
     <Notifications/>
     <View style={{minHeight: '100%' , flex: 1}}>
       {/* <SafeAreaView style = {styles.SafeAreaViewStyle}> */}
@@ -159,7 +161,7 @@ const Home = () => {
           {/* </View> */}
       {/* </SafeAreaView> */} 
       </View>
-    </ImageBackground>
+      </View>
   )
 }
 

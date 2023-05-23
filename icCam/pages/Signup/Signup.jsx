@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TextInput ,TouchableOpacity, ImageBackground} from 'react-native'
+import { ScrollView, StyleSheet, Text, View, TextInput ,TouchableOpacity, ImageBackground, KeyboardAvoidingView} from 'react-native'
 import { createUserWithEmailAndPassword} from "firebase/auth";
 import React , {useState} from 'react'
 import { auth } from '../../firebase'
@@ -38,27 +38,32 @@ const Signup = () => {
   }
 
   return (
-    <ImageBackground source={image} style={styles.image}>
-    
-      <View style = {styles.a}>
-        <View style = {styles.b}>
+      <ScrollView style={styles.all}>
+    {/* <ImageBackground source={image} style={styles.image}> */}
+              <KeyboardAvoidingView style = {styles.a}>
+      {/* <View style = {styles.a}> */}
+        {/* <View style = {styles.b}> */}
             <Text style = {styles.title}>Signup</Text>
             <View style={styles.c}>
-              <TextInput
-                        style = {styles.box}
-                        placeholder="Email"
-                        onChangeText={(email) => setEmail(email)}
-                        autoCapitalize="none"
-                        autoCorrect = {false}
-                        />
-              <TextInput
+                <TextInput
+                          style = {styles.box}
+                          placeholder="Email"
+                          onChangeText={(email) => setEmail(email)}
+                          autoCapitalize="none"
+                          autoCorrect = {false}
+                          />
+                {/* </KeyboardAvoidingView> */}
+                {/* <KeyboardAvoidingView> */}
+                      <TextInput
                         style = {styles.box}
                         placeholder="Password"
                         onChangeText={(password) => setPassword(password)}
                         autoCapitalize="none"
                         autoCorrect = {false}
                         secureTextEntry={true}
-                        />
+                      />
+                {/* </KeyboardAvoidingView> */}
+                {/* <KeyboardAvoidingView> */}
               <TextInput
                         style = {styles.box}
                         placeholder="Password Authentication"
@@ -67,8 +72,9 @@ const Signup = () => {
                         autoCorrect = {false}
                         secureTextEntry={true}
                         />
-              
+              {/* </KeyboardAvoidingView> */}
             </View>
+            {/* <KeyboardAvoidingView> */}
             <TouchableOpacity
                     style = {styles.button}
                     onPress={() => CreateUser(email, password, passwordAuthentication)}>
@@ -76,25 +82,32 @@ const Signup = () => {
             </TouchableOpacity>
             
            
-          </View>
-        </View>
+          {/* </View> */}
+        {/* </View> */}
+            </KeyboardAvoidingView>
     
-    </ImageBackground>
+    {/* </ImageBackground> */}
+    </ScrollView>
+    
   )
 }
 
 export default Signup
 
 const styles = StyleSheet.create({
+  all: {
+    backgroundColor: 'cadetblue',
+    height: '100%',
+  } ,
   a: {
     // backgroundColor: `#5f9ea0`,
     backgroundColor: 'rgba(255, 255, 255, 0.5)',
     borderRadius: 30,
     // opacity: '50%',
     Transparent: '50%',
-    padding: 1,
+    paddingVertical: 50,
     margin:30,
-    height: '70%',
+    // height: '100%',
     width: '70%',
     alignSelf: 'center',
     alignItems: 'center',
@@ -110,8 +123,8 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     padding: 3,
     margin:30,
-    height: '50%',
-    width: '99%',
+    height: '70%',
+    width: '90%',
     alignSelf: 'center',
     
   },
