@@ -5,6 +5,7 @@ import { collection, query, onSnapshot, where, getDocs, updateDoc} from 'firebas
 import {auth, db} from "../../firebase"
 import  Icon from 'react-native-vector-icons/Ionicons'
 import { BackgroundImage } from 'react-native-elements/dist/config'
+import ContactFeed from './ContactFeed'
 
 const Contacts = () => {
   const image = { uri: "https://img.freepik.com/free-vector/scene-swimming-pool-with_1308-37683.jpg" }
@@ -64,6 +65,7 @@ const Contacts = () => {
           <TouchableOpacity style={styles.contactsItemButton} onPress={()=>toggleActive(user)}>
             <Text style={styles.contactsItemButtonText}>{user.active?"Active":"not Active"}</Text>
           </TouchableOpacity>
+          <ContactFeed contact={user.email}/>
         </View>
       </TouchableOpacity>
     )
