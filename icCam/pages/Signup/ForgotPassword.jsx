@@ -40,11 +40,12 @@ const ForgotPassword = () => {
                                 onChangeText={(email) => setEmail(email)}
                                 autoCapitalize="none"
                                 autoCorrect = {false}
+                                placeholderTextColor={`#a9a9a9`}
                                 />
                     <TouchableOpacity 
                         style = {styles.button}
                         onPress={sendEmail}>
-                        <Text>sendEmail</Text>
+                        <Text style={styles.buttonText}>sendEmail</Text>
                     </TouchableOpacity>
                 </View>
             {/* </View> */}
@@ -69,13 +70,14 @@ const styles = StyleSheet.create({
         // marginBottom: 200,
       },
       box: {
-        backgroundColor: `#ffe4c4`,
+        backgroundColor: `#fffacd`,
         fontSize: 20,
         borderWidth: 2,
         margin: 10,
         padding: 3,
         paddingLeft: 3,
         borderRadius: 10,
+        color: `#000000`,
     },
     a: {
         // backgroundColor: `#5f9ea0`,
@@ -107,14 +109,15 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
       },
       title: {
-        //fontSize: 10,
+        color: `#2f4f4f`,
         fontWeight: 'bold',
         fontSize: 20,
-        alignSelf: 'center'
+        alignSelf: 'center',
       },
       button: {
         borderWidth: 2,
         alignSelf: 'center',
+        alignItems: 'center',
         width: '40%',
         paddingHorizontal: 8,
         paddingVertical: 6,
@@ -124,6 +127,10 @@ const styles = StyleSheet.create({
         marginBottom: 6,
         minWidth: '48%',
         textAlign: 'center',
-        backgroundColor: `#daa520`,
+        backgroundColor: `#8fbc8f`,
+      },
+      buttonText: {
+        fontWeight: '800',
+        fontSize: 15
       },
 })

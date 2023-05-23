@@ -101,7 +101,6 @@ const styles = StyleSheet.create({
         padding: 3,
         paddingLeft: 3,
         borderRadius: 10,
-      
     },
     button: {
         borderWidth: 2,
@@ -124,7 +123,6 @@ const styles = StyleSheet.create({
       },
       title: {
         color: `#2f4f4f`,
-        //fontSize: 10,
         fontWeight: 'bold',
         fontSize: 20,
         alignSelf: 'center',
