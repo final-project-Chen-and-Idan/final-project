@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React, { useState, useRef, useEffect } from 'react'
-import { RTCView, RTCPeerConnection, MediaStream, RTCIceCandidate} from 'react-native-webrtc';
+import { RTCView, RTCPeerConnection, MediaStream, RTCIceCandidate, RTCSessionDescription} from 'react-native-webrtc';
 import { auth, db } from '../../firebase';
 import { collection, doc, getDoc, getDocs,deleteDoc, onSnapshot, setDoc, addDoc } from 'firebase/firestore';
 
@@ -58,6 +58,7 @@ const ContactFeed = ({contact}) => {
         peerConnectionRef.current.ontrack = (event) => {
         if (event.track.kind === 'video') {
             remoteStreamRef.current = event.streams[0];
+            console.log(remoteStreamRef.current)
         }
         };
     };
@@ -97,14 +98,17 @@ const ContactFeed = ({contact}) => {
         //listening for a answer
         onSnapshot(doc(db,"LiveFeed",contact, "viewers", auth.currentUser.email),snapshot=>{
             const data = snapshot.data();
+            console.log("over here")
             if (!peerConnectionRef.current.currentRemoteDescription && data?.answer) {
                 const answerDescription = new RTCSessionDescription(data.answer);
                 peerConnectionRef.current.setRemoteDescription(answerDescription);
             }
+            
         })
-
+        
         // adding the ice candidates for the answer
         onSnapshot(answerCollectionRef, (snapshot) => {
+            console.log("now over here")
             snapshot.docChanges().forEach((change) => {
                 if (change.type === 'added') {
                     const candidate = new RTCIceCandidate(change.doc.data());
@@ -142,18 +146,14 @@ const ContactFeed = ({contact}) => {
     // };
   
     return (
-      <View style={{backgroundColor:"black"}}>
-        {/* {remoteStreams.map((stream) => (
-          <RTCView key={stream.offerId} streamURL={stream.stream.toURL()} style={{ flex: 1 }} />
-        ))} */}
+      <View style={{backgroundColor:"black",height:500, width:300}}>
         {remoteStreamRef.current?
         <RTCView
-          streamURL={localStreamRef.current.toURL()}
-          style={StyleSheet.absoluteFill}
+          streamURL={remoteStreamRef.current.toURL()}
         />:
         null
         }
-        <Text>Watch Feed</Text>
+        
       </View>
     );
 }
