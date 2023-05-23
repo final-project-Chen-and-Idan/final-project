@@ -79,7 +79,10 @@ const Home = () => {
       {/* <SafeAreaView style = {styles.SafeAreaViewStyle}> */}
       {/* ============================================================================================================================== */}
         <View style={styles.titleView}>
-          <Text style = {styles.title}>hello there {auth.currentUser.displayName} Welcome to:</Text>
+        <TouchableOpacity onPress={logOut} style = {styles.FuncButton}>
+                      <Text style={styles.logoutText}> Log Out </Text>
+                      </TouchableOpacity>
+          {/* <Text style = {styles.title}>hello there {auth.currentUser.displayName} Welcome to:</Text> */}
           <View style = {styles.logoView}>
               {/* <LinearGradient
             colors={['#FFFFFF', '#000000']}
@@ -123,9 +126,7 @@ const Home = () => {
                         {/* <Icon name="address-book" size={90} color="#900" /> */}
                       </TouchableOpacity>
                       <Text style = {styles.logoutText}>|</Text>
-                      <TouchableOpacity onPress={logOut} style = {styles.FuncButton}>
-                      <Text style={styles.logoutText}> Log Out </Text>
-                      </TouchableOpacity>
+                      
                       <Text style = {styles.logoutText}>|</Text>
                       <TouchableOpacity  style = {styles.FuncButton} onPress={toggleModal}>
                       <Text style={styles.logoutText}>How It Works </Text>
@@ -231,6 +232,9 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     alignItems: 'center',
     width: '90%',
+    height: '20%',
+    // backgroundColor: 'brown',
+    padding: 1
   },
   FuncButton: {
     // borderWidth: 2,
@@ -308,6 +312,9 @@ const styles = StyleSheet.create({
     //  width: 400,
      margin: 20,
     alignSelf: 'center',
+    maxHeight: '80%',
+    minHeight: '80%',
+    maxWidth: '80%',
     
 
   },
