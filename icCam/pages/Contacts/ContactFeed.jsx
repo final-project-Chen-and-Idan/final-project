@@ -1,13 +1,14 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React, { useState, useRef, useEffect } from 'react'
-import { RTCView, RTCPeerConnection, MediaStream, RTCIceCandidate, RTCSessionDescription} from 'react-native-webrtc';
+import { RTCView, RTCPeerConnection, RTCIceCandidate, RTCSessionDescription} from 'react-native-webrtc';
 import { auth, db } from '../../firebase';
 import { collection, doc, getDoc, getDocs,deleteDoc, onSnapshot, setDoc, addDoc } from 'firebase/firestore';
 
 const ContactFeed = ({contact}) => {
-    const remoteStreamRef = useRef(null);
+    const [remoteStream, setRemoteStream] = useState(null);
     const [activeFeed, setActiveFeed] = useState(false);
     const peerConnectionRef = useRef();
+    const iceHolder = []
 
   
     useEffect(() => {
@@ -20,7 +21,7 @@ const ContactFeed = ({contact}) => {
         }
 
         startup();
-        return closeConnection
+        return () => {closeConnection()}
     }, []);
 
     const checkIfActive = async()=>{
@@ -57,10 +58,16 @@ const ContactFeed = ({contact}) => {
         // when getting a video track add it to 
         peerConnectionRef.current.ontrack = (event) => {
         if (event.track.kind === 'video') {
-            remoteStreamRef.current = event.streams[0];
-            console.log(remoteStreamRef.current)
+            setRemoteStream(event.streams[0].toURL());
         }
         };
+
+        peerConnectionRef.current.oniceconnectionstatechange = ()=>{
+            console.log('ice Connection Status for the viewer', peerConnectionRef.current.iceConnectionState)
+          }
+        peerConnectionRef.current.onconnectionstatechange = ()=>{
+            console.log('Connection Status for the viewer', peerConnectionRef.current.connectionState)
+          }
     };
   
     const createOffer = async()=>{
@@ -96,23 +103,31 @@ const ContactFeed = ({contact}) => {
     const getAnswer = (answerCollectionRef)=>{
 
         //listening for a answer
-        onSnapshot(doc(db,"LiveFeed",contact, "viewers", auth.currentUser.email),snapshot=>{
+        onSnapshot(doc(db,"LiveFeed",contact, "viewers", auth.currentUser.email),async snapshot=>{
             const data = snapshot.data();
-            console.log("over here")
             if (!peerConnectionRef.current.currentRemoteDescription && data?.answer) {
                 const answerDescription = new RTCSessionDescription(data.answer);
-                peerConnectionRef.current.setRemoteDescription(answerDescription);
+                await peerConnectionRef.current.setRemoteDescription(answerDescription);
+
+                iceHolder.forEach(candidate=>{
+                    peerConnectionRef.current.addIceCandidate(candidate);
+                })
             }
             
         })
         
         // adding the ice candidates for the answer
         onSnapshot(answerCollectionRef, (snapshot) => {
-            console.log("now over here")
             snapshot.docChanges().forEach((change) => {
                 if (change.type === 'added') {
                     const candidate = new RTCIceCandidate(change.doc.data());
-                    peerConnectionRef.current.addIceCandidate(candidate);
+                    
+                    if(peerConnectionRef.current.currentRemoteDescription){
+                        peerConnectionRef.current.addIceCandidate(candidate);
+                    }
+                    else{
+                        iceHolder.push(candidate);
+                    }
                 }
             });
         });
@@ -120,8 +135,10 @@ const ContactFeed = ({contact}) => {
 
 
     const closeConnection = async()=>{
-        if(peerConnectionRef.current)
-          peerConnectionRef.current.close();
+        if(peerConnectionRef.current){
+            // peerConnectionRef.current._unregisterEvents();
+            peerConnectionRef.current.close();
+        }
     
         const deleteOffers = await getDocs(collection(db,"LiveFeed",contact,"viewers", auth.currentUser.email, "offerCandidates"))
         deleteOffers.docs.forEach(doc=>{
@@ -132,24 +149,17 @@ const ContactFeed = ({contact}) => {
         deleteanswers.docs.forEach(doc=>{
           deleteDoc(doc.ref);
         })
-        deleteDoc(doc(db,"LiveFeed",contact,"viewers", auth.currentUser.email))
+        await deleteDoc(doc(db,"LiveFeed",contact,"viewers", auth.currentUser.email))
     
     }
-    
-     
-    // const addRemoteStream = (offerId, stream) => {
-    //   setRemoteStreams((prevStreams) => [...prevStreams, { offerId, stream }]);
-    // };
-  
-    // const removeRemoteStream = (offerId) => {
-    //   setRemoteStreams((prevStreams) => prevStreams.filter((stream) => stream.offerId !== offerId));
-    // };
   
     return (
-      <View style={{backgroundColor:"black",height:500, width:300}}>
-        {remoteStreamRef.current?
+      <View >
+        {remoteStream?
         <RTCView
-          streamURL={remoteStreamRef.current.toURL()}
+          streamURL={remoteStream}
+          style={{height:500, width:300}}
+          zOrder={1}
         />:
         null
         }

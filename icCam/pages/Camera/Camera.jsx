@@ -1,8 +1,8 @@
 import { StyleSheet,PermissionsAndroid,TouchableOpacity, Text, View} from 'react-native'
 import React, { useState, useRef, useEffect} from 'react';
-import { RTCPeerConnection, RTCView, mediaDevices } from 'react-native-webrtc';
+import { RTCPeerConnection, RTCView, mediaDevices, RTCSessionDescription, RTCIceCandidate } from 'react-native-webrtc';
 import {auth, db} from '../../firebase';
-import {doc, setDoc, deleteDoc, onSnapshot, collection, addDoc, getDocs, updateDoc } from 'firebase/firestore';
+import {doc, setDoc, deleteDoc, onSnapshot, collection, addDoc, getDocs, updateDoc, getDoc } from 'firebase/firestore';
 
 
 const MyCamera = () => {
@@ -57,10 +57,11 @@ const MyCamera = () => {
     }
   },[]);
   
-  //todo clear the data and close connections ---------------------------
+  //todo clear the data and close connections ------------------------------------------------------------------------------------------------------------
   const closeStream = async()=>{
     if(peerConnectionRef.current)
       for(item in peerConnectionRef.current){
+        peerConnectionRef.current[item]._unregisterEvents();
         peerConnectionRef.current[item].close()
       }
 
@@ -107,6 +108,7 @@ const MyCamera = () => {
     }
   };
 
+  //listening to incomming connections
   const listenToConnection = ()=>{
     onSnapshot(collection(db,"LiveFeed",auth.currentUser.email,"viewers"), snapshot=>{
       const changes = snapshot.docChanges();
@@ -126,14 +128,33 @@ const MyCamera = () => {
 
   // handling a offer
   const handleOffer = async (offerId, offer) => {
+ 
     // if this is a brand new connection
     if (!peerConnectionRef.current[offerId]) {
       setupWebRTC(offerId);
     }
 
-    await peerConnectionRef.current[offerId].setRemoteDescription(offer["offer"]);
+    await peerConnectionRef.current[offerId].setRemoteDescription(new RTCSessionDescription(offer["offer"]));
     const answer = await peerConnectionRef.current[offerId].createAnswer();
     await peerConnectionRef.current[offerId].setLocalDescription(answer);
+
+    
+    const offerCollectionRef = collection(db, "LiveFeed", auth.currentUser.email, "viewers", offerId, "offerCandidates")
+    onSnapshot(offerCollectionRef, (snapshot) => {
+      const changes = snapshot.docChanges(); 
+      changes.forEach((change) => {
+          if (change.type === 'added') {
+              const candidate = new RTCIceCandidate(change.doc.data());
+              peerConnectionRef.current[offerId].addIceCandidate(candidate);
+          }
+      });
+    });
+    
+    const offerCandidates = await getDocs(offerCollectionRef);
+    offerCandidates.docs.forEach(doc=>{
+      const candidate = new RTCIceCandidate(doc.data());
+      peerConnectionRef.current[offerId].addIceCandidate(candidate);
+    })
 
     sendAnswerToFirestore(offerId, answer);
   };  
@@ -172,7 +193,7 @@ const MyCamera = () => {
       direction:'sendonly',
     })
     peerConnectionRef.current[id].addTransceiver('video',{
-        direction:'sendonly',
+      direction:'sendonly',
     })
 
     const answerCollectionRef = collection(db,"LiveFeed",auth.currentUser.email,"viewers",id,"answerCandidates");
@@ -180,9 +201,19 @@ const MyCamera = () => {
     //getting the ice candidates
     peerConnectionRef.current[id].onicecandidate = async(event) => {
       if(event.candidate)
-      await addDoc(answerCollectionRef,(event.candidate.toJSON()))
+        await addDoc(answerCollectionRef,(event.candidate.toJSON()))
+      
+
     };    
 
+    peerConnectionRef.current[id].oniceconnectionstatechange = ()=>{
+      if(peerConnectionRef.current[id])
+        console.log('ice Connection Status for the live feed', peerConnectionRef.current[id].iceConnectionState)
+    }
+    peerConnectionRef.current[id].onconnectionstatechange = ()=>{
+      if(peerConnectionRef.current[id])
+        console.log('Connection Status for the live feed', peerConnectionRef.current[id].connectionState)
+    }
   };
 
   const sendAnswerToFirestore = async (offerId, answer) => {
@@ -195,63 +226,6 @@ const MyCamera = () => {
     });
   };
   
-  const startFeed = async () => {
-    if (peerConnectionRef.current) {
-      
-      //refrencing the collections for the ice candidates both for the livefeed and 
-      const offerCollectionRef = collection(db,"LiveFeed",auth.currentUser.email,"offerCandidates");
-      const answerCollectionRef = collection(db,"LiveFeed",auth.currentUser.email,"answerCandidates");
-      
-      // Get the ice candidates for livefeed and add it to the firebase
-      peerConnectionRef.current.onicecandidate = async(event) => {
-        if(event.candidate)
-        await addDoc(offerCollectionRef,(event.candidate.toJSON()))
-      };
-      
-      // creating the offer
-      const offer = await peerConnectionRef.current.createOffer();
-      await peerConnectionRef.current.setLocalDescription(offer);
-      
-      //adding the offer to firebase
-      await setDoc(doc(db,"LiveFeed", auth.currentUser.email),{
-        offer:{
-          type: 'offer',
-          sdp: offer.sdp
-        }
-      });
-
-
-      //listening for a answer
-      onSnapshot(doc(db,"LiveFeed",auth.currentUser.email),snapshot=>{
-        const data = snapshot.data();
-
-        if (!peerConnectionRef.current.currentRemoteDescription && data?.answer) {
-          const answerDescription = new RTCSessionDescription(data.answer);
-          peerConnectionRef.current.setRemoteDescription(answerDescription);
-        }
-      })
-
-      // adding the ice candidates for the answer
-      onSnapshot(answerCollectionRef, (snapshot) => {
-        snapshot.docChanges().forEach((change) => {
-          if (change.type === 'added') {
-            const candidate = new RTCIceCandidate(change.doc.data());
-            peerConnectionRef.current.addIceCandidate(candidate);
-          }
-        });
-      });
-    }
-  };
-
-  const changeDirection = ()=>{
-    direction == "user"?
-    setDirection("environment"):
-    setDirection("user");
-
-    closeStream();
-    startMediaStream();
-  }
-
   if(!permission){
    return(
     <View>
