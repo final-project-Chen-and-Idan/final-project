@@ -1,5 +1,3 @@
-import priority
-from sympy import false, true
 from ultralytics import YOLO
 import cv2
 import math
@@ -8,6 +6,76 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 from firebase_admin import messaging
+from aiortc import RTCIceCandidate, RTCSessionDescription, MediaStreamTrack, RTCPeerConnection
+
+pc = None
+
+# class VideoStreamTrack(MediaStreamTrack):
+#     kind = "video"
+
+#     def __init__(self, track):
+#         super().__init__()
+#         self.track = track
+
+#     async def recv(self):
+#         return await self.track.recv()
+    
+# def connect_to_live_stream(email):
+#     # Retrieve the live stream document from Firestore
+#     db = firestore.client()
+#     doc_ref = db.collection('LiveFeed').document(email)
+#     doc = doc_ref.get()
+
+#     if doc.exists:
+#         offer_data = doc.to_dict()
+#         offer_type = offer_data["offer"]['type']
+
+#         if offer_type == 'offer':
+#             # TODO: Retrieve the offer's candidates from the subcollection
+#             candidates_ref = doc_ref.collection('candidates')
+#             candidates = candidates_ref.get()
+
+#             # Create the RTCPeerConnection
+#             global pc
+#             pc = RTCPeerConnection()
+
+#             @pc.on("iceconnectionstatechange")
+#             async def on_iceconnectionstatechange():
+#                 if pc.iceConnectionState == "failed":
+#                     await pc.close()
+#                     pc = None
+
+#                 # Process the offer
+#                 offer = RTCSessionDescription(sdp=offer_data.get('sdp'), type=offer_data.get('type'))
+#                 await pc.setRemoteDescription(offer)
+
+#                 # Process the candidates
+#                 for candidate in candidates:
+#                     candidate_data = candidate.to_dict()
+#                     ice_candidate = RTCIceCandidate(candidate=candidate_data.get('candidate'))
+#                     await pc.addIceCandidate(ice_candidate)
+
+#                 # Create an answer
+#                 answer = await pc.createAnswer()
+#                 await pc.setLocalDescription(answer)
+
+#                 # Save the answer to Firestore
+#                 answer_data = {
+#                     'type': answer.type,
+#                     'sdp': answer.sdp
+#                 }
+#                 doc_ref.set(answer_data)
+
+#             # Start streaming
+#             while True:
+#                 print("Hello")
+#                 # await asyncio.sleep(0)
+
+#         else:
+#             print('Invalid offer type')
+#     else:
+#         print('Document not found')
+
 
 #  ======================== unit tests ============================
 # a test to see if finds the right amount of people in the frame
@@ -127,11 +195,11 @@ def check_danger(children, adult_num, unknown_num):
     if adult_num > 0:
         return 
     
-    flag = false
+    flag = False
     for child in children:
         if child < 1:
             print("DANGER")
-            flag = true
+            flag = True
     
     if flag:
         signal_danger()
@@ -623,6 +691,8 @@ if __name__ == "__main__":
     # getting the active contacts
     active_token = get_active_tokens()    
     
+    # connect_to_live_stream("idanbkideckel@gmail.com")
+    
     conf = 0.5
     
     print("loading models.....")
@@ -651,3 +721,4 @@ if __name__ == "__main__":
         
     # predicted_amount = []
     # test_amount_of_people()
+    

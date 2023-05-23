@@ -2,14 +2,10 @@
 import { initializeApp } from 'firebase/app';
 import { initializeFirestore } from 'firebase/firestore';
 import {onAuthStateChanged, initializeAuth } from 'firebase/auth';
-import {getStorage} from 'firebase/storage'
-// import { getMessaging } from "firebase/messaging";
 import { getReactNativePersistence } from 'firebase/auth/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
   
-
-
 // Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyDrs5ht5-Q33uSzGqBVxMS2YV-DnEfqAVg",
@@ -23,8 +19,5 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = initializeAuth(app, {persistence: getReactNativePersistence(AsyncStorage),});
 const db = initializeFirestore(app,{experimentalForceLongPolling: true,   useFetchStreams: false,});
-const storage = getStorage(app)
 
-// const messaging  = getMessaging(app)
-// const token = getToken(messaging, {vapidKey:"BNEYA0gwLvwuHwV8_Q5kuwxFD1_6e1OTDa7rpfiVe-kGSgu9Ml2ukq2Xfoo8TzKCStlsZzlugflmEFOXa3JDDIU"})
-export {db, auth, storage,onAuthStateChanged};
+export {db, auth, onAuthStateChanged};
