@@ -260,7 +260,8 @@ const styles = StyleSheet.create({
     fontSize: 25,
     textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 2, 
-    textShadowColor: `#cd853f`,
+    textShadowColor: 'darkslategrey ',
+    color: 'darkslategrey ',
   
   },
   

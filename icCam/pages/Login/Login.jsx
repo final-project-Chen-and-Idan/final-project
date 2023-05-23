@@ -37,6 +37,7 @@ const Login = () => {
                             onChangeText={(email) => setEmail(email)}
                             autoCapitalize="none"
                             autoCorrect = {false}
+                            placeholderTextColor={`#a9a9a9`}
                             />
                             <TextInput
                             style = {styles.box}
@@ -45,12 +46,13 @@ const Login = () => {
                             autoCapitalize="none"
                             autoCorrect = {false}
                             secureTextEntry={true}
+                            placeholderTextColor={`#a9a9a9`}
                             />
                             <TouchableOpacity
                             style = {styles.button}
                             onPress={() => loginUser(email, password)}
                             >
-                                <Text>Login</Text>
+                                <Text style={styles.buttonText}>Login</Text>
                             </TouchableOpacity>
                             </KeyboardAvoidingView>
                         </View>
@@ -60,7 +62,7 @@ const Login = () => {
                                     style = {styles.button}
                                     onPress={() => navigation.navigate('Signup')}
                                 >
-                                    <Text>Register Now</Text>
+                                    <Text style={styles.buttonText}>Register</Text>
                                 </TouchableOpacity>
                         </View>
                         <View style = {styles.c}>
@@ -68,7 +70,7 @@ const Login = () => {
                                 <TouchableOpacity 
                                 onPress={()=>{navigation.navigate('forgot')}}
                                 style = {styles.button}>
-                                <Text >Password recovery</Text>
+                                <Text style={styles.buttonText}>Recover</Text>
                                 </TouchableOpacity>
                         </View>
                     </View>
@@ -92,13 +94,14 @@ const styles = StyleSheet.create({
         // flex: 1,
     },
     box: {
-        backgroundColor: `#ffe4c4`,
+        backgroundColor: `#fffacd`,
         fontSize: 20,
         borderWidth: 2,
         margin: 10,
         padding: 3,
         paddingLeft: 3,
         borderRadius: 10,
+      
     },
     button: {
         borderWidth: 2,
@@ -113,13 +116,18 @@ const styles = StyleSheet.create({
         marginBottom: 6,
         minWidth: '48%',
         textAlign: 'center',
-        backgroundColor: `#daa520`,
+        backgroundColor: `#8fbc8f`,
+      },
+      buttonText: {
+        fontWeight: '800',
+        fontSize: 15
       },
       title: {
+        color: `#2f4f4f`,
         //fontSize: 10,
         fontWeight: 'bold',
         fontSize: 20,
-        alignSelf: 'center'
+        alignSelf: 'center',
       },
       a: {
         // backgroundColor: `#5f9ea0`,
