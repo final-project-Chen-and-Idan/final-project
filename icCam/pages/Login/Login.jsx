@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View , TouchableOpacity, TextInput,Image, ImageBackground} from 'react-native'
+import { StyleSheet, Text, View , TouchableOpacity, TextInput,Image, ImageBackground, KeyboardAvoidingView, Platform, SafeAreaView , ScrollView} from 'react-native'
 import React , {useRef, useState} from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { auth } from '../../firebase'
@@ -21,55 +21,59 @@ const Login = () => {
     }
 
     return(
+        
         <ImageBackground source={image} style={styles.image}>
-            <View style = {styles.a}>
-                <View style = {styles.b}>
-
-                <Text style = {styles.title}>
-                    Login
-                </Text>
-                <View style={styles.c}>
-                    <TextInput
-                    style = {styles.box}
-                    placeholder="Email"
-                    onChangeText={(email) => setEmail(email)}
-                    autoCapitalize="none"
-                    autoCorrect = {false}
-                    />
-                    <TextInput
-                    style = {styles.box}
-                    placeholder="Password"
-                    onChangeText={(password) => setPassword(password)}
-                    autoCapitalize="none"
-                    autoCorrect = {false}
-                    secureTextEntry={true}
-                    />
-                    <TouchableOpacity
-                    style = {styles.button}
-                    onPress={() => loginUser(email, password)}
-                >
-                    <Text>Login</Text>
-                </TouchableOpacity>
-                </View>
-                <TouchableOpacity 
-                    onPress={()=>{navigation.navigate('forgot')}}
-                    style={{}}>
-                    <Text style={styles.logoutText}>Forgot Password</Text>
-                </TouchableOpacity>
-                <View style = {styles.d}>
-                    <Text>Don't have an account?</Text>  
-                    <TouchableOpacity
-                        style = {styles.button}
-                        onPress={() => navigation.navigate('Signup')}
-                    >
-                        <Text>Register Now</Text>
-                    </TouchableOpacity>
-                </View>
-                
-                
-                </View>
-            </View>
+            {/* <SafeAreaView style={{}}> */}
+            <ScrollView>
+                <KeyboardAvoidingView style={styles.container} behavior="position">
+                    <View style = {styles.a}>
+                        <View style={styles.c}>
+                            <Text style = {styles.title}> Login </Text>
+                            <TextInput
+                            style = {styles.box}
+                            placeholder="Email"
+                            onChangeText={(email) => setEmail(email)}
+                            autoCapitalize="none"
+                            autoCorrect = {false}
+                            />
+                            <TextInput
+                            style = {styles.box}
+                            placeholder="Password"
+                            onChangeText={(password) => setPassword(password)}
+                            autoCapitalize="none"
+                            autoCorrect = {false}
+                            secureTextEntry={true}
+                            />
+                            <TouchableOpacity
+                            style = {styles.button}
+                            onPress={() => loginUser(email, password)}
+                            >
+                                <Text>Login</Text>
+                            </TouchableOpacity>
+                        </View>
+                        <View style = {styles.c}>
+                                <Text style = {styles.title}>Don't have an account?</Text>  
+                                <TouchableOpacity
+                                    style = {styles.button}
+                                    onPress={() => navigation.navigate('Signup')}
+                                >
+                                    <Text>Register Now</Text>
+                                </TouchableOpacity>
+                        </View>
+                        <View style = {styles.c}>
+                                <Text style = {styles.title}>Forgot Password</Text>
+                                <TouchableOpacity 
+                                onPress={()=>{navigation.navigate('forgot')}}
+                                style = {styles.button}>
+                                <Text >Password recovery</Text>
+                                </TouchableOpacity>
+                        </View>
+                    </View>
+                </KeyboardAvoidingView>
+            </ScrollView>
+            {/* </SafeAreaView> */}
         </ImageBackground>
+          
         
     )
 }
@@ -78,6 +82,9 @@ export default Login
 
 const styles = StyleSheet.create({
     
+    container:{
+        // flex: 1,
+    },
     box: {
         backgroundColor: `#ffe4c4`,
         fontSize: 20,
@@ -90,6 +97,7 @@ const styles = StyleSheet.create({
     button: {
         borderWidth: 2,
         alignSelf: 'center',
+        alignItems: 'center',
         width: '40%',
         paddingHorizontal: 8,
         paddingVertical: 6,
@@ -113,25 +121,27 @@ const styles = StyleSheet.create({
         borderRadius: 30,
         // opacity: '50%',
         Transparent: '50%',
-        padding: 1,
-        margin:30,
-        height: '70%',
-        width: '70%',
+        paddingHorizontal: 10,
+        paddingVertical: 20,
+        margin:60,
+        // height: '80%',
+        width: '80%',
         alignSelf: 'center',
         alignItems: 'center',
         justifyContent: 'center',
+        // flex: 1,
         
       },
       b: {
-        height: '80%',
+        // height: '80%',
         width: '80%',
       },
       c: {
         backgroundColor: 'rgba(255, 255, 255, 0.5)',
         borderRadius: 30,
-        padding: 3,
+        padding: 10,
         margin:30,
-        height: '50%',
+        // height: '50%',
         width: '99%',
         alignSelf: 'center',
         
@@ -140,8 +150,8 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(255, 255, 255, 0.5)',
         borderRadius: 30,
         padding: 3,
-        margin:30,
-        height: '25%',
+        margin:60,
+        // height: '25%',
         width: '99%',
         alignSelf: 'center',
         justifyContent: 'center',
