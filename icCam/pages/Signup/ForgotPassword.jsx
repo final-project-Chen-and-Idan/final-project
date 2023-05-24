@@ -41,6 +41,7 @@ const ForgotPassword = () => {
                                 autoCapitalize="none"
                                 autoCorrect = {false}
                                 placeholderTextColor={`#a9a9a9`}
+                                color="#000000" 
                                 />
                     <TouchableOpacity 
                         style = {styles.button}

@@ -38,6 +38,7 @@ const Login = () => {
                             autoCapitalize="none"
                             autoCorrect = {false}
                             placeholderTextColor={`#a9a9a9`}
+                            color="#000000" 
                             />
                             <TextInput
                             style = {styles.box}
@@ -47,6 +48,7 @@ const Login = () => {
                             autoCorrect = {false}
                             secureTextEntry={true}
                             placeholderTextColor={`#a9a9a9`}
+                            color="#000000" 
                             />
                             <TouchableOpacity
                             style = {styles.button}
