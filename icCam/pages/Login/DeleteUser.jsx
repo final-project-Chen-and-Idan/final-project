@@ -42,15 +42,19 @@ const DeleteUser = () => {
 
     }
 
-    const deleteUserFromFirebase = async()=>{
-        removeFromContacts();
-
+    const deleteFromFirestore = async()=>{
         const q = query(collection(db, "Users"), where("id", "==", auth.currentUser.uid));
         const user = await getDocs(q);
 
         user.docs.forEach(async doc=>{
             await deleteDoc(doc.ref);
         })
+    }
+
+    const deleteUserFromFirebase = async()=>{
+        removeFromContacts();
+
+       await deleteFromFirestore();
 
         deleteUser(auth.currentUser).then(
             alert("Your user has been deleted")
@@ -68,12 +72,14 @@ const DeleteUser = () => {
                 text: "cancle",
                 onPress: () => {return},
               },
+
               {
                 text: "delete",
                 onPress: async () => {
                    await deleteUserFromFirebase();
                 },
               },
+
             ],
           );
     }
