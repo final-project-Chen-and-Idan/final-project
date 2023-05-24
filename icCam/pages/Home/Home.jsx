@@ -68,8 +68,6 @@ const Home = () => {
       </Animated.View>
     );
   };
-  // <ImageBackground source={require('../../assets/background.jpg')} style={styles.image}>
-  //   </ImageBackground>
 
   
   
@@ -79,29 +77,17 @@ const Home = () => {
     <DeleteUser></DeleteUser>
     <View style={{minHeight: '100%' , flex: 1, backgroundColor: 'cadetblue',}}>
       {/* <SafeAreaView style = {styles.SafeAreaViewStyle}> */}
-      {/* ============================================================================================================================== */}
         <View style={styles.titleView}>
-        <TouchableOpacity onPress={logOut} style = {styles.FuncButton}>
-                      <Text style={styles.logoutText}> Log Out </Text>
-                      </TouchableOpacity>
+          <View style={{flexDirection: 'row',backgroundColor: 'rgba(0, 0, 0, 0.5)',}}>
+            <TouchableOpacity onPress={logOut} style = {styles.FuncButton}>
+              <Text style={styles.logoutText}> Log Out </Text>
+            </TouchableOpacity>
+          </View>
           {/* <Text style = {styles.title}>hello there {auth.currentUser.displayName} Welcome to:</Text> */}
           <View style = {styles.logoView}>
-              {/* <LinearGradient
-            colors={['#FFFFFF', '#000000']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            locations={[0, 1]}
-            style={styles.gradient}
-          /> */}
-                <Image source={require('../../assets/a1.png')}
-                    style = {styles.logologo}/>
-                    {/* <Text style={styles}>IC-CAM</Text> */}
+                <Image source={require('../../assets/a1.png')} style = {styles.logologo}/>
           </View>
         </View>
-        {/* ================================================================================================================================= */}
-        {/* --------------------------------------------------------------------------------------------------------------------------- */}
-         {/* <ImageBackground source={image} style={styles.pool}> */}
-         {/* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */}
         <View style={styles.newBox}>
           <FadeInView duration={1000}> 
             <View style = {styles.buttonBox}>
@@ -120,12 +106,10 @@ const Home = () => {
             </View>       
           </FadeInView>
         </View>
-        {/* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */}
-        {/* (((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((()))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))) */}
          <View style = {{maxHeight:'10%',minHeight: '10%', padding: 10,alignItems: 'center' ,width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 30, alignSelf: 'center',backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
                       <TouchableOpacity  onPress={() => {navigation.navigate('Contacts')}} style={styles.button}>
                         <Text style={styles.logoutText}> Contacts</Text>
-                        {/* <Icon name="address-book" size={90} color="#900" /> */}
+                        <Icon name="address-book" size={30} color="#d2691e" />
                       </TouchableOpacity>
                       <Text style = {styles.logoutText}>|</Text>
                       
@@ -143,26 +127,7 @@ const Home = () => {
                         </View>
                         </ImageBackground>
                       </Modal>
-
-
          </View>
-         {/* (((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((()))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))) */}
-          {/* </ImageBackground> */}
-             
-             {/* ------------------------------------------------------------------------------------------------------------------------------------ */}
-                {/* <View style = {styles.logOutView}> */}
-                  {/* <Text style = {styles.logoutText}>log out view 4r</Text> */}
-                  {/* <View>
-                    <TouchableOpacity onPress={logOut} style = {styles.FuncButton}>
-                      <Text style={styles.logoutText}>Log out</Text>
-                      </TouchableOpacity>
-                  </View> */}
-                {/* </View> */}
-            {/* <View style={styles.container}> */}
-              {/* <Animated.View style={[styles.square, animation.getLayout()]} /> */}
-              
-          {/* </View> */}
-      {/* </SafeAreaView> */} 
       </View>
       </View>
   )
@@ -240,36 +205,26 @@ const styles = StyleSheet.create({
   titleView: {
     // borderWidth: 10,
     // backgroundColor: 'rgba(0, 139, 139, 0.5)',
-    // backgroundColor: 'rgba(100, 120, 130, 0.7)',
     maxHeight: '30%',
     minHeight: '30%',
     flex: 1,
-    alignContent: 'flex-start'
+    alignContent: 'flex-start',
+    
     
   },
   logoView: {
     margin: 50,
-    // backgroundColor: `#2f4f4f`,
+   
     alignSelf: 'center',
     alignItems: 'center',
     width: '90%',
     height: '20%',
-    // backgroundColor: 'brown',
+  
     padding: 1
   },
   FuncButton: {
-    // borderWidth: 2,
-    // alignSelf: 'center',
-    // maxWidth: '90%',
-    // paddingHorizontal: 8,
-    // paddingVertical: 6,
-    // // borderRadius: 100,
-    // backgroundColor: 'oldlace',
-    // marginHorizontal: '1%',
-    // marginBottom: 6,
-    // minWidth: '40%',
-    // textAlign: 'center',
-    // backgroundColor: `#deb887`,
+   
+    justifyContent: 'flex-start',
   },
   logOutView: {
     backgroundColor: 'rgba(0, 139, 139, 0.3)',
@@ -311,24 +266,7 @@ const styles = StyleSheet.create({
     // width: '80%' ,
     // borderWidth: 5,
   },
-  // logo: {
-  //   fontWeight: 'bold',
-  //   color: '#b8860b',
-  //   shadowColor: '#cd5c5c',
-  //   fontSize: 60,
-  //   alignSelf: 'center',
-  //   borderCurve: '#cd5c5c',
-  //   background: {
-  //     position: 'absolute',
-  //     top: 1,
-  //     bottom: 1,
-  //     left: 1,
-  //     right: 1,
-  //     backgroundColor: `#000000`,
-  //     borderRadius: Dimensions.get('window').height / 2,
-  //     overflow: 'hidden'
-  //   }
-  // },
+  
   logologo: {
     //  maxHeight: 500,
     //  width: 400,
@@ -353,7 +291,7 @@ const styles = StyleSheet.create({
     // borderWidth: 2,
     // height: "60%",
     // alignSelf: 'center',
-    // alignItems: 'center',
+    flexDirection: 'row',
     // maxWidth: '90%',
     // paddingHorizontal: 8,
     // paddingVertical: 6,
@@ -365,6 +303,7 @@ const styles = StyleSheet.create({
     // minWidth: '88%',
     // textAlign: 'center',
     // backgroundColor: `#ffe4c4`,
+
   },
   buttonText: {
     textAlign: 'center',
@@ -384,6 +323,8 @@ const styles = StyleSheet.create({
     height: '100%'
   },
   buttonBox: {
-    flex: 2
+    flex: 2,
+    // backgroundColor: `#ff8c00`,
+    width: '100%'
   }
 })
