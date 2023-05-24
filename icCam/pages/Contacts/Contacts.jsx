@@ -65,7 +65,7 @@ const Contacts = () => {
           <TouchableOpacity style={styles.contactsItemButton} onPress={()=>toggleActive(user)}>
             <Text style={styles.contactsItemButtonText}>{user.active?"Active":"not Active"}</Text>
           </TouchableOpacity>
-          <ContactFeed contact={user.email}/>
+          <ContactFeed contact={user.email} contactName={user.name}/>
         </View>
       </TouchableOpacity>
     )

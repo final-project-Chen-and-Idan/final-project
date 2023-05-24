@@ -2,15 +2,14 @@ import { StyleSheet,PermissionsAndroid,TouchableOpacity, Text, View} from 'react
 import React, { useState, useRef, useEffect} from 'react';
 import { RTCPeerConnection, RTCView, mediaDevices, RTCSessionDescription, RTCIceCandidate } from 'react-native-webrtc';
 import {auth, db} from '../../firebase';
-import {doc, setDoc, deleteDoc, onSnapshot, collection, addDoc, getDocs, updateDoc, getDoc } from 'firebase/firestore';
+import {doc, setDoc, onSnapshot, collection, addDoc, getDocs, updateDoc, getDoc, query, where } from 'firebase/firestore';
 
 
 const MyCamera = () => {
   const localStreamRef = useRef(null);
-  const remoteStreamRef = useRef(null);
   const peerConnectionRef = useRef({});
   const [permission, setPermission] = useState(false);
-  const [direction, setDirection] = useState("environment");//or environment
+  const [direction, setDirection] = useState("environment");//or user
   const [loading, setLoading] = useState(true);
   
   //getting the permissions for the camera
@@ -52,39 +51,33 @@ const MyCamera = () => {
     }
     start();
 
-    return ()=>{
-      // closeStream();
+    return async()=>{
+      await closeStream();
     }
   },[]);
   
   //todo clear the data and close connections ------------------------------------------------------------------------------------------------------------
   const closeStream = async()=>{
+
+    await updateDoc(doc(db,"LiveFeed",auth.currentUser.email), {"Active" : false})
+
     if(peerConnectionRef.current)
       for(item in peerConnectionRef.current){
-        peerConnectionRef.current[item]._unregisterEvents();
         peerConnectionRef.current[item].close()
       }
 
-    const deleteOffers = await getDocs(collection(db,"LiveFeed",auth.currentUser.email, "offerCandidates"))
-    deleteOffers.docs.forEach(doc=>{
-      deleteDoc(doc.ref);
-    })
-
-    const deleteanswers = await getDocs(collection(db,"LiveFeed",auth.currentUser.email, "answerCandidates"))
-    deleteOffers.docs.forEach(doc=>{
-      deleteDoc(doc.ref);
-    })
-    deleteDoc(doc(db,"LiveFeed",auth.currentUser.email))
-
-    if(localStreamRef.current)
-    localStreamRef.current.getTracks().forEach(t => t.stop());
-    localStreamRef.current.release();
+    if(localStreamRef.current){
+      localStreamRef.current.getTracks().forEach(t => t.stop());
+      localStreamRef.current.release();
+    }
+    
 
 
   }
 
   // starting the camera stream for sharing
   const startMediaStream = async () => {
+    // constraint for the local media device
     const constraints = {
       audio: false,
       video: {
@@ -97,11 +90,12 @@ const MyCamera = () => {
       },
     };
     try {
-      console.log("setting up the local stream")
+      // setting up the local stream
       const stream = await mediaDevices.getUserMedia(constraints);
       localStreamRef.current = stream;
 
-      setDoc(doc(db,"LiveFeed", auth.currentUser.email),{})
+      // adding a doc to hold all of the viewers
+      setDoc(doc(db,"LiveFeed", auth.currentUser.email),{"Active" : true})
 
     } catch (error) {
       console.error('Error accessing media devices:', error);
@@ -126,7 +120,7 @@ const MyCamera = () => {
     })
   }
 
-  // handling a offer
+  // handling a offer when someone wants to connect
   const handleOffer = async (offerId, offer) => {
  
     // if this is a brand new connection
@@ -134,11 +128,13 @@ const MyCamera = () => {
       setupWebRTC(offerId);
     }
 
+    // setting the remote and local description
     await peerConnectionRef.current[offerId].setRemoteDescription(new RTCSessionDescription(offer["offer"]));
     const answer = await peerConnectionRef.current[offerId].createAnswer();
     await peerConnectionRef.current[offerId].setLocalDescription(answer);
 
     
+    // listening to the offer ice candidates to add 
     const offerCollectionRef = collection(db, "LiveFeed", auth.currentUser.email, "viewers", offerId, "offerCandidates")
     onSnapshot(offerCollectionRef, (snapshot) => {
       const changes = snapshot.docChanges(); 
@@ -150,6 +146,7 @@ const MyCamera = () => {
       });
     });
     
+    // adding existing ice candidates
     const offerCandidates = await getDocs(offerCollectionRef);
     offerCandidates.docs.forEach(doc=>{
       const candidate = new RTCIceCandidate(doc.data());
@@ -159,6 +156,7 @@ const MyCamera = () => {
     sendAnswerToFirestore(offerId, answer);
   };  
 
+  // handles closing a connection when someone disconnects
   const handleClose = (offerId) => {
     if (peerConnectionRef.current[offerId]) {
       peerConnectionRef.current[offerId].close();
@@ -168,7 +166,7 @@ const MyCamera = () => {
 
   // setting up the webrtc connection
   const setupWebRTC = (id) => {
-    // the stun servers for the ice candidates(ip - port pairs)
+    // the stun servers for the ice candidates
     const configuration = {
       iceServers: [
         {
@@ -181,8 +179,10 @@ const MyCamera = () => {
       iceCandidatePoolSize: 10
     };
 
+    // creating the peer connecetion
     peerConnectionRef.current[id] = new RTCPeerConnection(configuration);
 
+    // adding thte local stream to the peer connection 
     localStreamRef.current.getTracks().forEach((track) => {
       peerConnectionRef.current[id].addTrack(track, localStreamRef.current);
     });
@@ -203,9 +203,9 @@ const MyCamera = () => {
       if(event.candidate)
         await addDoc(answerCollectionRef,(event.candidate.toJSON()))
       
-
     };    
 
+    // for debug - print the connectiton and ice connection status 
     peerConnectionRef.current[id].oniceconnectionstatechange = ()=>{
       if(peerConnectionRef.current[id])
         console.log('ice Connection Status for the live feed', peerConnectionRef.current[id].iceConnectionState)
@@ -216,6 +216,7 @@ const MyCamera = () => {
     }
   };
 
+  // upload an answer to the firestore for the correct offer
   const sendAnswerToFirestore = async (offerId, answer) => {
     const docRef = doc(db,"LiveFeed", auth.currentUser.email, "viewers", offerId);
     await updateDoc(docRef,{
@@ -225,6 +226,25 @@ const MyCamera = () => {
       }
     });
   };
+
+  // return a list of active users
+  const getActiveUsers = async()=>{
+    const query  = query(collection(db, "Users"), where("id","==", auth.currentUser.uid))
+    const contacts = await getDocs(query);
+
+    const actives = []
+
+    // looping through the contacts and taking the active ones
+    contacts.docs.forEach(doc=>{
+      let c = doc.data().contacts
+      for(cont in c){
+        if(c[cont]["active"])
+          actives.push(c[cont]["email"])
+      }
+    })
+
+    return actives
+  }
   
   if(!permission){
    return(
@@ -246,7 +266,7 @@ const MyCamera = () => {
   }
 
   return(
-    <View style={{ flex: 1 }}>
+    <View style={{flex:1,  backgroundColor:"black" }}>
       {localStreamRef.current?
         <RTCView
           streamURL={localStreamRef.current.toURL()}
@@ -261,62 +281,5 @@ const MyCamera = () => {
 export default MyCamera
 
 const styles = StyleSheet.create({
-    camera: {
-      width:'90%',
-      height:'80%',
-      zIndex: 1,
-      alignSelf: 'center',
-      borderRadius: 30,
-      borderWidth: 6
-    },
-    view:{
-      justifyContent:'flex-end'
-    },
-    button: {
-        borderWidth: 2,
-        width: '40%',
-        paddingHorizontal: 8,
-        paddingVertical: 6,
-        borderRadius: 50,
-        
-        alignSelf: 'center',
-        marginHorizontal: '1%',
-        marginBottom: 6,
-        minWidth: '48%',
-        textAlign: 'center',
-        backgroundColor: `#daa520`,
-      },
-      buttonText: {
-        textAlign: 'center',
-        justifyContent: 'center',
-        fontWeight: 'bold',
-        fontSize: 25,
-      },
-      iconView: {
-        alignSelf: 'center',
-        position:'absolute',
-        // bottom:30,
-        backgroundColor: `#daa520`,
-        borderRadius: 100,
-        height: 60,
-        width: 60,
-
-
-      },
-      iconButton: {
-        // height: '80%',
-        // backgroundColor: `#daa520`,
-        alignSelf: 'center',
-        justifyContent: 'center',
-        paddingTop: 9,
-        height: '90%',
-        // width: '90%'
-      },
-      canvas:{
-        position: 'absolute',
-        height:'100%',
-        width: '100%',
-        zIndex: 1000000,
-
-      }
+  
 })
