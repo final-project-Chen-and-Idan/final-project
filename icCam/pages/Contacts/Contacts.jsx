@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity, Modal, TextInput, FlatList, ToastAndroid, Alert, ImageBackground, Image} from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Modal, TextInput, FlatList, ToastAndroid, Alert, ImageBackground, Image, KeyboardAvoidingView} from 'react-native'
 import React, { useState, useEffect} from 'react'
 import { fetchSignInMethodsForEmail } from 'firebase/auth'
 import { collection, query, onSnapshot, where, getDocs, updateDoc} from 'firebase/firestore'
@@ -62,8 +62,8 @@ const Contacts = () => {
         <View style={styles.contactsItem}>
           <Text style={styles.contactsItemText}   >name: {user.name}</Text>
           <Text style={styles.contactsItemText}  >email: {user.email}</Text>
-          <TouchableOpacity style={styles.contactsItemButton} onPress={()=>toggleActive(user)}>
-            <Text style={styles.contactsItemButtonText}>{user.active?"Active":"not Active"}</Text>
+          <TouchableOpacity style={styles.button} onPress={()=>toggleActive(user)}>
+            <Text style={styles.buttonText}>{user.active?"Active":"not Active"}</Text>
           </TouchableOpacity>
           <ContactFeed contact={user.email} contactName={user.name}/>
         </View>
@@ -261,78 +261,109 @@ const Contacts = () => {
     },[])
 
   return (
-    <BackgroundImage source={image} style = {styles.page}>
-    <View style = {styles.pageContent}>
-      {/*----------------- the adding area ----------------*/}
-      {/* the pop up for adding */}
-      <Modal visible={visible} animationType="slide"
-                               >
-        <ImageBackground source={require('../../assets/pool4.png')} style={styles.page} >
-          <View style={styles.modalContent}>
-        <TouchableOpacity onPress={()=>{setVisible(false)}}>
-          <Icon name="ios-arrow-back" size={30} color="black"></Icon>
-        </TouchableOpacity>
-        <View style={styles.c}>
-        <TextInput
-                  style = {styles.box}
-                  placeholder="Email"
-                  onChangeText={(email) => setEmail(email)}
-                  autoCapitalize="none"
-                  autoCorrect = {false}
-        />
-        <TouchableOpacity onPress={addContact} style={styles.contactsItemButton}>
-          <Text>Send Invite</Text>
-        </TouchableOpacity>
-        </View>
-        <View
-          style={{
-            borderBottomColor: 'black',
-            borderBottomWidth: StyleSheet.hairlineWidth,
-          }}
-        />
+    <View style={styles.all}>
+    {/* <BackgroundImage source={image} style = {styles.page}> */}
+      <View style = {styles.pageContent}>
+        {/*----------------- the adding area ----------------*/}
+        {/* the pop up for adding */}
+        <Modal visible={visible} animationType="slide"
+                                >
+          <View style={styles.all}>
+          {/* <ImageBackground source={require('../../assets/pool4.png')} style={styles.page} > */}
+            <View style={styles.modalContent}>
+          <TouchableOpacity onPress={()=>{setVisible(false)}}>
+            <Icon name="ios-arrow-back" size={30} color="black"></Icon>
+          </TouchableOpacity>
+          <View style={styles.c}>
+          <KeyboardAvoidingView>
+            <TextInput
+                      style = {styles.box}
+                      placeholder="Email"
+                      onChangeText={(email) => setEmail(email)}
+                      autoCapitalize="none"
+                      autoCorrect = {false}
+                      placeholderTextColor={`#a9a9a9`}
+                      color="#000000" 
+            />
+            <TouchableOpacity onPress={addContact} style={styles.button}>
+              <Text>Send Invite</Text>
+            </TouchableOpacity>
+          </KeyboardAvoidingView>
+          </View>
+          <View
+            style={{
+              borderBottomColor: 'black',
+              borderBottomWidth: StyleSheet.hairlineWidth,
+            }}
+          />
 
-        {/* the request area */}
-        {contacts.filter(item=>item.request==true).length>0?
-        <FlatList
-          data={contacts.filter(item=>item.request==true)}
-          keyExtractor = {item=> item.email}
-          renderItem = {(data)=><RequestItem user={data.item}/>}
-        />:
-        <Text style={{fontWeight: '400', fontSize: 20}}>There are currently no requests</Text>
-        }
-        </View>
-</ImageBackground>
-      </Modal>
-
-      {/* the adding button */}
-      <View>
-        <TouchableOpacity onPress={()=>{setVisible(true)}} style={{margin: 6}}>
-          <Icon name="md-person-add" size={30}/>
-        </TouchableOpacity>
-        {contacts.filter(item=>item.request==true).length>0?
-        <View style={styles.redDot}/>
-        :
-        null}
-      </View>
-
-      {/* --------------------list area------------------ */}
-      {/* the contact list */}
-      {contacts.filter(item=>item.request==false).length>0?
-      <FlatList
-        data={contacts.filter(item=>item.request==false)}
-        keyExtractor = {item=> item.email}
-        renderItem = {(data)=><Contact user={data.item}/>}
-      />:
-      <Text>you currently have no contact - try clicking the add button to add a contact</Text>
-      }
+          {/* the request area */}
+          {contacts.filter(item=>item.request==true).length>0?
+          <FlatList
+            data={contacts.filter(item=>item.request==true)}
+            keyExtractor = {item=> item.email}
+            renderItem = {(data)=><RequestItem user={data.item}/>}
+          />:
+          <Text style={{fontWeight: '400', fontSize: 20}}>There are currently no requests</Text>
+          }
+          </View>
+    {/* </ImageBackground> */}
     </View>
-    </BackgroundImage>
+        </Modal>
+
+        {/* the adding button */}
+        <View>
+          <TouchableOpacity onPress={()=>{setVisible(true)}} style={{margin: 6}}>
+            <Icon name="md-person-add" size={30}/>
+          </TouchableOpacity>
+          {contacts.filter(item=>item.request==true).length>0?
+          <View style={styles.redDot}/>
+          :
+          null}
+        </View>
+
+        {/* --------------------list area------------------ */}
+        {/* the contact list */}
+        {contacts.filter(item=>item.request==false).length>0?
+        <FlatList
+          data={contacts.filter(item=>item.request==false)}
+          keyExtractor = {item=> item.email}
+          renderItem = {(data)=><Contact user={data.item}/>}
+        />:
+        <Text>you currently have no contact - try clicking the add button to add a contact</Text>
+        }
+      </View>
+    {/* </BackgroundImage> */}
+    </View>
   )
 }
 
 export default Contacts
 
 const styles = StyleSheet.create({
+  all: {
+    backgroundColor: 'cadetblue',
+    height: '100%',
+  } ,
+  button: {
+    borderWidth: 2,
+    alignSelf: 'center',
+    alignItems: 'center',
+    width: '40%',
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+    borderRadius: 50,
+    backgroundColor: 'oldlace',
+    marginHorizontal: '1%',
+    marginBottom: 6,
+    minWidth: '48%',
+    textAlign: 'center',
+    backgroundColor: `#8fbc8f`,
+  },
+  buttonText: {
+    fontWeight: '800',
+    fontSize: 15
+  },
   redDot:{
     position:"absolute",
     left:20,
@@ -408,7 +439,7 @@ const styles = StyleSheet.create({
     maxWidth: '100%',
   },
   box: {
-    backgroundColor: `#ffe4c4`,
+    backgroundColor: `#fffacd`,
     fontSize: 20,
     borderWidth: 2,
     margin: 10,
