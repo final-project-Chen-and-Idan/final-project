@@ -366,12 +366,15 @@ const styles = StyleSheet.create({
   },
   redDot:{
     position:"absolute",
-    left:20,
-    height:10,
-    width: 10,
+    marginTop: 5,
+    height:15,
+    width: 15,
     borderRadius:25,
     backgroundColor:"red",
     padding: 3,
+    alignSelf: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   activeButton:{
     width:50,
