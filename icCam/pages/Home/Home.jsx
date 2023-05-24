@@ -106,7 +106,7 @@ const Home = () => {
             </View>       
           </FadeInView>
         </View>
-         <View style = {{maxHeight:'10%',minHeight: '10%', padding: 10,alignItems: 'center' ,width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 30, alignSelf: 'center',backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+         <View style = {{paddingBottom: 20,  maxHeight:'10%',minHeight: '10%', padding: 10,alignItems: 'center' ,width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 30, alignSelf: 'center',backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
                       <TouchableOpacity  onPress={() => {navigation.navigate('Contacts')}} style = {styles.FuncButton}>
                         <Text style={styles.logoutText}> Contacts</Text>
                         <Icon name="address-book" size={30} color="#d2691e" />
@@ -123,8 +123,6 @@ const Home = () => {
                           <View style={styles.modalContent}>
                             <Text style = {styles.title}>How It Works:</Text>
                             <Text style={styles.text}>
-                       
-
 הבעיה: טביעת ילדים בבריכות ביתיות - כולנו מכירים את הסיפורים בתקשורת.
 מקור הבעיה: חוסר תשומת לב של המבוגר האחראי והשגחה לא רציפה על הבריכה.
 הפתרון שלנו: IC-CAM, אמצעי טכנולוגי להשגחה רציפה ויעילה על הבריכה המבוסס על למידה עמוקה בתחום עיבוד תמונה ומופעל באמצעות סמארטפון.
