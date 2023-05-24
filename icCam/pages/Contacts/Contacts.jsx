@@ -286,7 +286,7 @@ const Contacts = () => {
                       color="#000000" 
             />
             <TouchableOpacity onPress={addContact} style={styles.button}>
-              <Text>Send Invite</Text>
+              <Text style={styles.buttonText}>Send Invite</Text>
             </TouchableOpacity>
           </KeyboardAvoidingView>
           </View>
@@ -304,7 +304,7 @@ const Contacts = () => {
             keyExtractor = {item=> item.email}
             renderItem = {(data)=><RequestItem user={data.item}/>}
           />:
-          <Text style={{fontWeight: '400', fontSize: 20}}>There are currently no requests</Text>
+          <Text style={{fontWeight: '400', fontSize: 20, color: `#000000`}}>There are currently no requests</Text>
           }
           </View>
     {/* </ImageBackground> */}

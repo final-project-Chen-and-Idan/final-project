@@ -107,7 +107,7 @@ const Home = () => {
           </FadeInView>
         </View>
          <View style = {{maxHeight:'10%',minHeight: '10%', padding: 10,alignItems: 'center' ,width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 30, alignSelf: 'center',backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
-                      <TouchableOpacity  onPress={() => {navigation.navigate('Contacts')}} style={styles.button}>
+                      <TouchableOpacity  onPress={() => {navigation.navigate('Contacts')}} style = {styles.FuncButton}>
                         <Text style={styles.logoutText}> Contacts</Text>
                         <Icon name="address-book" size={30} color="#d2691e" />
                       </TouchableOpacity>
@@ -117,15 +117,24 @@ const Home = () => {
                       <TouchableOpacity  style = {styles.FuncButton} onPress={toggleModal}>
                       <Text style={styles.logoutText}>How It Works </Text>
                       </TouchableOpacity>
-                      <Modal visible={modalVisible} animationType="slide"
-                              style={styles.modalContent}>
-                                <ImageBackground source={image} style = {styles.page}>
-                        <View style={styles.modalContent}>
-                          <TouchableOpacity style={styles.contactsItemButton}   onPress={closeModal}>
-                            <Text style={styles.closeButton}>Close Modal</Text>
-                          </TouchableOpacity>
+                      <Modal visible={modalVisible} animationType="slide">
+                                {/* <ImageBackground source={image} style = {styles.page}> */}
+                        <View style={styles.all}>
+                          <View style={styles.modalContent}>
+                            <Text style = {styles.title}>How It Works:</Text>
+                            <Text style={styles.text}>
+                        
+בשנים האחרונות, בעקבות ירידת המחירים והעלייה ברמת החיים, חלה עלייה במספר הבתים הפרטיים בהם בריכות ביתיות מסוגים שונים. אולם, בעקבות העלייה במספר הבריכות הפרטיות הובילה גם לעלייה מצערת של שכיחות מקרי טביעה של ילדים בבריכות אלו.
+הבריכות הפרטיות מסוכנות יותר מן הציבוריות מכיוון שבריכות ציבוריות מחויבות על פי חוק לתקנות בטיחות כמו גידור הבריכה והשגחת מציל [1], מה שאין כן בבריכות הפרטיות [2] , שלעיתים קרובות נשארות לאורך רוב שעות היום ללא השגחה וללא גידור. נוסף על כך, גם כאשר ילדים שוהים בבריכה, הם נתונים להשגחת הוריהם או מבוגרים אחרים שלרוב לא השתתפו בתוכנית להכשרת מצילים. 
+מטרת הפרויקט היא לפתח מוצר שיעזור בפתרון הבעיות הללו. בעזרת עיבוד תמונה והגדרת גבולות הבריכה יאפשר המוצר לאתר ילדים המשוטטים בסביבתה ללא השגחה ואף לזהות מקרי קיצון שבהם ישקעו ילדים מתחת לפני המים – ולשלוח התראה בהתאם להורה או לבעל הבריכה. 
+
+                            </Text>
+                            <TouchableOpacity style={styles.button}   onPress={closeModal}>
+                              <Text style={styles.buttonText}>Close Modal</Text>
+                            </TouchableOpacity>
+                          </View>
                         </View>
-                        </ImageBackground>
+                        {/* </ImageBackground> */}
                       </Modal>
          </View>
       </View>
@@ -136,6 +145,20 @@ const Home = () => {
 export default Home
 
 const styles = StyleSheet.create({
+  all: {
+    backgroundColor: 'cadetblue',
+    height: '100%',
+  } ,
+  text: {
+    textAlign: 'center',
+    justifyContent: 'center',
+    fontWeight: '400',
+    fontSize: 20,
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 2, 
+    textShadowColor: 'darkslategrey ',
+    color: 'darkslategrey ',
+  },
   camButtonView: {
     flexDirection: 'row',
     alignItems: 'center', 
@@ -287,29 +310,23 @@ const styles = StyleSheet.create({
     color: "darkslategrey",
   },
   button: {
-    // borderWidth: 2,
-    // height: "60%",
-    // alignSelf: 'center',
-    flexDirection: 'row',
-    // maxWidth: '90%',
-    // paddingHorizontal: 8,
-    // paddingVertical: 6,
-    // borderRadius: 40,
-    // // backgroundColor: 'oldlace',
-    // marginHorizontal: '1%',
-    // // marginBottom: 6,
-    // // margin: 10,
-    // minWidth: '88%',
-    // textAlign: 'center',
-    // backgroundColor: `#ffe4c4`,
-
+    borderWidth: 2,
+    alignSelf: 'center',
+    alignItems: 'center',
+    width: '40%',
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+    borderRadius: 50,
+    backgroundColor: 'oldlace',
+    marginHorizontal: '1%',
+    marginBottom: 6,
+    minWidth: '48%',
+    textAlign: 'center',
+    backgroundColor: `#8fbc8f`,
   },
   buttonText: {
-    textAlign: 'center',
-    alignSelf: 'center',
-    justifyContent: 'center',
-    fontWeight: 'bold',
-    fontSize: 25,
+    fontWeight: '800',
+    fontSize: 15
   },
   box: {
     textAlign: 'center',
