@@ -72,7 +72,6 @@ const MyCamera = () => {
     }
     
 
-
   }
 
   // starting the camera stream for sharing
