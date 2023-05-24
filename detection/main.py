@@ -674,11 +674,12 @@ def send_notifications(type_of_danger = "child is alone near the pool"):
             priority= "high",
             
             notification= messaging.AndroidNotification(
-                vibrate_timings_millis= [10000, 30000, 10000],
+                vibrate_timings_millis= [1000, 30000, 1000, 10000, 1000, 30000],
                 title="DANGER",
                 body=type_of_danger,
                 default_sound = True,
-                visibility="public"
+                visibility="public",
+                color='#ff0000'
             )
         )
         
