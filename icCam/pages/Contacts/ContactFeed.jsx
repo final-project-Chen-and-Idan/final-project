@@ -229,9 +229,9 @@ const ContactFeed = ({contact, contactName}) => {
         </Modal>
         
         {/* button for oppening the  modal */}
-        <View style={{backgroundColor:"blue", width:100, height:50}}>
-            <TouchableOpacity onPress={()=>{setVisible(true)}}>
-                <Text style={styles.text}>Watch feed</Text>
+        <View >
+            <TouchableOpacity onPress={()=>{setVisible(true)}} style={styles.button}>
+                <Text style={styles.buttonText}>Watch feed</Text>
             </TouchableOpacity>
         </View>
       </>
@@ -241,7 +241,23 @@ const ContactFeed = ({contact, contactName}) => {
 export default ContactFeed
 
 const styles = StyleSheet.create({
-    text:{
-        fontSize:22,
-    }
+    button: {
+        borderWidth: 2,
+        alignSelf: 'center',
+        alignItems: 'center',
+        width: '40%',
+        paddingHorizontal: 8,
+        paddingVertical: 6,
+        borderRadius: 50,
+        backgroundColor: 'oldlace',
+        marginHorizontal: '1%',
+        marginBottom: 6,
+        minWidth: '48%',
+        textAlign: 'center',
+        backgroundColor: `#8fbc8f`,
+      },
+      buttonText: {
+        fontWeight: '800',
+        fontSize: 15
+      },
 })

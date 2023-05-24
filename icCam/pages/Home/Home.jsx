@@ -130,7 +130,7 @@ const Home = () => {
 
                             </Text>
                             <TouchableOpacity style={styles.button}   onPress={closeModal}>
-                              <Text style={styles.buttonText}>Close Modal</Text>
+                              <Text style={styles.buttonText}>Close</Text>
                             </TouchableOpacity>
                           </View>
                         </View>
@@ -147,7 +147,7 @@ export default Home
 const styles = StyleSheet.create({
   all: {
     backgroundColor: 'cadetblue',
-    height: '100%',
+    height: '110%',
   } ,
   text: {
     textAlign: 'center',
