@@ -1,4 +1,4 @@
-import { StyleSheet,PermissionsAndroid,TouchableOpacity, Text, View} from 'react-native'
+import { StyleSheet,PermissionsAndroid,TouchableOpacity, Text, View, AppState} from 'react-native'
 import React, { useState, useRef, useEffect} from 'react';
 import { RTCPeerConnection, RTCView, mediaDevices, RTCSessionDescription, RTCIceCandidate } from 'react-native-webrtc';
 import {auth, db} from '../../firebase';
@@ -41,6 +41,7 @@ const MyCamera = () => {
   };
   
   useEffect(()=>{
+    AppState.addEventListener('change',changeEvent )
     const start = async()=>{
       cameraPermission = await getPermision();
       if(cameraPermission){
@@ -55,6 +56,13 @@ const MyCamera = () => {
       await closeStream();
     }
   },[]);
+
+  // closes the connection when the app is closed
+  const changeEvent = (nextAppState)=>{
+    if (nextAppState === 'background' || nextAppState == null ) {
+      closeStream().then(console.log("closed"))
+  }
+  }
   
   //todo clear the data and close connections ------------------------------------------------------------------------------------------------------------
   const closeStream = async()=>{

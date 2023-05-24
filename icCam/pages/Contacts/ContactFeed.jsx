@@ -1,4 +1,4 @@
-import { Modal, StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import { Modal, StyleSheet, Text, View, TouchableOpacity, AppState } from 'react-native'
 import React, { useState, useRef, useEffect } from 'react'
 import { RTCView, RTCPeerConnection, RTCIceCandidate, RTCSessionDescription} from 'react-native-webrtc';
 import { auth, db } from '../../firebase';
@@ -9,10 +9,12 @@ const ContactFeed = ({contact, contactName}) => {
     const [activeFeed, setActiveFeed] = useState(false);
     const [visible, setVisible] = useState(false); 
     const peerConnectionRef = useRef();
+    const appStateRef = useRef(AppState.currentState)
     const iceHolder = []
 
   
     useEffect(() => {
+        AppState.addEventListener('change', onAppClose);
         checkIfActive()
     }, []);
 
@@ -24,6 +26,15 @@ const ContactFeed = ({contact, contactName}) => {
 
         change();
     }, [activeFeed, visible])
+
+    //the event that colses stuff when the app closes
+    const onAppClose = (nextAppState)=>{
+        if (nextAppState === 'background' || nextAppState == null ) {
+            closeConnection().then(console.log("closed"))
+            setVisible(false);
+        }
+
+    }
 
     // activating the connection to watch the feed
     const activateFeed = ()=>{
