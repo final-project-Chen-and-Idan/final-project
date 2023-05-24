@@ -77,7 +77,7 @@ const Home = () => {
     <View>
     <Notifications/>
     <DeleteUser></DeleteUser>
-    <View style={{minHeight: '100%' , flex: 1}}>
+    <View style={{minHeight: '100%' , flex: 1, backgroundColor: 'cadetblue',}}>
       {/* <SafeAreaView style = {styles.SafeAreaViewStyle}> */}
       {/* ============================================================================================================================== */}
         <View style={styles.titleView}>
@@ -105,7 +105,7 @@ const Home = () => {
         <View style={styles.newBox}>
           <FadeInView duration={1000}> 
             <View style = {styles.buttonBox}>
-              <View style = {{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 30}}>
+              <View style = {styles.camButtonView}>
                 <TouchableOpacity  onPress={() => {navigation.navigate('Camera')}} style={styles.camButton}>
                   {/* <Text style={styles.buttonText}>Camera</Text> */}
                   <Icon name="video-camera" size={150} color="darkslategrey" style={{borderColor: `#000000`,borderRadius: 5, shadowRadius:  3, shadowColor: `#000000`, shadowOpacity: 0.5}} />
@@ -171,6 +171,20 @@ const Home = () => {
 export default Home
 
 const styles = StyleSheet.create({
+  camButtonView: {
+    flexDirection: 'row',
+    alignItems: 'center', 
+    justifyContent: 'space-between', 
+    paddingHorizontal: 30, 
+    shadowColor: '#000',
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    elevation: Platform.OS === 'android' ? 4 : 0,
+  },
   camButton: {
     borderColor: "darkslategrey",
     borderRadius: 200,
@@ -180,8 +194,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.5)'
-  },
+    backgroundColor: 'rgba(255, 255, 255, 0.5)',
+    shadowColor: '#000',
+    shadowOpacity: 0.3,
+    shadowRadius: 1,
+    shadowOffset: {width: 0, height: 2},
+},
   contactsItemButton: {
     alignSelf: 'center',
     backgroundColor: `#008b8b`,
@@ -226,6 +244,7 @@ const styles = StyleSheet.create({
     maxHeight: '30%',
     minHeight: '30%',
     flex: 1,
+    alignContent: 'flex-start'
     
   },
   logoView: {
@@ -364,5 +383,7 @@ const styles = StyleSheet.create({
   image: {
     height: '100%'
   },
-  
+  buttonBox: {
+    flex: 2
+  }
 })
