@@ -51,6 +51,8 @@ const Signup = () => {
                           onChangeText={(email) => setEmail(email)}
                           autoCapitalize="none"
                           autoCorrect = {false}
+                          placeholderTextColor={`#a9a9a9`}
+                          color="#000000" 
                           />
                 {/* </KeyboardAvoidingView> */}
                 {/* <KeyboardAvoidingView> */}
@@ -61,6 +63,8 @@ const Signup = () => {
                         autoCapitalize="none"
                         autoCorrect = {false}
                         secureTextEntry={true}
+                        placeholderTextColor={`#a9a9a9`}
+                        color="#000000" 
                       />
                 {/* </KeyboardAvoidingView> */}
                 {/* <KeyboardAvoidingView> */}
@@ -71,6 +75,8 @@ const Signup = () => {
                         autoCapitalize="none"
                         autoCorrect = {false}
                         secureTextEntry={true}
+                        placeholderTextColor={`#a9a9a9`}
+                        color="#000000" 
                         />
               {/* </KeyboardAvoidingView> */}
             </View>
@@ -129,17 +135,19 @@ const styles = StyleSheet.create({
     
   },
   box: {
-    backgroundColor: `#ffe4c4`,
+    backgroundColor: `#fffacd`,
     fontSize: 20,
     borderWidth: 2,
     margin: 10,
     padding: 3,
     paddingLeft: 3,
     borderRadius: 10,
+    
 },
 button: {
   borderWidth: 2,
   alignSelf: 'center',
+  alignItems: 'center',
   width: '40%',
   paddingHorizontal: 8,
   paddingVertical: 6,
@@ -149,14 +157,12 @@ button: {
   marginBottom: 6,
   minWidth: '48%',
   textAlign: 'center',
-  backgroundColor: `#daa520`,
+  backgroundColor: `#8fbc8f`,
 },
-  buttonText: {
-    textAlign: 'center',
-    justifyContent: 'center',
-    fontWeight: 'bold',
-    fontSize: 25,
-  },
+buttonText: {
+  fontWeight: '800',
+  fontSize: 15
+},
   title: {
     //fontSize: 10,
     fontWeight: 'bold',
