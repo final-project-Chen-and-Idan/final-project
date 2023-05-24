@@ -6,7 +6,7 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 from firebase_admin import messaging
-from aiortc import RTCIceCandidate, RTCSessionDescription, MediaStreamTrack, RTCPeerConnection
+# from aiortc import RTCIceCandidate, RTCSessionDescription, MediaStreamTrack, RTCPeerConnection
 
 pc = None
 
@@ -671,14 +671,27 @@ def send_notifications(type_of_danger = "child is alone near the pool"):
         ),
         tokens=active_token,
         android= messaging.AndroidConfig(
-            priority= "high"
+            priority= "high",
+            
+            notification= messaging.AndroidNotification(
+                vibrate_timings_millis= [10000, 30000, 10000],
+                title="DANGER",
+                body=type_of_danger,
+                default_sound = True,
+                visibility="public"
+            )
         )
         
     )
+    
     response = messaging.send_multicast(message)
     # See the BatchResponse reference documentation
     # for the contents of response.
     print('{0} messages were sent successfully'.format(response.success_count))
+    
+    # in case it was not sent
+    if response.success_count == 0:
+        messaging.send_multicast(message)
 
 # ============================= main =============================================
 if __name__ == "__main__":
