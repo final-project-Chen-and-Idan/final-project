@@ -113,7 +113,7 @@ const Home = () => {
                       </TouchableOpacity>
                       <Text style = {styles.logoutText}>|</Text>
                       
-                      <Text style = {styles.logoutText}>|</Text>
+                      {/* <Text style = {styles.logoutText}>|</Text> */}
                       <TouchableOpacity  style = {styles.FuncButton} onPress={toggleModal}>
                       <Text style={styles.logoutText}>How It Works </Text>
                       </TouchableOpacity>
@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
     // justifyContent: 'center'
   },
   FuncButton: {
-   
+   flexDirection: 'row',
     justifyContent: 'flex-start',
   },
   logOutView: {
