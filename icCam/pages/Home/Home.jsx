@@ -8,6 +8,7 @@ import Notifications from '../Notifications/Notifications'
 // import {logo} from '../assets'
 import { NavigationContainer, useNavigation } from '@react-navigation/native'
 import Icon from 'react-native-vector-icons/FontAwesome';
+import DeleteUser from '../Login/DeleteUser';
 
 
 const Home = () => {
@@ -75,6 +76,7 @@ const Home = () => {
   return (
     <View>
     <Notifications/>
+    <DeleteUser></DeleteUser>
     <View style={{minHeight: '100%' , flex: 1}}>
       {/* <SafeAreaView style = {styles.SafeAreaViewStyle}> */}
       {/* ============================================================================================================================== */}
