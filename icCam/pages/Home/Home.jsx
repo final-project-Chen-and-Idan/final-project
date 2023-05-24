@@ -189,10 +189,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.5)',
     // borderRadius: [10, 20, 30, 40],
   },
-  pool: {
-    width: '100%',
-    height: '80%',
-  },
+ 
   SafeAreaViewStyle: {
     backgroundColor: 'rgba(0, 139, 139, 0.6)',
     // borderColor: `#ff0000`,
@@ -214,13 +211,13 @@ const styles = StyleSheet.create({
   },
   logoView: {
     margin: 50,
-   
+    // backgroundColor: 'rgba(0, 0, 0, 0.5)',
     alignSelf: 'center',
     alignItems: 'center',
-    width: '90%',
-    height: '20%',
-  
-    padding: 1
+    width: '99%',
+    // height: '50%',
+    // padding: -100,
+    // justifyContent: 'center'
   },
   FuncButton: {
    
@@ -270,13 +267,15 @@ const styles = StyleSheet.create({
   logologo: {
     //  maxHeight: 500,
     //  width: 400,
-     margin: 20,
+    margin: 20,
+    padding: 20,
     alignSelf: 'center',
-    maxHeight: '80%',
-    minHeight: '80%',
-    maxWidth: '80%',
-    
+    // maxHeight: '80%',
+    // minHeight: '80%',
+    maxWidth: '99%',
+    minWidth: '90%',
 
+    
   },
   
   title: {
