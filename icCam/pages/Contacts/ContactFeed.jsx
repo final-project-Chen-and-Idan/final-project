@@ -41,12 +41,29 @@ const ContactFeed = ({contact, contactName}) => {
         // the configurations for the peer connection
         const configuration = {
             iceServers: [
-              {
-                urls: [
-                  'stun:stun1.l.google.com:19302',
-                  'stun:stun2.l.google.com:19302',
-                ],
-              },
+                {
+                    urls: "stun:a.relay.metered.ca:80",
+                  },
+                  {
+                    urls: "turn:a.relay.metered.ca:80",
+                    username: "2f02eed12f0f526544c1a6c8",
+                    credential: "eBSRDZmuIEXyUuXV",
+                  },
+                  {
+                    urls: "turn:a.relay.metered.ca:80?transport=tcp",
+                    username: "2f02eed12f0f526544c1a6c8",
+                    credential: "eBSRDZmuIEXyUuXV",
+                  },
+                  {
+                    urls: "turn:a.relay.metered.ca:443",
+                    username: "2f02eed12f0f526544c1a6c8",
+                    credential: "eBSRDZmuIEXyUuXV",
+                  },
+                  {
+                    urls: "turn:a.relay.metered.ca:443?transport=tcp",
+                    username: "2f02eed12f0f526544c1a6c8",
+                    credential: "eBSRDZmuIEXyUuXV",
+                  },
             ],
             iceCandidatePoolSize: 10
         };
