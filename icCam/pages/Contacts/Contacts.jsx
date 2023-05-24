@@ -312,7 +312,7 @@ const Contacts = () => {
         </Modal>
 
         {/* the adding button */}
-        <View>
+        <View style={{width:42}}>
           <TouchableOpacity onPress={()=>{setVisible(true)}} style={{margin: 6}}>
             <Icon name="md-person-add" size={30}/>
           </TouchableOpacity>
@@ -366,15 +366,13 @@ const styles = StyleSheet.create({
   },
   redDot:{
     position:"absolute",
-    marginTop: 5,
-    height:15,
-    width: 15,
+    height:12,
+    width: 12,
     borderRadius:25,
     backgroundColor:"red",
     padding: 3,
-    alignSelf: 'center',
-    alignItems: 'center',
-    justifyContent: 'center',
+    top:4,
+    right:5
   },
   activeButton:{
     width:50,
