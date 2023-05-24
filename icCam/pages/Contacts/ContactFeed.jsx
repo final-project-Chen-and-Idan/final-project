@@ -18,7 +18,11 @@ const ContactFeed = ({contact, contactName}) => {
 
     // if there is a connection and the user wants to view it
     useEffect(()=>{
-        activeFeed && visible ?activateFeed(): closeConnection();
+        const change = async ()=>{
+            activeFeed && visible ? activateFeed():await closeConnection();
+        }
+
+        change();
     }, [activeFeed, visible])
 
     // activating the connection to watch the feed
@@ -188,7 +192,7 @@ const ContactFeed = ({contact, contactName}) => {
     // a listener incase the live feed is stopped
     const listenToclose = async()=>{
         onSnapshot(doc(db,"LiveFeed", contact), snapshot=>{
-            if(!snapshot.data()["Active"]){
+            if(snapshot.data() && !snapshot.data()["Active"]){
                 setActiveFeed(false);
                 if(visible){
                     alert(contactName + " has closed the feed")
@@ -215,7 +219,7 @@ const ContactFeed = ({contact, contactName}) => {
             style={StyleSheet.absoluteFill}
             zOrder={1}
             />:
-            null
+            <Text>Loading ......</Text>
             }
 
             {/* close button */}
