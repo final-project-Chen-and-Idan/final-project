@@ -404,6 +404,7 @@ const styles = StyleSheet.create({
   contactsItemText: {
     fontSize: 20,
     fontWeight: '500',
+    color: `#000000`,
 
   },
   contactsItemButton: {
