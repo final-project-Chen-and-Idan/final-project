@@ -156,8 +156,8 @@ const styles = StyleSheet.create({
     fontSize: 20,
     textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 2, 
-    textShadowColor: 'darkslategrey ',
-    color: 'darkslategrey ',
+    // textShadowColor: 'darkslategrey ',
+    // color: 'darkslategrey ',
   },
   camButtonView: {
     flexDirection: 'row',
@@ -256,8 +256,8 @@ const styles = StyleSheet.create({
     fontSize: 25,
     textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 2, 
-    textShadowColor: 'darkslategrey ',
-    color: 'darkslategrey ',
+    // textShadowColor: 'darkslategrey ',
+    // color: 'darkslategrey ',
   
   },
   
