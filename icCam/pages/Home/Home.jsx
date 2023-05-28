@@ -74,7 +74,9 @@ const Home = () => {
   return (
     <View>
     <Notifications/>
-    <DeleteUser></DeleteUser>
+    <View style={styles.deleteUser}>
+    <DeleteUser ></DeleteUser>
+    </View>
     <View style={{minHeight: '100%' , flex: 1, backgroundColor: 'cadetblue',}}>
       {/* <SafeAreaView style = {styles.SafeAreaViewStyle}> */}
         <View style={styles.titleView}>
@@ -145,6 +147,9 @@ const Home = () => {
 export default Home
 
 const styles = StyleSheet.create({
+  deleteUser: {
+    backgroundColor: 'rgba(150, 100, 4, 0.6)',
+  },
   all: {
     backgroundColor: 'cadetblue',
     height: '110%',
@@ -234,12 +239,12 @@ const styles = StyleSheet.create({
   },
   logoView: {
     margin: 50,
-    // backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     alignSelf: 'center',
     alignItems: 'center',
     width: '99%',
     // height: '50%',
-    // padding: -100,
+    padding: 20,
     // justifyContent: 'center'
   },
   FuncButton: {
@@ -290,13 +295,13 @@ const styles = StyleSheet.create({
   logologo: {
     //  maxHeight: 500,
     //  width: 400,
-    margin: 20,
-    padding: 20,
+    margin: 8,
+    // padding: 20,
     alignSelf: 'center',
-    // maxHeight: '80%',
+    // maxHeight: '90%',
     // minHeight: '80%',
     maxWidth: '99%',
-    minWidth: '90%',
+    minWidth: '100%',
 
     
   },
