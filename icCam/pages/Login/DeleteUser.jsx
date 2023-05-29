@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, Alert } from 'react-native'
 import React from 'react'
 import {auth, db} from '../../firebase'
-import { collection, deleteDoc, getDocs, query, updateDoc, where } from 'firebase/firestore'
+import { collection, deleteDoc, doc, getDocs, query, updateDoc, where } from 'firebase/firestore'
 import { deleteUser } from 'firebase/auth'
 
 const DeleteUser = () => {
@@ -49,6 +49,8 @@ const DeleteUser = () => {
         user.docs.forEach(async doc=>{
             await deleteDoc(doc.ref);
         })
+
+        await deleteDoc(doc(db,"LiveFeed",auth.currentUser.email));
     }
 
     const deleteUserFromFirebase = async()=>{

@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, TouchableOpacity, TextInput, ImageBackground } from 'react-native'
 import React, { useState } from 'react'
 import { auth, db } from '../../firebase'
-import { addDoc, collection } from 'firebase/firestore'
+import { addDoc, collection, doc } from 'firebase/firestore'
 import { sendEmailVerification, updateProfile } from 'firebase/auth'
 import Icon from 'react-native-vector-icons/Feather'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -31,6 +31,7 @@ const Verify = () => {
             contacts:{},
             danger: false
           });
+          setDoc(doc(db,"LiveFeed", auth.currentUser.email),{"Active":false})
           auth.signOut()
         }
     }
