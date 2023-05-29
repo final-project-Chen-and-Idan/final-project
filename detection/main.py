@@ -679,7 +679,6 @@ def send_notifications(type_of_danger = "child is alone near the pool"):
                 body=type_of_danger,
                 default_sound = True,
                 visibility="public",
-                color='#ff0000'
             )
         )
         
