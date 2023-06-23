@@ -60,26 +60,30 @@ const MyCamera = () => {
   // closes the connection when the app is closed
   const changeEvent = (nextAppState)=>{
     if (nextAppState === 'background' || nextAppState == null ) {
-      closeStream().then(console.log("closed"))
+      closeStream().then(console.log("closed livestream"))
   }
   }
   
   //todo clear the data and close connections ------------------------------------------------------------------------------------------------------------
   const closeStream = async()=>{
-
+    console.log(peerConnectionRef.current)
+    
     await updateDoc(doc(db,"LiveFeed",auth.currentUser.email), {"Active" : false})
-
-    if(peerConnectionRef.current)
-      for(item in peerConnectionRef.current){
-        peerConnectionRef.current[item].close()
-      }
 
     if(localStreamRef.current){
       localStreamRef.current.getTracks().forEach(t => t.stop());
       localStreamRef.current.release();
     }
     
-
+    for(item in peerConnectionRef.current){
+      if(peerConnectionRef.current[item]){
+        peerConnectionRef.current[item].close()
+        delete peerConnectionRef.current[item];
+      }
+      
+    }
+    console.log(peerConnectionRef.current)
+    peerConnectionRef.current = {}
   }
 
   // starting the camera stream for sharing
@@ -165,6 +169,7 @@ const MyCamera = () => {
 
   // handles closing a connection when someone disconnects
   const handleClose = (offerId) => {
+    console.log("closeing connection for " + offerId)
     if (peerConnectionRef.current[offerId]) {
       peerConnectionRef.current[offerId].close();
       delete peerConnectionRef.current[offerId];

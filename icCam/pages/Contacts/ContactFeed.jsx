@@ -8,20 +8,20 @@ const ContactFeed = ({contact, contactName}) => {
     const [remoteStream, setRemoteStream] = useState(null);
     const [activeFeed, setActiveFeed] = useState(false);
     const [visible, setVisible] = useState(false); 
-    const peerConnectionRef = useRef();
-    const appStateRef = useRef(AppState.currentState)
+    const peerConnectionRef = useRef(null);
     const iceHolder = []
 
   
     useEffect(() => {
         AppState.addEventListener('change', onAppClose);
-        checkIfActive()
+        listenToclose()
     }, []);
 
     // if there is a connection and the user wants to view it
     useEffect(()=>{
+        console.log("e ============== "+visible)
         const change = async ()=>{
-            activeFeed && visible ? activateFeed():await closeConnection();
+            activeFeed && visible ? activateFeed(): closeConnection();
         }
 
         change();
@@ -30,7 +30,8 @@ const ContactFeed = ({contact, contactName}) => {
     //the event that colses stuff when the app closes
     const onAppClose = (nextAppState)=>{
         if (nextAppState === 'background' || nextAppState == null ) {
-            closeConnection().then(console.log("closed"))
+            closeConnection()
+            console.log("closed viewer: " +auth.currentUser.email)
             setVisible(false);
         }
 
@@ -40,15 +41,6 @@ const ContactFeed = ({contact, contactName}) => {
     const activateFeed = ()=>{
         setupWebRTC();
         createOffer();
-    }
-
-    // checking if thte feed for the current contact is active
-    const checkIfActive = async()=>{
-        const data = (await getDoc(doc(db,"LiveFeed",contact))).data();
-        if(data && data["Active"]){
-            setActiveFeed(true);
-            listenToclose();
-        }
     }
   
     //setting upp the webrtc peer connectionn
@@ -82,7 +74,7 @@ const ContactFeed = ({contact, contactName}) => {
             ],
             iceCandidatePoolSize: 10
         };
-      
+       
         peerConnectionRef.current = new RTCPeerConnection(configuration);
 
         //making the peerconnection as receive only
@@ -95,17 +87,22 @@ const ContactFeed = ({contact, contactName}) => {
 
         // when getting a video track fromo remotet stream 
         peerConnectionRef.current.ontrack = (event) => {
-        if (event.track.kind === 'video') {
-            setRemoteStream(event.streams[0].toURL());
-        }
+            if (event.track.kind === 'video') {
+                setRemoteStream(event.streams[0]);
+            }
+            else{
+                event.track.stop()
+            }
         };
 
         // for debbuging - printing the changes in the connection and ice connection  
         peerConnectionRef.current.oniceconnectionstatechange = ()=>{
-            console.log('ice Connection Status for the viewer', peerConnectionRef.current.iceConnectionState)
+            if(peerConnectionRef.current)
+                console.log('ice Connection Status for the viewer', peerConnectionRef.current.iceConnectionState)
           }
         peerConnectionRef.current.onconnectionstatechange = ()=>{
-            console.log('Connection Status for the viewer', peerConnectionRef.current.connectionState)
+            if(peerConnectionRef.current)
+                console.log('Connection Status for the viewer', peerConnectionRef.current.connectionState)
           }
     };
   
@@ -147,7 +144,7 @@ const ContactFeed = ({contact, contactName}) => {
         onSnapshot(doc(db,"LiveFeed",contact, "viewers", auth.currentUser.email),async snapshot=>{
             const data = snapshot.data();
             // if there is an answer add the remote description
-            if (!peerConnectionRef.current.currentRemoteDescription && data?.answer) {
+            if (peerConnectionRef.current && !peerConnectionRef.current.currentRemoteDescription && data?.answer) {
                 const answerDescription = new RTCSessionDescription(data.answer);
                 await peerConnectionRef.current.setRemoteDescription(answerDescription);
                 
@@ -165,7 +162,7 @@ const ContactFeed = ({contact, contactName}) => {
                 if (change.type === 'added') {
                     const candidate = new RTCIceCandidate(change.doc.data());
                     
-                    if(peerConnectionRef.current.currentRemoteDescription){
+                    if(peerConnectionRef.current && peerConnectionRef.current.currentRemoteDescription){
                         peerConnectionRef.current.addIceCandidate(candidate);
                     }
                     else{
@@ -177,40 +174,46 @@ const ContactFeed = ({contact, contactName}) => {
     }
 
     // closing thte connection on the viewing  side
-    const closeConnection = async()=>{
-        // closing the peer connection if there is one
-        if(peerConnectionRef.current){
-            // peerConnectionRef.current._unregisterEvents();
-            peerConnectionRef.current.close();
-        }
+    const closeConnection = ()=>{
     
         // deleteing the offer ice candidates
-        const deleteOffers = await getDocs(collection(db,"LiveFeed",contact,"viewers", auth.currentUser.email, "offerCandidates"))
-        deleteOffers.docs.forEach(doc=>{
-            deleteDoc(doc.ref);
+        getDocs(collection(db,"LiveFeed",contact,"viewers", auth.currentUser.email, "offerCandidates")).then(deleteOffers=>{
+            deleteOffers.docs.forEach( async doc=>{
+                await deleteDoc(doc.ref);
+            })    
         })
         
         // deleteing the answer ice candidates
-        const deleteanswers = await getDocs(collection(db,"LiveFeed",contact,"viewers", auth.currentUser.email, "answerCandidates"))
-        deleteanswers.docs.forEach(doc=>{
-          deleteDoc(doc.ref);
+        getDocs(collection(db,"LiveFeed",contact,"viewers", auth.currentUser.email, "answerCandidates")).then(deleteanswers=>{
+            deleteanswers.docs.forEach(doc=>{
+              deleteDoc(doc.ref);
+            })
         })
         // deleteing the viewing doc for the current user
-        await deleteDoc(doc(db,"LiveFeed",contact,"viewers", auth.currentUser.email))
+        deleteDoc(doc(db,"LiveFeed",contact,"viewers", auth.currentUser.email)).then()
+
+        // closing the peer connection if there is one
+        if(peerConnectionRef.current){
+            console.log("closing viewer side: "+auth.currentUser.email)
+            peerConnectionRef.current.close()
+            setRemoteStream(null);
+            peerConnectionRef.current = null;
+        
+        }
     
     }
 
     // a listener incase the live feed is stopped
-    const listenToclose = async()=>{
+    const listenToclose = ()=>{
         onSnapshot(doc(db,"LiveFeed", contact), snapshot=>{
-            if(snapshot.data() && !snapshot.data()["Active"]){
+            const active = snapshot.data()["Active"]
+            console.log(visible)
+            if(!active && visible){
+                alert(contactName + " has closed the feed")
                 setActiveFeed(false);
-                if(visible){
-                    alert(contactName + " has closed the feed")
-                }
                 setVisible(false)
             }
-            else{
+            else if(active){
                 setActiveFeed(true);
             }
         })
@@ -226,7 +229,7 @@ const ContactFeed = ({contact, contactName}) => {
         <Modal visible = {visible}>
             {remoteStream?
             <RTCView
-            streamURL={remoteStream}
+            streamURL={remoteStream.toURL()}
             style={StyleSheet.absoluteFill}
             zOrder={1}
             />:

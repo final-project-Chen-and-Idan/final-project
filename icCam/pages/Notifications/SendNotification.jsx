@@ -3,9 +3,10 @@ import React, { useEffect, useState } from 'react'
 import messaging from '@react-native-firebase/messaging'
 import {auth, db} from '../../firebase'
 import { updateDoc, collection, query , where, getDocs } from 'firebase/firestore'
+import  Sound from 'react-native-sound'
 
-  const SendNotification = () => {
-    
+
+  const SendNotification = () => {  
     PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
     
     // uploads the current notification token to the firebase
@@ -28,10 +29,18 @@ import { updateDoc, collection, query , where, getDocs } from 'firebase/firestor
       uploadToken();
     })
 
-    // Register background handler
-    messaging().setBackgroundMessageHandler(async remoteMessage => {
-      console.log('Message handled in the background!', remoteMessage);
-    });
+    // // Register background handler
+    // messaging().setBackgroundMessageHandler(async remoteMessage => {
+    //   console.log('Message handled in the background!', remoteMessage);
+    //   const notificationSound = new Sound('../', Sound.MAIN_BUNDLE, (error) => {
+    //     if (error) {
+    //       console.log('Failed to load the sound', error);
+    //       return;
+    //     }
+    //     // Play the sound
+    //     notificationSound.play();
+    //   });
+    // });
 
     useEffect(() => {
       const unsubscribe = messaging().onMessage(async remoteMessage => {
