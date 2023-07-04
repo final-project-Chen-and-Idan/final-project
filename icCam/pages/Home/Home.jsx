@@ -1,12 +1,10 @@
-import { StyleSheet, Text, TouchableOpacity, View ,Image, ImageBackground, Animated, SafeAreaView, Modal, Dimensions } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View ,Image, Animated, Modal } from 'react-native'
 import { auth } from '../../firebase'
 import { signOut } from 'firebase/auth'
-// import React from 'react'
 import React, { useEffect, useRef ,Component, useState } from 'react';
-import {Camera} from '../Camera/Camera'
 import Notifications from '../Notifications/Notifications'
 // import {logo} from '../assets'
-import { NavigationContainer, useNavigation } from '@react-navigation/native'
+import { useNavigation } from '@react-navigation/native'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import DeleteUser from '../Login/DeleteUser';
 
@@ -19,18 +17,9 @@ const Home = () => {
   const closeModal = () => {
     setModalVisible(false);
   }
-  const [animation] = useState(new Animated.ValueXY({ x: 0, y: 0 }));
 
-  const moveSquare = () => {
-    Animated.timing(animation, {
-      toValue: { x: 200, y: 200 },
-      duration: 1000000000,
-      useNativeDriver: false, // this property must be set to false when using LayoutAnimation on Android
-    }).start();
-  };
   const navigation = useNavigation();
 
-  const image = { uri: "https://img.freepik.com/free-vector/scene-swimming-pool-with_1308-37683.jpg" }
 
 
   
@@ -73,73 +62,71 @@ const Home = () => {
   
   return (
     <View>
-    <Notifications/>
-    <View style={styles.deleteUser}>
-    <DeleteUser ></DeleteUser>
-    </View>
-    <View style={{minHeight: '100%' , flex: 1, backgroundColor: 'cadetblue',}}>
-      {/* <SafeAreaView style = {styles.SafeAreaViewStyle}> */}
-        <View style={styles.titleView}>
-          <View style={{flexDirection: 'row',backgroundColor: 'rgba(0, 0, 0, 0.5)',}}>
-            <TouchableOpacity onPress={logOut} style = {styles.FuncButton}>
-              <Text style={styles.logoutText}> Log Out </Text>
-            </TouchableOpacity>
+      <Notifications/>
+
+      {/* deleting the user */}
+      <View style={styles.deleteUser}>
+        <DeleteUser ></DeleteUser>
+      </View>
+
+      {/* the main view area */}
+      <View style={{minHeight: '100%' , flex: 1, backgroundColor: 'cadetblue',}}>
+          
+          {/* the logo area */}
+          <View style={styles.titleView}>  
+            <View style = {styles.logoView}>
+                  <Image source={require('../../assets/a1.png')} style = {styles.logologo}/>
+            </View>
           </View>
-          {/* <Text style = {styles.title}>hello there {auth.currentUser.displayName} Welcome to:</Text> */}
-          <View style = {styles.logoView}>
-                <Image source={require('../../assets/a1.png')} style = {styles.logologo}/>
+
+
+          {/* the main area with the contact button */}
+          <View style={styles.newBox}>
+            <FadeInView duration={1000}> 
+                {/* the contacts view */}
+                <TouchableOpacity  onPress={() => {navigation.navigate('Contacts')}} style={styles.contactsButton}>
+                  <Icon name="address-book" size={300} color="#900"/>
+                </TouchableOpacity>     
+            </FadeInView>
           </View>
-        </View>
-        <View style={styles.newBox}>
-          <FadeInView duration={1000}> 
-            <View style = {styles.buttonBox}>
-              <View style = {styles.camButtonView}>
-                <TouchableOpacity  onPress={() => {navigation.navigate('Camera')}} style={styles.camButton}>
-                  {/* <Text style={styles.buttonText}>Camera</Text> */}
-                  <Icon name="video-camera" size={150} color="darkslategrey" style={{borderColor: `#000000`,borderRadius: 5, shadowRadius:  3, shadowColor: `#000000`, shadowOpacity: 0.5}} />
-                </TouchableOpacity>
-              </View>
-                    {/* <View> */}
-                        {/* <TouchableOpacity  onPress={() => {navigation.navigate('Contacts')}} style={styles.button}> */}
-                          {/* <Text style={styles.buttonText}>Contacts</Text> */}
-                          {/* <Icon name="address-book" size={90} color="#900" /> */}
-                        {/* </TouchableOpacity> */}
-                    {/* </View>  */}
-            </View>       
-          </FadeInView>
-        </View>
-         <View style = {{paddingBottom: 20,  maxHeight:'10%',minHeight: '10%', padding: 10,alignItems: 'center' ,width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 30, alignSelf: 'center',backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
-                      <TouchableOpacity  onPress={() => {navigation.navigate('Contacts')}} style = {styles.FuncButton}>
-                        <Text style={styles.logoutText}> Contacts</Text>
-                        <Icon name="address-book" size={30} color="#d2691e" />
-                      </TouchableOpacity>
-                      <Text style = {styles.logoutText}>|</Text>
-                      
-                      {/* <Text style = {styles.logoutText}>|</Text> */}
-                      <TouchableOpacity  style = {styles.FuncButton} onPress={toggleModal}>
-                      <Text style={styles.logoutText}>How It Works </Text>
-                      </TouchableOpacity>
-                      <Modal visible={modalVisible} animationType="slide">
-                                {/* <ImageBackground source={image} style = {styles.page}> */}
-                        <View style={styles.all}>
-                          <View style={styles.modalContent}>
-                            <Text style = {styles.title}>How It Works:</Text>
-                            <Text style={styles.text}>
+         
+          {/* the bottom row */}
+          <View style = {{paddingBottom: 20,  maxHeight:'10%',minHeight: '10%', padding: 10,alignItems: 'center' ,width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 30, alignSelf: 'center',backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+
+              {/* log out */}
+              <TouchableOpacity onPress={logOut} style = {styles.FuncButton}>
+                <Text style={styles.logoutText}> Log Out </Text>
+              </TouchableOpacity>
+
+              <Text style={styles.logoutText}>|</Text>
+
+              {/* how it works */}
+              <TouchableOpacity  style = {styles.FuncButton} onPress={toggleModal}>
+                <Text style={styles.logoutText}>How It Works </Text>
+              </TouchableOpacity>
+
+              {/* the modal that shows the information */}
+              <Modal visible={modalVisible} animationType="slide">
+                        {/* <ImageBackground source={image} style = {styles.page}> */}
+                <View style={styles.all}>
+                  <View style={styles.modalContent}>
+                    <Text style = {styles.title}>How It Works:</Text>
+                    <Text style={styles.text}>
 הבעיה: טביעת ילדים בבריכות ביתיות - כולנו מכירים את הסיפורים בתקשורת.
 מקור הבעיה: חוסר תשומת לב של המבוגר האחראי והשגחה לא רציפה על הבריכה.
 הפתרון שלנו: IC-CAM, אמצעי טכנולוגי להשגחה רציפה ויעילה על הבריכה המבוסס על למידה עמוקה בתחום עיבוד תמונה ומופעל באמצעות סמארטפון.
- 
 
-                            </Text>
-                            <TouchableOpacity style={styles.button}   onPress={closeModal}>
-                              <Text style={styles.buttonText}>Close</Text>
-                            </TouchableOpacity>
-                          </View>
-                        </View>
-                        {/* </ImageBackground> */}
-                      </Modal>
-         </View>
-      </View>
+
+                    </Text>
+                    <TouchableOpacity style={styles.button}   onPress={closeModal}>
+                      <Text style={styles.buttonText}>Close</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+                {/* </ImageBackground> */}
+              </Modal>
+          </View>
+        </View>
       </View>
   )
 }
@@ -230,8 +217,8 @@ const styles = StyleSheet.create({
   titleView: {
     // borderWidth: 10,
     // backgroundColor: 'rgba(0, 139, 139, 0.5)',
-    maxHeight: '30%',
-    minHeight: '30%',
+    maxHeight: '20%',
+    minHeight: '20%',
     flex: 1,
     alignContent: 'flex-start',
     
@@ -279,17 +266,10 @@ const styles = StyleSheet.create({
   // },
  
   newBox: {
-    // borderRadius: 75,
     justifyContent: 'center', 
     alignItems: 'center', 
-    // alignSelf: 'center',
-    // height: '40%' , 
-    // backgroundColor: `#d2691e`,
-    maxHeight: '60%',
-    minHeight: '60%',
-    // marginTop: 10 , 
-    // width: '80%' ,
-    // borderWidth: 5,
+    maxHeight: '70%',
+    minHeight: '70%',
   },
   
   logologo: {
@@ -329,6 +309,15 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     backgroundColor: `#8fbc8f`,
   },
+  contactsButton: {
+    display:"flex",
+    width:270,
+    backgroundColor: `#8fbc8f`,
+    borderTopLeftRadius: 50,
+    borderBottomLeftRadius: 50,
+    borderTopRightRadius: 15,
+    borderBottomRightRadius: 15,
+  },
   buttonText: {
     fontWeight: '800',
     fontSize: 15
@@ -343,9 +332,4 @@ const styles = StyleSheet.create({
   image: {
     height: '100%'
   },
-  buttonBox: {
-    flex: 2,
-    // backgroundColor: `#ff8c00`,
-    width: '100%'
-  }
 })

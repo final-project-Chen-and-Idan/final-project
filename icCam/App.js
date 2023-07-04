@@ -2,7 +2,6 @@ import { createStackNavigator } from '@react-navigation/stack'
 import React, {useState, useEffect}from 'react'
 import {auth} from './firebase'
 import Login from './pages/Login/Login'
-import Camera from './pages/Camera/Camera'
 import Notifications from './pages/Notifications/Notifications'
 import Signup from './pages/Signup/Signup'
 import Home from './pages/Home/Home'
@@ -50,10 +49,6 @@ export default function App() {
                         options={{
                             headerShown: false
                           }}  
-                    />
-                    <Stack.Screen
-                        name="Camera"
-                        component={Camera}
                     />
                      <Stack.Screen
                         name="Notifications"

@@ -1,5 +1,5 @@
 import { Alert } from 'react-native'
-import { useState, useEffect, useRef, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { db, auth } from '../../firebase';
 import { collection, query, where, onSnapshot, updateDoc, doc } from 'firebase/firestore';
 import  Sound from 'react-native-sound'
