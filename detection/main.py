@@ -1,113 +1,110 @@
+from cv2 import KeyPoint
 from ultralytics import YOLO
 import cv2
 import math
+import tkinter as tk
+from PIL import Image, ImageTk
 import numpy as np
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 from firebase_admin import messaging
-# from aiortc import RTCIceCandidate, RTCSessionDescription, MediaStreamTrack, RTCPeerConnection
+import pygame
 
-pc = None
+# variables
+user_ref = None
+email = None
+active_token = None
+amount_of_danger_frames = 0
+conf = 0.5
+amount_of_danger_frames = 0
+amount_of_adult_frames = 0
+doc_id = None
 
-# class VideoStreamTrack(MediaStreamTrack):
-#     kind = "video"
-
-#     def __init__(self, track):
-#         super().__init__()
-#         self.track = track
-
-#     async def recv(self):
-#         return await self.track.recv()
-    
-# def connect_to_live_stream(email):
-#     # Retrieve the live stream document from Firestore
-#     db = firestore.client()
-#     doc_ref = db.collection('LiveFeed').document(email)
-#     doc = doc_ref.get()
-
-#     if doc.exists:
-#         offer_data = doc.to_dict()
-#         offer_type = offer_data["offer"]['type']
-
-#         if offer_type == 'offer':
-#             # TODO: Retrieve the offer's candidates from the subcollection
-#             candidates_ref = doc_ref.collection('candidates')
-#             candidates = candidates_ref.get()
-
-#             # Create the RTCPeerConnection
-#             global pc
-#             pc = RTCPeerConnection()
-
-#             @pc.on("iceconnectionstatechange")
-#             async def on_iceconnectionstatechange():
-#                 if pc.iceConnectionState == "failed":
-#                     await pc.close()
-#                     pc = None
-
-#                 # Process the offer
-#                 offer = RTCSessionDescription(sdp=offer_data.get('sdp'), type=offer_data.get('type'))
-#                 await pc.setRemoteDescription(offer)
-
-#                 # Process the candidates
-#                 for candidate in candidates:
-#                     candidate_data = candidate.to_dict()
-#                     ice_candidate = RTCIceCandidate(candidate=candidate_data.get('candidate'))
-#                     await pc.addIceCandidate(ice_candidate)
-
-#                 # Create an answer
-#                 answer = await pc.createAnswer()
-#                 await pc.setLocalDescription(answer)
-
-#                 # Save the answer to Firestore
-#                 answer_data = {
-#                     'type': answer.type,
-#                     'sdp': answer.sdp
-#                 }
-#                 doc_ref.set(answer_data)
-
-#             # Start streaming
-#             while True:
-#                 print("Hello")
-#                 # await asyncio.sleep(0)
-
-#         else:
-#             print('Invalid offer type')
-#     else:
-#         print('Document not found')
-
-
-#  ======================== unit tests ============================
-# a test to see if finds the right amount of people in the frame
-# def test_amount_of_people():
-#     print("testing amount of people")
-    
-#     for i in range(2,11):
-#         img = cv2.imread("test_images/test"+str(i)+".jpg")
-#         predict(img, pose_model, img)
+# =============================== tests =======================
+#  testing the accuracy of the age detection
+def age_test():
+    for i in range(1, 12):
+        print(i)
+        strin = "./test_images/test"+str(i)+".jpg"
+        onImage(strin)
         
-#     true = [1] * 9
-#     correct = 0
-#     for i,j in zip(true, predicted_amount):
-#         if i == np.sum(j):
-#             correct += 1
-    
-#     correct_percent = correct / len(true)
-    
-#     assert correct_percent > 0.9 , "failed"
-    
-#     print("passesd")
+# testing to see if the amount of people is right 
+def amount_test():        
+    for i in range(40):
+        if i in [0, 28, 29, 30, 31, 32, 33]:
+            continue
+        print(i)
+        strin = "./test_images/amount/test ("+str(i)+").jpeg"
+        onImage(strin)
 
-# a test to see if recognizes it correctly as a child or adult
-def recognize_child_or_adult():
-    pass
 
-# a test to see if the child is in danger
-def danger():
-    pass
+# ====================================== GUI ======================================
+
+# the getting the email from the gui view point
+def getEmail(event, label, entry, window):
+    active_doc_id, active_email = get_account(label, entry)
+    if(active_doc_id == -1):
+        label.config(text = "invalid email")
+        return
+    
+    # setting the global email 
+    global email
+    email = active_email
+    
+    global doc_id
+    doc_id = active_doc_id
+    
+    # getting the active contacts
+    global active_token
+    active_token = get_active_tokens(user_ref, doc_id)
+    
+    window.destroy()  
+
+# not showing the email warning when writing
+def on_entry_change(event, label):
+    label.config(text="")
+
+# creating the window to connect
+def create_email_window():
+    window = tk.Tk()
+    window.title("IC-Cam")
+    window.geometry("400x300")
+    window.grid_rowconfigure(0, weight=1)
+    window.grid_columnconfigure(0, weight=1)
+    
+    connection_frame = tk.Frame(window, width=300, height=200)
+
+    # Create a label
+    label = tk.Label(connection_frame, text="Enter your email:")
+    label.pack()
+
+    # Create an entry field
+    entry = tk.Entry(connection_frame)
+    # entry.configure(height=3, width=50)
+    entry.pack()
+    
+    # diplaying the error message
+    error_message = tk.Label(connection_frame, text="", fg="red")
+    error_message.pack()
+    
+    entry.bind("<Key>", lambda event: on_entry_change(event, error_message))
+    entry.bind("<Return>", lambda event: getEmail(event, error_message, entry, window))
+    
+    # Create a button
+    button = tk.Button(connection_frame, text="Connect", command= lambda : getEmail(None, error_message, entry, window))
+    button.pack()
+    
+    # connection_frame.bind('<Return>', lambda : getEmail(error_message, entry, window))
+
+        
+    connection_frame.pack()
+    connection_frame.grid(row=0, column=0, sticky="nsew")
+
+    # Start the main event loop
+    window.mainloop()
 
 # ============================= Danger area ======================================
-
 # calculates the distance to the pool
 def distance_to_pool(child, pools):
     # when there are no pools
@@ -187,25 +184,51 @@ def distance_to_pool(child, pools):
 
 # checks if there is danger
 def check_danger(children, adult_num, unknown_num):
+    global amount_of_adult_frames
+    # there is an adult nearby to watch over them stop the alarm and return
+    if adult_num > 0:
+        amount_of_adult_frames += 1
+        # making sure it wasn't a glitch
+        if amount_of_adult_frames+1 > 3:   
+            stop_alarm()
+        return 
+    
+    amount_of_adult_frames = 0
+    
     # no children no danger
     if len(children) == 0:
         return
     
-    # there is an adult nearby to watch over them
-    if adult_num > 0:
-        return 
     
     flag = False
     for child in children:
-        if child < 1:
-            print("DANGER")
+        if child < 1.5 and child != -1:
             flag = True
     
+    global amount_of_danger_frames
+    
+    # signaling the danger
     if flag:
-        signal_danger()
-        send_notifications()
-    pass
+        amount_of_danger_frames += 1
+        
+        # making sure it wasn't a glitch
+        if amount_of_danger_frames > 1:
+            print("DANGER")
+            send_notifications()
+            play_alarm()
+    else:
+        amount_of_danger_frames = 0
 
+# playing the alarm
+def play_alarm():
+    pygame.mixer.music.play(-1)  # -1 indicates infinite loop
+
+# stopping the alarm
+def stop_alarm():
+    try:
+        pygame.mixer.music.stop()
+    except:
+        print("no alarm is playing")
 # ============================= child or adult area ================================
 
 points = {"Nose":0,"Left Eye":1,"Right Eye":2,"Left Ear":3,"Right Ear":4,"Left Shoulder":5,"Right Shoulder":6,"Left Elbow":7,"Right Elbow":8
@@ -230,7 +253,7 @@ def calculate_torso_length(keypoints):
 
     # calculating the length of the torso
     if rsrh!=-1 and lslh != -1:
-        torso_length = (lslh+rsrh)/2
+        torso_length = lslh if lslh > rsrh else rsrh
         return torso_length
     
     # foundleft side
@@ -245,59 +268,76 @@ def calculate_torso_length(keypoints):
 
 # calculating the length of the limbs 
 def calculate_limb_length(keypoints):
-    # --------------- right arm ----------------------------
+    # --------------- arm ----------------------------
     # calculating the distance between the right shoulder and right elbow
     rsre = calculate_keypoint_distance(keypoints,"Right Shoulder","Right Elbow")
+    
+    # calculating the distance between the left shoulder and left elbow
+    lsle = calculate_keypoint_distance(keypoints,"Left Shoulder","Left Elbow")
     
     # calculating the distance between the right elbow and right wrist
     rerw = calculate_keypoint_distance(keypoints,"Right Elbow","Right Wrist")
     
-    # calculating the right arm
-    if rsre != -1 and rerw != -1:
-        right_arm_length = rsre+rerw
-    else:
-        right_arm_length = -1
-    
-    # ----------------------- left arm ------------------------------
-    # calculating the distance between the left shoulder and left elbow
-    lsle = calculate_keypoint_distance(keypoints,"Left Shoulder","Left Elbow")
-    
     # calculating the distance between the left elbow and left wrist
     lelw = calculate_keypoint_distance(keypoints,"Left Elbow","Left Wrist")
     
-    # calculating the left arm
-    if lsle != -1 and lelw != -1:
-        left_arm_length = lsle + lelw
+    # getting the max length
+    shoulder_2_elbow = lsle if lsle > rsre else rsre
+    elbow_2_wrist = lelw if lelw > rerw else rerw
+    
+    
+    # calculating the arm length
+    if shoulder_2_elbow != -1 and elbow_2_wrist != -1:
+        arm_length = shoulder_2_elbow + elbow_2_wrist
     else:
-        left_arm_length = -1
+        arm_length = -1
+
         
-    # --------------- right leg ----------------------------
+    # ---------------- leg ----------------------------
     # calculating the distance between the right hip and right knee
     rhrk = calculate_keypoint_distance(keypoints,"Right Hip","Right Knee")
+    
+    # calculating the distance between the left hip and left knee
+    lhlk = calculate_keypoint_distance(keypoints,"Left Hip","Left Knee")
     
     # calculating the distance between the right knee and right ankle
     rkra = calculate_keypoint_distance(keypoints,"Right Knee","Right Ankle")
     
-    # calculating the right arm
-    if rhrk != -1 and rkra != -1:
-        right_leg_length = rhrk+rkra
-    else:
-        right_leg_length = -1
-    
-    # ----------------------- left leg ------------------------------
-    # calculating the distance between the left hip and left knee
-    lhlk = calculate_keypoint_distance(keypoints,"Left Hip","Left Knee")
-    
     # calculating the distance between the left knee and left ankle
     lkla = calculate_keypoint_distance(keypoints,"Left Knee","Left Ankle")
     
-    # calculating the left arm
-    if lhlk != -1 and lkla != -1:
-        left_leg_length = lhlk + lkla
+    # getting the max length
+    hip_2_knee = lhlk if lhlk > rhrk else rhrk
+    knee_2_ankle = lkla if lkla > rkra else rkra
+    
+    # calculating the leg length
+    if hip_2_knee != -1 and knee_2_ankle != -1:
+        leg_length = hip_2_knee + knee_2_ankle
     else:
-        left_leg_length = -1
+        leg_length = -1
         
-    return {"right arm":right_arm_length, "left arm":left_arm_length,"right leg": right_leg_length,"left leg": left_leg_length}
+    return {"arm":arm_length, "leg": leg_length}
+
+# calculating the deitance between the ear and shoulder
+def calculate_ear_to_shoulder_length(keypoints):
+    # calculating the distance
+    left_side = calculate_keypoint_distance(keypoints, "Left Ear", "Left Shoulder")
+    right_side = calculate_keypoint_distance(keypoints, "Right Ear", "Right Shoulder")
+    
+    # no mesurments 
+    if left_side == -1 and right_side == -1:
+        return -1
+    
+    # no left side
+    if left_side == -1:
+        return right_side
+    
+    # no right side
+    if right_side == -1:
+        return left_side
+    
+    # average of both left and right
+    return (left_side + right_side) / 2 
 
 # calculates the width between the shoulders
 def calculate_sholders_width(keypoints):
@@ -314,26 +354,35 @@ def estimate_height(head, torso, limbs):
     # checking if there is a missing feture
     if head == -1 or torso == -1:
         return -1
-    if limbs["right leg"] == -1 and limbs["left leg"] == -1:
+    if limbs["leg"] == -1:
         return -1
     
     # adding up the height 
-    height  = head + torso
-
-    # adding the leg length 
-    if limbs["right leg"] == -1:
-        height += limbs["left leg"]
-    elif limbs["left leg"] == -1:
-        height += limbs["right leg"]
-    else:
-        height += (limbs["right leg"] + limbs["left leg"]) / 2
-    
+    height  = head + torso + limbs["leg"]    
     return height
 
 # calculating the size of the head
 def calculate_head_size(keypoints):
-    return 0
-    pass
+    # Get the coordinates of the relevant keypoints
+    nose = keypoints[points["Nose"]]
+    left_eye = keypoints[points["Left Eye"]]
+    right_eye = keypoints[points["Right Eye"]]
+    if nose[2]<conf or left_eye[2]<conf or right_eye[2]<conf:
+        return -1
+
+    # Calculate the Euclidean distance between the eyes
+    eye_distance = calculate_keypoint_distance(keypoints,"Left Eye", "Right Eye")
+    if eye_distance == -1:
+        return -1
+
+    # Calculate the Euclidean distance between the nose and the midpoint between the eyes
+    eye_midpoint = [(left_eye[0] + right_eye[0]) / 2, (left_eye[1] + right_eye[1]) / 2]
+    nose_eye_distance = math.dist(nose[:2], eye_midpoint)
+
+    # Estimate the head size as the average of the eye distance and nose-eye distance
+    head_size = (eye_distance + nose_eye_distance) / 2
+
+    return head_size
 
 # ---------------------- ratio estimations -----------------------
 
@@ -343,24 +392,14 @@ def limb_to_body_ratio(limbs, height, type):
     if height == -1:
         return -1
     
-    # calculating the limb to body ratio for both limbs
-    left = limbs["left "+ type] / height
-    right = limbs["right "+ type] / height
+    # calculating the limb to body ratio
+    ratio = limbs[type] / height
     
     # if there are no limb mesurements
-    if left < 0 and right < 0:
+    if ratio < 0:
         return -1
-    
-    # if there isn't a left limb mesurement
-    if left < 0:
-        return right
-    
-    # if there isn't a right limb mesurement
-    if right<0:
-        return left
-    
-    # return the average limb to body ratio
-    return (left + right)/2
+    else:
+        return ratio
 
 # calculates if the leg to body ratio is for an adult or child
 def leg_to_body_ratio(limbs, height):
@@ -378,7 +417,7 @@ def arm_to_body_ratio(limbs, height):
         return -1
     return 0
 
-# calculates if the head to body ratio is for an adult or child
+# calculates if the head to body ratio is for an adult or child --------------------------------------- todo
 def head_to_body_ratio(head, height):
     # missing feature
     if head == -1 or height == -1:
@@ -393,23 +432,11 @@ def limb_to_torso_ratio(limbs, torso, type):
     # checking missing variables
     if torso == -1:
         return -1
-    if limbs["left " + type] == -1 and limbs["right " + type] == -1:
+    if limbs[type] == -1:
         return -1
     
     # calculating the limbs to torso ratio
-    left_ratio = limbs["left "+ type] / torso
-    right_ratio = limbs["right " + type] / torso
-    
-    ratio = -1
-
-    # getting the average ratio
-    if left_ratio < 0:
-        ratio = right_ratio
-    elif right_ratio < 0:
-        ratio = left_ratio
-    else:
-        ratio = (left_ratio + right_ratio) / 2
-    
+    ratio = limbs[type] / torso
     return ratio
 
 # calculates the arm to torso ratio
@@ -434,11 +461,30 @@ def leg_to_torso_ratio(limbs, torso):
         return -1
     
     # returning if child or adult
-    if ratio > 1.2:
+    if ratio > 1.25:
         return 0
     else:
         return 1
 
+#  calculating the ear to shoulder ratio
+def ear_to_shoulder_ratio(ears, shoulder):
+    # if there are missing features
+    if ears == -1 or shoulder == -1:
+        return -1 
+    
+    # invalid mesurements
+    if ears > shoulder:
+        return -1
+    
+    # the ratio
+    ratio =  ears / shoulder
+    
+    if ratio < 0.73:
+        return 0
+    return 1
+        
+    
+# ---------------------------------------------------------------------------------------------------- todo
 def head_to_shoulder_ratio(head, shoulder):
     if head == -1 or shoulder == -1:
         return -1
@@ -451,18 +497,22 @@ def child_or_adult(keypoints):
     torso = calculate_torso_length(keypoints)
     limbs = calculate_limb_length(keypoints)
     head = calculate_head_size(keypoints)
+    ears =  calculate_ear_to_shoulder_length(keypoints)
     shoulders = calculate_sholders_width(keypoints)
     height = estimate_height(head, torso, limbs)
     
     
     child , adult = 0, 0
     # running the ratio function that requie height
-    function_array = ([leg_to_body_ratio, [limbs, height]],
-                      [arm_to_body_ratio, [limbs, height]],
-                      [head_to_body_ratio, [head, height]],
-                      [head_to_shoulder_ratio, [head, shoulders]],
+    function_array = (
+                    # [leg_to_body_ratio, [limbs, height]],
+                    #   [arm_to_body_ratio, [limbs, height]],
+                    #   [head_to_body_ratio, [head, height]],
+                    #   [head_to_shoulder_ratio, [head, shoulders]],
+                      [leg_to_torso_ratio, [limbs, torso]],
                       [arm_to_torso_ratio, [limbs, torso]],
-                      [leg_to_torso_ratio, [limbs, torso]])
+                    #   [ear_to_shoulder_ratio, [ears, shoulders]],
+                    )
     for func in function_array:
         result = func[0](func[1][0], func[1][1])
             
@@ -475,14 +525,16 @@ def child_or_adult(keypoints):
 
     # majority rules
     if child > adult:
+        print("child")
         return 0
     if adult > child:
+        print("adult")
         return 1
     return -1
 
 
-# ======================== detection area ================= 
 
+# ======================== detection area ================= 
 def predict(source, model, img=[], pools = []):
     # getting the predictions 
     output = model.predict(source, verbose=False, boxes=False)[0]
@@ -547,6 +599,7 @@ def onImage(source):
 
 # running the prediction on 
 def onVideo(source):
+    
     # loading the feed
     print("loading feed .......")
     
@@ -578,18 +631,28 @@ def onVideo(source):
         display_image = predict(image, pose_model, pools=pools)
         
         # showing the image
-        cv2.imshow("Result", display_image)
-
+        cv2.imshow("IC-Cam", display_image)
+        
         key = cv2.waitKey(1) & 0xFF
         if key == ord("q"):
             break
-
+        # Check if the window is closed
+        if cv2.getWindowProperty('IC-Cam', cv2.WND_PROP_VISIBLE) < 1:
+            break
+        
         (success, image) = cap.read()   
     cv2.destroyAllWindows()
 
 
 
 # ============================= firebase area ==================================
+
+# running all firebase functions
+def setup_firebase():
+    # connecting to the firebase
+    global user_ref
+    user_ref = connect_to_firebase()
+
 # connecting to the firebase
 def connect_to_firebase():
     # getting the credentials
@@ -607,24 +670,19 @@ def connect_to_firebase():
     return users_ref
 
 # logging into the account
-def get_account():
-    connected = False
-    while not connected:
-        email = input("enter your email: ")
-        
-        # no account and wants to stop the program
-        if email == '0':
-            return -1
-        
+def get_account(label, entry):
+
+        email = entry.get().strip()
+
         # getting the refrences
         doc_id = get_doc_id(email, user_ref)
         
         # if the account was not found
         if doc_id == -1:
-            print("invalid email - you can enter 0 to stop the program")
+            return -1, -1
         else:
             print("connected")
-            return doc_id
+            return doc_id , email
 
 # returns the doc id for the account
 def get_doc_id(email, users_ref):
@@ -638,16 +696,16 @@ def get_doc_id(email, users_ref):
         return doc.id
     return -1
 
-# signals the account that there is danger
-def signal_danger():
-    user_ref.document(doc_id).update({"danger" : True})
-
 # gets the list of notification tokens from the contacts
-def get_active_tokens():
+def get_active_tokens(user_ref, doc_id):
     # getting the users conrtact list
     doc = user_ref.document(doc_id).get()
     contacts = doc.to_dict()["contacts"]
     
+    # # the token of the user
+    # user_token =  doc.to_dict()["token"]
+    
+    # # active_tokens = [user_token]
     active_tokens = []
     
     # getting the token of each active contact
@@ -664,11 +722,6 @@ def get_active_tokens():
 def send_notifications(type_of_danger = "child is alone near the pool"):
 
     message = messaging.MulticastMessage(
-        notification=messaging.Notification(
-            title = "DANGER",
-            body = type_of_danger,
-            image="image_url"
-        ),
         tokens=active_token,
         android= messaging.AndroidConfig(
             priority= "high",
@@ -677,8 +730,10 @@ def send_notifications(type_of_danger = "child is alone near the pool"):
                 vibrate_timings_millis= [1000, 30000, 1000, 10000, 1000, 30000],
                 title="DANGER",
                 body=type_of_danger,
-                default_sound = True,
                 visibility="public",
+                channel_id= "ic-Cam",
+                default_sound=False,
+                sound="alarm",
             )
         )
         
@@ -694,44 +749,32 @@ def send_notifications(type_of_danger = "child is alone near the pool"):
         messaging.send_multicast(message)
 
 # ============================= main =============================================
+
 if __name__ == "__main__":
-    # connecting to the firebase
-    user_ref = connect_to_firebase()
-    
-    # getting the account refrence and doc id
-    doc_id = get_account()
-   
-    # getting the active contacts
-    active_token = get_active_tokens()    
-    
-    # connect_to_live_stream("idanbkideckel@gmail.com")
-    
-    conf = 0.5
-    
     print("loading models.....")
     
     pose_model = YOLO("weights/yolov8m-pose.pt")
     model_pool = YOLO("weights/poolm.pt")
-    # model_person = YOLO("weights/yolov8m.pt")
-    
+    model_person = YOLO("weights/best.pt") 
     print("finished loading models")
     
-   
-    # loading video
-    onVideo("vid.mp4")
-    # onVideo("vid1.mp4")
-    # onVideo("0")
-    # onVideo("test.mp4")
+    # loading the alarm
+    pygame.mixer.init()
+    pygame.mixer.music.load("./alarm.mp3")
     
-    # # print testing
-    # current = 2
-    # true_amount_of_people = [1]*9
-    # predicted_amount = []
-    # is_child = []
-    # for i in range(2,12):
-    #     onImage("test_images/test"+str(i)+".jpg")
-    #     current += 1
+    try:
+        setup_firebase()
         
-    # predicted_amount = []
-    # test_amount_of_people()
+        create_email_window()
+
+        # only if there is an account connected
+        if email != None:
+            # onVideo("vid.mp4")
+            onVideo("0")
     
+    
+    except:
+        print("an error occord")
+    
+    
+    # age_test()

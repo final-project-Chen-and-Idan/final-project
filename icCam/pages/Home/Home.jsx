@@ -111,12 +111,9 @@ const Home = () => {
                 <View style={styles.all}>
                   <View style={styles.modalContent}>
                     <Text style = {styles.title}>How It Works:</Text>
+                    <Text style={styles.text}>The first step is to manage who you want to make active in your contact list so that they will get Notifications </Text>
                     <Text style={styles.text}>
-הבעיה: טביעת ילדים בבריכות ביתיות - כולנו מכירים את הסיפורים בתקשורת.
-מקור הבעיה: חוסר תשומת לב של המבוגר האחראי והשגחה לא רציפה על הבריכה.
-הפתרון שלנו: IC-CAM, אמצעי טכנולוגי להשגחה רציפה ויעילה על הבריכה המבוסס על למידה עמוקה בתחום עיבוד תמונה ומופעל באמצעות סמארטפון.
-
-
+                    The second step is to activate the watching system to watch the pool 
                     </Text>
                     <TouchableOpacity style={styles.button}   onPress={closeModal}>
                       <Text style={styles.buttonText}>Close</Text>
